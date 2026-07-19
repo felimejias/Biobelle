@@ -30,6 +30,9 @@ export async function POST(request: Request) {
   if (phone.length < 10 || phone.length > 16) return Response.json({ error: "Ingresa un WhatsApp válido." }, { status: 400 });
   if (!TREATMENTS.includes(treatmentId)) return Response.json({ error: "Tratamiento no válido." }, { status: 400 });
   if (!PROFESSIONALS.includes(professional)) return Response.json({ error: "Profesional no válida." }, { status: 400 });
+  if (preferredDate && (!/^\d{4}-\d{2}-\d{2}$/.test(preferredDate) || preferredDate < "2026-08-10")) {
+    return Response.json({ error: "La fecha preferida debe ser desde el 10 de agosto de 2026." }, { status: 400 });
+  }
   if (payload.privacyConsent !== true) return Response.json({ error: "Debes aceptar el uso de tus datos." }, { status: 400 });
 
   const db = getDb();

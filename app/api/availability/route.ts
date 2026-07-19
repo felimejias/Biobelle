@@ -4,6 +4,7 @@ import { bookings } from "../../../db/schema";
 
 const PROFESSIONALS = ["Kiara Moscoso", "Pía Orellana"] as const;
 const SLOTS = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"] as const;
+const OPENING_DATE = "2026-08-10";
 
 function isValidDate(value: string) {
   return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T12:00:00`));
@@ -16,6 +17,10 @@ export async function GET(request: Request) {
 
   if (!isValidDate(date)) {
     return Response.json({ error: "Selecciona una fecha válida." }, { status: 400 });
+  }
+
+  if (date < OPENING_DATE) {
+    return Response.json({ date, slots: [], closed: true, beforeOpening: true, message: "La agenda BIOBELLE comienza el 10 de agosto de 2026." });
   }
 
   const day = new Date(`${date}T12:00:00`).getDay();

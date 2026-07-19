@@ -21,8 +21,9 @@ test("keeps the BIOBELLE brand, contact channels and booking journey visible", a
 });
 
 test("ships persistent booking management, waitlist and privacy-aware analytics", async () => {
-  const [schema, bookingApi, reservationApi, waitlistApi, eventsApi] = await Promise.all([
+  const [schema, availabilityApi, bookingApi, reservationApi, waitlistApi, eventsApi] = await Promise.all([
     source("db/schema.ts"),
+    source("app/api/availability/route.ts"),
     source("app/api/bookings/route.ts"),
     source("app/api/reservations/[token]/route.ts"),
     source("app/api/waitlist/route.ts"),
@@ -31,6 +32,8 @@ test("ships persistent booking management, waitlist and privacy-aware analytics"
   assert.match(schema, /managementToken/);
   assert.match(schema, /export const waitlist/);
   assert.match(schema, /export const siteEvents/);
+  assert.match(availabilityApi, /2026-08-10/);
+  assert.match(bookingApi, /2026-08-10/);
   assert.match(bookingApi, /managementUrl/);
   assert.match(reservationApi, /reschedule/);
   assert.match(reservationApi, /cancelled/);

@@ -34,12 +34,12 @@ const treatments: Treatment[] = [
 ];
 
 const concerns = [
-  { id: "expresion", label: "Líneas de expresión", treatment: "armonizacion" },
-  { id: "manchas", label: "Manchas o tatuajes", treatment: "laser" },
-  { id: "luminosidad", label: "Luminosidad y textura", treatment: "piel" },
-  { id: "regenerar", label: "Regeneración facial o capilar", treatment: "regenerativa" },
-  { id: "lesion", label: "Lesiones cutáneas", treatment: "lesiones" },
-  { id: "orientacion", label: "No sé qué necesito", treatment: "evaluacion" },
+  { id: "expresion", label: "Líneas de expresión", note: "Suavizar preservando tu expresión", treatment: "armonizacion" },
+  { id: "manchas", label: "Manchas o tatuajes", note: "Tecnología láser y evaluación responsable", treatment: "laser" },
+  { id: "luminosidad", label: "Luminosidad y textura", note: "Recuperar una piel uniforme y vital", treatment: "piel" },
+  { id: "regenerar", label: "Regeneración", note: "Cuidado facial o capilar personalizado", treatment: "regenerativa" },
+  { id: "lesion", label: "Lesiones cutáneas", note: "Evaluar antes de intervenir", treatment: "lesiones" },
+  { id: "orientacion", label: "Quiero orientación", note: "Una profesional te ayudará a decidir", treatment: "evaluacion" },
 ];
 
 type AvailableSlot = {
@@ -49,10 +49,11 @@ type AvailableSlot = {
 };
 
 function nextBusinessDate() {
+  const openingDate = "2026-08-10";
   const date = new Date();
   date.setDate(date.getDate() + 1);
   while (date.getDay() === 0) date.setDate(date.getDate() + 1);
-  return date.toISOString().slice(0, 10);
+  return date.toISOString().slice(0, 10) < openingDate ? openingDate : date.toISOString().slice(0, 10);
 }
 
 function BrandLockup({ className = "", compact = false }: { className?: string; compact?: boolean }) {
@@ -185,7 +186,7 @@ export default function Home() {
 
   return (
     <main>
-      <div className="announcement">Primera evaluación personalizada · Agenda online disponible 24/7</div>
+      <div className="announcement">Agenda online abierta · Atenciones desde el 10 de agosto de 2026</div>
       <header className="site-header">
         <BrandSocial />
         <nav className={menuOpen ? "nav open" : "nav"} aria-label="Navegación principal">
@@ -337,15 +338,16 @@ export default function Home() {
               <>
                 <div className="modal-header">
                   <BrandLockup compact />
-                  <div><p>AGENDA INTELIGENTE</p><h2>{step === 1 ? "Partamos por ti" : step === 2 ? "Tu mejor primer paso" : step === 3 ? "Elige tu hora" : "Confirma tus datos"}</h2></div>
+                  <div><p>PASO 0{step} · DE 04</p><h2>{step === 1 ? "Comencemos por lo que te importa" : step === 2 ? "Una recomendación pensada para ti" : step === 3 ? "Elige tu momento" : "Los últimos detalles"}</h2></div>
                 </div>
-                <div className="progress"><span style={{ width: `${step * 25}%` }} /></div>
-                {step === 1 && <div className="booking-step"><p>¿Qué te gustaría mejorar o cuidar?</p><div className="concern-grid">{concerns.map((item) => <button className={concern === item.id ? "selected" : ""} onClick={() => setConcern(item.id)} key={item.id}>{item.label}<span>{concern === item.id ? "✓" : "→"}</span></button>)}</div></div>}
-                {step === 2 && <div className="booking-step"><p>Según tu objetivo, te recomendamos comenzar por:</p><div className="result-card"><span>RECOMENDACIÓN BIOBELLE</span><h3>{recommended ? recommended.eyebrow : "Evaluación estética personalizada"}</h3><p>{recommended ? recommended.copy : "Una conversación clínica para entender tu piel, tus expectativas y recomendarte opciones seguras."}</p><div><b>{recommended?.duration ?? "40 min"}</b><b>{recommended?.price ?? "Sin compromiso"}</b></div></div><p className="disclaimer">Esta orientación no reemplaza una evaluación clínica. La indicación final siempre será realizada por una profesional.</p></div>}
-                {step === 3 && <div className="booking-step schedule-step"><label>Profesional<select value={professional} onChange={(e) => setProfessional(e.target.value)}><option>Primera disponible</option><option>Kiara Moscoso</option><option>Pía Orellana</option></select></label><label>Fecha<input type="date" min={nextBusinessDate()} value={date} onChange={(e) => setDate(e.target.value)} /></label><p>Horas disponibles en tiempo real</p>{availabilityLoading ? <div className="availability-status">Consultando agenda…</div> : availability.length ? <div className="time-grid">{availability.map((slot) => <button type="button" className={time === slot.time ? "selected" : ""} disabled={!slot.available} onClick={() => setTime(slot.time)} key={slot.time}>{slot.time}{!slot.available && <small>Ocupada</small>}</button>)}</div> : <div className="availability-status">No hay horas disponibles para esta fecha.<Link href={`/lista-espera?tratamiento=${recommended?.id ?? "evaluacion"}`}>Unirme a la lista de espera →</Link></div>}<small>✦ Las horas se bloquean al confirmar para evitar reservas duplicadas.</small></div>}
-                {step === 4 && <div className="booking-step details-step"><div className="booking-summary"><span>{date.split("-").reverse().join("/")} · {time}</span><b>{recommended?.eyebrow ?? "Evaluación personalizada"}</b><small>{professional}</small></div><label>Nombre completo<input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tu nombre" autoComplete="name" /></label><label>WhatsApp<input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+56 9 1234 5678" inputMode="tel" autoComplete="tel" /></label><label className="checkbox"><input type="checkbox" checked={reminderConsent} onChange={(e) => setReminderConsent(e.target.checked)} /> Quiero recibir recordatorios e indicaciones por WhatsApp.</label><label className="checkbox required-consent"><input type="checkbox" checked={privacyConsent} onChange={(e) => setPrivacyConsent(e.target.checked)} /> Acepto que BIOBELLE use estos datos para gestionar mi reserva, según la <Link href="/privacidad" target="_blank">Política de Privacidad</Link>.</label></div>}
+                <div className="opening-note"><span>APERTURA DE AGENDA</span><b>Desde el 10 de agosto</b><small>Atención privada · Rancagua</small></div>
+                <div className="progress" aria-label={`Paso ${step} de 4`}><span style={{ width: `${step * 25}%` }} /></div>
+                {step === 1 && <div className="booking-step"><p className="step-intro">Cada experiencia comienza escuchándote.</p><h3 className="step-question">¿Qué te gustaría cuidar o realzar?</h3><div className="concern-grid">{concerns.map((item, index) => <button className={concern === item.id ? "selected" : ""} onClick={() => setConcern(item.id)} key={item.id}><span className="concern-number">0{index + 1}</span><span className="concern-copy"><b>{item.label}</b><small>{item.note}</small></span><span className="concern-mark">{concern === item.id ? "✓" : "→"}</span></button>)}</div></div>}
+                {step === 2 && <div className="booking-step"><p className="step-intro">Tu objetivo merece una indicación honesta.</p><h3 className="step-question">Este es el mejor lugar para comenzar.</h3><div className="result-card"><span>CURADURÍA BIOBELLE · RECOMENDACIÓN PERSONALIZADA</span><h3>{recommended ? recommended.eyebrow : "Evaluación estética personalizada"}</h3><p>{recommended ? recommended.copy : "Una conversación clínica para entender tu piel, tus expectativas y recomendarte opciones seguras."}</p><div><b>{recommended?.duration ?? "40 min"}</b><b>{recommended?.price ?? "Sin compromiso"}</b></div></div><p className="disclaimer">La belleza consciente comienza con una evaluación. La indicación definitiva siempre será realizada por una profesional.</p></div>}
+                {step === 3 && <div className="booking-step schedule-step"><p className="step-intro">Tu tiempo también es parte de la experiencia.</p><h3 className="step-question">Reserva el momento que prefieras.</h3><div className="schedule-fields"><label>Profesional<select value={professional} onChange={(e) => setProfessional(e.target.value)}><option>Primera disponible</option><option>Kiara Moscoso</option><option>Pía Orellana</option></select></label><label>Fecha de atención<input type="date" min={nextBusinessDate()} value={date} onChange={(e) => setDate(e.target.value)} /></label></div><p className="slots-label">Disponibilidad en tiempo real</p>{availabilityLoading ? <div className="availability-status">Preparando las mejores horas para ti…</div> : availability.length ? <div className="time-grid">{availability.map((slot) => <button type="button" className={time === slot.time ? "selected" : ""} disabled={!slot.available} onClick={() => setTime(slot.time)} key={slot.time}><span>{slot.time}</span><small>{slot.available ? "Disponible" : "Ocupada"}</small></button>)}</div> : <div className="availability-status">No encontramos horas para esta fecha.<Link href={`/lista-espera?tratamiento=${recommended?.id ?? "evaluacion"}`}>Solicitar prioridad en lista de espera →</Link></div>}<small className="booking-assurance">✦ Tu hora se reserva exclusivamente para ti al confirmar.</small></div>}
+                {step === 4 && <div className="booking-step details-step"><p className="step-intro">Estás a un paso de tu experiencia BIOBELLE.</p><div className="booking-summary"><span>SELECCIÓN PERSONALIZADA</span><b>{recommended?.eyebrow ?? "Evaluación personalizada"}</b><small>{date.split("-").reverse().join("/")} · {time} · {professional}</small></div><div className="detail-fields"><label>Tu nombre completo<input value={name} onChange={(e) => setName(e.target.value)} placeholder="¿Cómo quieres que te recibamos?" autoComplete="name" /></label><label>WhatsApp de contacto<input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+56 9 1234 5678" inputMode="tel" autoComplete="tel" /></label></div><label className="checkbox"><input type="checkbox" checked={reminderConsent} onChange={(e) => setReminderConsent(e.target.checked)} /> Deseo recibir recordatorios e indicaciones de preparación por WhatsApp.</label><label className="checkbox required-consent"><input type="checkbox" checked={privacyConsent} onChange={(e) => setPrivacyConsent(e.target.checked)} /> Acepto que BIOBELLE use estos datos exclusivamente para gestionar mi reserva, según la <Link href="/privacidad" target="_blank">Política de Privacidad</Link>.</label></div>}
                 {bookingError && <p className="booking-error" role="alert">{bookingError}</p>}
-                <div className="modal-actions">{step > 1 && <button className="back" onClick={() => setStep(step - 1)} disabled={bookingLoading}>← Volver</button>}<button className="continue" disabled={(step === 3 && (!time || availabilityLoading)) || (step === 4 && (!name.trim() || !phone.trim() || !privacyConsent || bookingLoading))} onClick={() => step < 4 ? setStep(step + 1) : void submitBooking()}>{step === 4 ? (bookingLoading ? "Guardando…" : "Confirmar solicitud") : "Continuar"} <span>→</span></button></div>
+                <div className="modal-actions">{step > 1 && <button className="back" onClick={() => setStep(step - 1)} disabled={bookingLoading}>← Volver</button>}<button className="continue" disabled={(step === 3 && (!time || availabilityLoading)) || (step === 4 && (!name.trim() || !phone.trim() || !privacyConsent || bookingLoading))} onClick={() => step < 4 ? setStep(step + 1) : void submitBooking()}>{step === 4 ? (bookingLoading ? "Reservando tu momento…" : "Reservar mi experiencia") : "Continuar con mi selección"} <span>→</span></button></div>
               </>
             ) : (
               <div className="confirmation"><div className="checkmark">✓</div><p>HORA RESERVADA · {confirmationCode}</p><h2>Tu momento BIOBELLE comienza aquí.</h2><p>La hora del <b>{date.split("-").reverse().join("/")} a las {time}</b> quedó bloqueada a tu nombre. Conserva tu código de reserva.</p><div className="confirmation-card"><span>{recommended?.eyebrow ?? "Evaluación personalizada"}</span><b>{professional}</b><small>{confirmationCode} · Bueras 218, Oficina 302 · Rancagua</small></div>{managementUrl && <a className="manage-booking-link full" href={managementUrl}>Reprogramar o cancelar mi hora <span>→</span></a>}<a className="whatsapp-confirm full" href={bookingWhatsAppUrl} target="_blank" rel="noreferrer">Enviar confirmación por WhatsApp <span>↗</span></a><button className="modal-done full" onClick={closeBooking}>Listo, cerrar</button></div>

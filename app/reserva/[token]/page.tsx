@@ -18,10 +18,11 @@ type Booking = {
 type Slot = { time: string; available: boolean };
 
 function nextBusinessDate() {
+  const openingDate = "2026-08-10";
   const date = new Date();
   date.setDate(date.getDate() + 1);
   while (date.getDay() === 0) date.setDate(date.getDate() + 1);
-  return date.toISOString().slice(0, 10);
+  return date.toISOString().slice(0, 10) < openingDate ? openingDate : date.toISOString().slice(0, 10);
 }
 
 export default function ReservationPage() {
