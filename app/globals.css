@@ -78,7 +78,10 @@ h1 em,h2 em { color:var(--wine); font-weight:400; }
 .treatment-card>p:not(.eyebrow) { font-size:12px; color:var(--muted); line-height:1.7; }
 .treatment-card.wine>p { color:#eadde1!important; }
 .treatment-meta { margin-top:auto; display:flex; gap:18px; font-size:9px; text-transform:uppercase; letter-spacing:.1em; }
-.treatment-card button { margin-top:20px; padding:14px 0 0; border:0; border-top:1px solid currentColor; background:none; color:inherit; display:flex; justify-content:space-between; text-transform:uppercase; font-size:9px; letter-spacing:.12em; }
+.treatment-actions { margin-top:20px; padding-top:14px; border-top:1px solid currentColor; display:flex; align-items:center; justify-content:space-between; gap:18px; }
+.treatment-actions a,.treatment-actions button { margin:0; padding:0; border:0; background:none; color:inherit; display:flex; align-items:center; gap:9px; text-decoration:none; text-transform:uppercase; font-size:8px; letter-spacing:.1em; }
+.treatment-actions a:hover,.treatment-actions button:hover { color:var(--wine); }
+.treatment-card.wine .treatment-actions a:hover,.treatment-card.wine .treatment-actions button:hover { color:#e6c5b2; }
 .smart-booking { background:var(--deep); color:white; padding:110px 10vw; display:grid; grid-template-columns:1fr 1fr; gap:9vw; align-items:center; }
 .smart-booking h2,.gallery h2,.final-cta h2 { font-size:clamp(50px,5.5vw,84px); line-height:.9; }
 .smart-booking h2 em,.gallery h2 em,.final-cta h2 em { color:#e6c5b2; }
@@ -177,6 +180,36 @@ footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1
 .confirmation-card span { font-family:var(--font-serif); font-size:22px; }
 .confirmation-card b,.confirmation-card small { font-size:9px; margin-top:4px; }
 .full { width:100%; }
+.whatsapp-confirm { min-height:48px; padding:14px 18px; background:#176b51; color:white; text-decoration:none; text-transform:uppercase; letter-spacing:.1em; font-size:9px; display:flex; align-items:center; justify-content:center; gap:20px; }
+.whatsapp-confirm:hover { background:#10533f; }
+.modal-done { margin-top:9px; padding:11px; border:0; background:transparent; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; font-size:8px; }
+
+.treatment-header { position:relative; }
+.back-home { color:var(--wine); text-decoration:none; text-transform:uppercase; letter-spacing:.12em; font-size:9px; }
+.treatment-detail-hero { min-height:680px; display:grid; grid-template-columns:1fr 1fr; background:#f3e8e4; }
+.treatment-detail-hero>div { padding:100px 7vw; display:flex; flex-direction:column; justify-content:center; }
+.treatment-detail-hero h1 { max-width:700px; color:#382129; font-size:clamp(58px,6.2vw,96px); line-height:.86; letter-spacing:-.05em; margin:32px 0; }
+.treatment-detail-hero>div>p:not(.kicker) { max-width:610px; color:var(--muted); line-height:1.9; font-size:14px; }
+.treatment-detail-hero figure { margin:0; min-height:680px; overflow:hidden; }
+.treatment-detail-hero figure img { width:100%; height:100%; object-fit:cover; object-position:center; }
+.detail-meta { display:flex; gap:45px; margin:32px 0; padding:22px 0; border-top:1px solid #d6c3bf; border-bottom:1px solid #d6c3bf; font-family:var(--font-serif); font-size:20px; }
+.detail-meta span { display:flex; flex-direction:column; }
+.detail-meta small { margin-bottom:5px; color:var(--wine); font-family:var(--font-sans); font-size:8px; text-transform:uppercase; letter-spacing:.14em; }
+.detail-actions { display:flex; align-items:center; gap:24px; }
+.detail-actions .primary { text-decoration:none; }
+.detail-whatsapp { color:#176b51; text-decoration:none; padding:11px 0; border-bottom:1px solid currentColor; font-size:9px; text-transform:uppercase; letter-spacing:.1em; }
+.treatment-information { padding:100px 7vw; display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:#d6c3bf; }
+.treatment-information article { min-height:390px; padding:38px; background:var(--cream); }
+.treatment-information article>span { color:var(--gold); font-family:var(--font-serif); font-size:19px; }
+.treatment-information h2 { margin:45px 0 25px; font-size:37px; line-height:1; }
+.treatment-information ul { padding:0; margin:0; list-style:none; }
+.treatment-information li { padding:13px 0; border-bottom:1px solid #e3d8d5; color:var(--muted); font-size:11px; line-height:1.55; }
+.treatment-information li:before { content:"✦"; color:var(--gold); margin-right:10px; }
+.treatment-disclaimer { padding:110px 10vw; text-align:center; background:var(--deep); color:white; display:flex; align-items:center; flex-direction:column; }
+.treatment-disclaimer>p { color:#e6c5b2; text-transform:uppercase; letter-spacing:.16em; font-size:9px; }
+.treatment-disclaimer h2 { max-width:850px; margin:22px 0; font-size:clamp(48px,5.5vw,82px); line-height:.9; }
+.treatment-disclaimer>span { max-width:700px; color:#d8c9cd; font-size:12px; line-height:1.8; }
+.treatment-disclaimer .cream-button { margin-top:32px; text-decoration:none; }
 
 @media(max-width:900px){
   .announcement { font-size:8px; }
@@ -208,6 +241,11 @@ footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1
   .final-cta { grid-template-columns:1fr; padding:80px 25px; }
   footer { grid-template-columns:1fr; text-align:center; }
   footer>div { justify-content:center; }
+  .treatment-detail-hero { grid-template-columns:1fr; }
+  .treatment-detail-hero>div { padding:75px 7vw; }
+  .treatment-detail-hero figure { min-height:540px; }
+  .treatment-information { grid-template-columns:1fr; padding:70px 6vw; }
+  .treatment-information article { min-height:auto; }
 }
 @media(max-width:600px){
   .brand-lockup { width:178px; max-width:48vw; }
@@ -232,5 +270,17 @@ footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1
   .concern-grid { grid-template-columns:1fr; }
   .modal-actions { flex-direction:column-reverse; }
   .continue { width:100%; }
+  .back-home { font-size:0; }
+  .back-home:after { content:"← Tratamientos"; font-size:8px; }
+  .treatment-detail-hero>div { padding:60px 24px; }
+  .treatment-detail-hero h1 { font-size:55px; }
+  .treatment-detail-hero figure { min-height:430px; }
+  .detail-meta { gap:24px; flex-direction:column; }
+  .detail-actions { align-items:stretch; flex-direction:column; }
+  .detail-actions .primary { width:100%; }
+  .detail-whatsapp { text-align:center; }
+  .treatment-information { padding:50px 20px; }
+  .treatment-information article { padding:30px 25px; }
+  .treatment-disclaimer { padding:80px 24px; }
 }
 @media(prefers-reduced-motion:reduce){ html { scroll-behavior:auto; } * { transition:none!important; } }

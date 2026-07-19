@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 
 type Treatment = {
   id: string;
@@ -119,6 +120,15 @@ export default function Home() {
 
   const closeBooking = () => setBookingOpen(false);
 
+  useEffect(() => {
+    const preset = new URLSearchParams(window.location.search).get("agendar");
+    if (preset && treatments.some((item) => item.id === preset)) openBooking(preset);
+  }, []);
+
+  const bookingWhatsAppUrl = `https://wa.me/56979655129?text=${encodeURIComponent(
+    `Hola BIOBELLE, acabo de reservar ${recommended?.eyebrow ?? "una evaluación"} para el ${date.split("-").reverse().join("/")} a las ${time}. Código: ${confirmationCode}. Profesional: ${professional}. Mi nombre es ${name}.`,
+  )}`;
+
   const submitBooking = async () => {
     setBookingLoading(true);
     setBookingError("");
@@ -218,7 +228,7 @@ export default function Home() {
               <h3>{item.title}</h3>
               <p>{item.copy}</p>
               <div className="treatment-meta"><span>{item.duration}</span><span>{item.price}</span></div>
-              <button onClick={() => openBooking(item.id)} aria-label={`Agendar ${item.eyebrow}`}>Conocer y agendar <span>↗</span></button>
+              <div className="treatment-actions"><Link href={`/tratamientos/${item.id}`}>Ver detalles <span>→</span></Link><button onClick={() => openBooking(item.id)} aria-label={`Agendar ${item.eyebrow}`}>Agendar <span>↗</span></button></div>
             </article>
           ))}
         </div>
@@ -299,7 +309,7 @@ export default function Home() {
         <small>© 2026 BIOBELLE · Información referencial. Todo procedimiento requiere evaluación profesional.</small>
       </footer>
 
-      <a className="whatsapp" href="https://wa.me/56979655129" aria-label="Contactar BIOBELLE por WhatsApp">◉</a>
+      <a className="whatsapp" href={`https://wa.me/56979655129?text=${encodeURIComponent("Hola BIOBELLE, quisiera recibir orientación sobre sus tratamientos y disponibilidad.")}`} target="_blank" rel="noreferrer" aria-label="Contactar BIOBELLE por WhatsApp">◉</a>
 
       {bookingOpen && (
         <div className="modal-backdrop" role="presentation" onMouseDown={(e) => { if (e.currentTarget === e.target) closeBooking(); }}>
@@ -320,7 +330,7 @@ export default function Home() {
                 <div className="modal-actions">{step > 1 && <button className="back" onClick={() => setStep(step - 1)} disabled={bookingLoading}>← Volver</button>}<button className="continue" disabled={(step === 3 && (!time || availabilityLoading)) || (step === 4 && (!name.trim() || !phone.trim() || bookingLoading))} onClick={() => step < 4 ? setStep(step + 1) : void submitBooking()}>{step === 4 ? (bookingLoading ? "Guardando…" : "Confirmar solicitud") : "Continuar"} <span>→</span></button></div>
               </>
             ) : (
-              <div className="confirmation"><div className="checkmark">✓</div><p>HORA RESERVADA · {confirmationCode}</p><h2>Tu momento BIOBELLE comienza aquí.</h2><p>La hora del <b>{date.split("-").reverse().join("/")} a las {time}</b> quedó bloqueada a tu nombre. Conserva tu código de reserva.</p><div className="confirmation-card"><span>{recommended?.eyebrow ?? "Evaluación personalizada"}</span><b>{professional}</b><small>{confirmationCode} · Bueras 218, Oficina 302 · Rancagua</small></div><button className="continue full" onClick={closeBooking}>Listo, cerrar</button></div>
+              <div className="confirmation"><div className="checkmark">✓</div><p>HORA RESERVADA · {confirmationCode}</p><h2>Tu momento BIOBELLE comienza aquí.</h2><p>La hora del <b>{date.split("-").reverse().join("/")} a las {time}</b> quedó bloqueada a tu nombre. Conserva tu código de reserva.</p><div className="confirmation-card"><span>{recommended?.eyebrow ?? "Evaluación personalizada"}</span><b>{professional}</b><small>{confirmationCode} · Bueras 218, Oficina 302 · Rancagua</small></div><a className="whatsapp-confirm full" href={bookingWhatsAppUrl} target="_blank" rel="noreferrer">Enviar confirmación por WhatsApp <span>↗</span></a><button className="modal-done full" onClick={closeBooking}>Listo, cerrar</button></div>
             )}
           </section>
         </div>
