@@ -77,12 +77,26 @@ export async function POST(request: Request) {
     const occupiedProfessionals = new Set(occupied.map((row) => row.professional));
     const availableCandidates = candidates.filter((candidate) => !occupiedProfessionals.has(candidate));
 
+    const duplicate = await db
+      .select({ id: bookings.id })
+      .from(bookings)
+      .where(and(
+        eq(bookings.phone, phone),
+        eq(bookings.appointmentDate, date),
+        eq(bookings.appointmentTime, time),
+        inArray(bookings.status, ["pending", "confirmed"]),
+      ))
+      .limit(1);
+    if (duplicate.length) return Response.json({ error: "Ya existe una reserva activa con este WhatsApp para esa fecha y hora." }, { status: 409 });
+
     for (const professional of availableCandidates) {
       const code = confirmationCode();
+      const managementToken = crypto.randomUUID().replaceAll("-", "") + crypto.randomUUID().replaceAll("-", "");
       try {
         await db.insert(bookings).values({
           id: crypto.randomUUID(),
           confirmationCode: code,
+          managementToken,
           concernId,
           treatmentId,
           treatmentName: TREATMENTS[treatmentId],
@@ -98,7 +112,14 @@ export async function POST(request: Request) {
         });
 
         return Response.json({
-          booking: { confirmationCode: code, professional, date, time, treatmentName: TREATMENTS[treatmentId] },
+          booking: {
+            confirmationCode: code,
+            professional,
+            date,
+            time,
+            treatmentName: TREATMENTS[treatmentId],
+            managementUrl: `${new URL(request.url).origin}/reserva/${managementToken}`,
+          },
         }, { status: 201 });
       } catch (error) {
         if (!isUniqueConstraintError(error)) throw error;

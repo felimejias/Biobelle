@@ -4,6 +4,15 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { BrandSocial } from "./components/BrandSocial";
 
+function track(event: string, path = window.location.pathname) {
+  void fetch("/api/events/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ event, path }),
+    keepalive: true,
+  });
+}
+
 type Treatment = {
   id: string;
   eyebrow: string;
@@ -72,6 +81,7 @@ export default function Home() {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingError, setBookingError] = useState("");
   const [confirmationCode, setConfirmationCode] = useState("");
+  const [managementUrl, setManagementUrl] = useState("");
 
   const recommendedId = concerns.find((item) => item.id === concern)?.treatment ?? "evaluacion";
   const recommended = useMemo(
@@ -82,8 +92,10 @@ export default function Home() {
   useEffect(() => {
     if (!bookingOpen || step !== 3 || !date) return;
     const controller = new AbortController();
-    setAvailabilityLoading(true);
-    setBookingError("");
+    queueMicrotask(() => {
+      setAvailabilityLoading(true);
+      setBookingError("");
+    });
 
     fetch(`/api/availability/?date=${encodeURIComponent(date)}&professional=${encodeURIComponent(professional)}`, {
       signal: controller.signal,
@@ -116,19 +128,21 @@ export default function Home() {
     setConfirmed(false);
     setBookingError("");
     setConfirmationCode("");
+    setManagementUrl("");
     setStep(1);
     setBookingOpen(true);
+    track("booking_started");
   };
 
   const closeBooking = () => setBookingOpen(false);
 
   useEffect(() => {
     const preset = new URLSearchParams(window.location.search).get("agendar");
-    if (preset && treatments.some((item) => item.id === preset)) openBooking(preset);
+    if (preset && treatments.some((item) => item.id === preset)) queueMicrotask(() => openBooking(preset));
   }, []);
 
   const bookingWhatsAppUrl = `https://wa.me/56979655129?text=${encodeURIComponent(
-    `Hola BIOBELLE, acabo de reservar ${recommended?.eyebrow ?? "una evaluación"} para el ${date.split("-").reverse().join("/")} a las ${time}. Código: ${confirmationCode}. Profesional: ${professional}. Mi nombre es ${name}.`,
+    `Hola BIOBELLE, acabo de reservar ${recommended?.eyebrow ?? "una evaluación"} para el ${date.split("-").reverse().join("/")} a las ${time}. Código: ${confirmationCode}. Profesional: ${professional}. Mi nombre es ${name}.${managementUrl ? ` Gestionar reserva: ${managementUrl}` : ""}`,
   )}`;
 
   const submitBooking = async () => {
@@ -151,13 +165,15 @@ export default function Home() {
         }),
       });
       const data = await response.json() as {
-        booking?: { confirmationCode: string; professional: string };
+        booking?: { confirmationCode: string; professional: string; managementUrl: string };
         error?: string;
       };
       if (!response.ok || !data.booking) throw new Error(data.error ?? "No pudimos guardar la reserva.");
       setProfessional(data.booking.professional);
       setConfirmationCode(data.booking.confirmationCode);
+      setManagementUrl(data.booking.managementUrl);
       setConfirmed(true);
+      track("booking_confirmed");
     } catch (error) {
       setBookingError(error instanceof Error ? error.message : "No pudimos guardar la reserva.");
       if (error instanceof Error && /ocup/i.test(error.message)) setStep(3);
@@ -256,14 +272,14 @@ export default function Home() {
           <p>Formación clínica, actualización constante y una mirada humana para recomendar solo aquello que aporte a tu bienestar.</p>
         </div>
         <div className="team-grid">
-          <article className="team-card">
+          <Link className="team-card" href="/equipo/kiara-moscoso">
             <img src="/images/kiara-moscoso.jpg" alt="EU. Kiara Moscoso Villegas, enfermera dermoestética y cosmetóloga" />
-            <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Kiara Moscoso V.</h3><span>Armonización · Láser · Dermocosmética</span></div>
-          </article>
-          <article className="team-card">
+            <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Kiara Moscoso V.</h3><span>Armonización · Láser · Dermocosmética · Ver perfil →</span></div>
+          </Link>
+          <Link className="team-card" href="/equipo/pia-orellana">
             <img src="/images/pia-orellana.jpg" alt="EU. Pía Orellana, enfermera dermoestética y cosmetóloga" />
-            <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Pía Orellana G.</h3><span>Armonización · Láser · Salud integral</span></div>
-          </article>
+            <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Pía Orellana G.</h3><span>Armonización · Láser · Salud integral · Ver perfil →</span></div>
+          </Link>
         </div>
       </section>
 
@@ -325,13 +341,13 @@ export default function Home() {
                 <div className="progress"><span style={{ width: `${step * 25}%` }} /></div>
                 {step === 1 && <div className="booking-step"><p>¿Qué te gustaría mejorar o cuidar?</p><div className="concern-grid">{concerns.map((item) => <button className={concern === item.id ? "selected" : ""} onClick={() => setConcern(item.id)} key={item.id}>{item.label}<span>{concern === item.id ? "✓" : "→"}</span></button>)}</div></div>}
                 {step === 2 && <div className="booking-step"><p>Según tu objetivo, te recomendamos comenzar por:</p><div className="result-card"><span>RECOMENDACIÓN BIOBELLE</span><h3>{recommended ? recommended.eyebrow : "Evaluación estética personalizada"}</h3><p>{recommended ? recommended.copy : "Una conversación clínica para entender tu piel, tus expectativas y recomendarte opciones seguras."}</p><div><b>{recommended?.duration ?? "40 min"}</b><b>{recommended?.price ?? "Sin compromiso"}</b></div></div><p className="disclaimer">Esta orientación no reemplaza una evaluación clínica. La indicación final siempre será realizada por una profesional.</p></div>}
-                {step === 3 && <div className="booking-step schedule-step"><label>Profesional<select value={professional} onChange={(e) => setProfessional(e.target.value)}><option>Primera disponible</option><option>Kiara Moscoso</option><option>Pía Orellana</option></select></label><label>Fecha<input type="date" min={nextBusinessDate()} value={date} onChange={(e) => setDate(e.target.value)} /></label><p>Horas disponibles en tiempo real</p>{availabilityLoading ? <div className="availability-status">Consultando agenda…</div> : availability.length ? <div className="time-grid">{availability.map((slot) => <button type="button" className={time === slot.time ? "selected" : ""} disabled={!slot.available} onClick={() => setTime(slot.time)} key={slot.time}>{slot.time}{!slot.available && <small>Ocupada</small>}</button>)}</div> : <div className="availability-status">No hay horas disponibles para esta fecha.</div>}<small>✦ Las horas se bloquean al confirmar para evitar reservas duplicadas.</small></div>}
+                {step === 3 && <div className="booking-step schedule-step"><label>Profesional<select value={professional} onChange={(e) => setProfessional(e.target.value)}><option>Primera disponible</option><option>Kiara Moscoso</option><option>Pía Orellana</option></select></label><label>Fecha<input type="date" min={nextBusinessDate()} value={date} onChange={(e) => setDate(e.target.value)} /></label><p>Horas disponibles en tiempo real</p>{availabilityLoading ? <div className="availability-status">Consultando agenda…</div> : availability.length ? <div className="time-grid">{availability.map((slot) => <button type="button" className={time === slot.time ? "selected" : ""} disabled={!slot.available} onClick={() => setTime(slot.time)} key={slot.time}>{slot.time}{!slot.available && <small>Ocupada</small>}</button>)}</div> : <div className="availability-status">No hay horas disponibles para esta fecha.<Link href={`/lista-espera?tratamiento=${recommended?.id ?? "evaluacion"}`}>Unirme a la lista de espera →</Link></div>}<small>✦ Las horas se bloquean al confirmar para evitar reservas duplicadas.</small></div>}
                 {step === 4 && <div className="booking-step details-step"><div className="booking-summary"><span>{date.split("-").reverse().join("/")} · {time}</span><b>{recommended?.eyebrow ?? "Evaluación personalizada"}</b><small>{professional}</small></div><label>Nombre completo<input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tu nombre" autoComplete="name" /></label><label>WhatsApp<input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+56 9 1234 5678" inputMode="tel" autoComplete="tel" /></label><label className="checkbox"><input type="checkbox" checked={reminderConsent} onChange={(e) => setReminderConsent(e.target.checked)} /> Quiero recibir recordatorios e indicaciones por WhatsApp.</label><label className="checkbox required-consent"><input type="checkbox" checked={privacyConsent} onChange={(e) => setPrivacyConsent(e.target.checked)} /> Acepto que BIOBELLE use estos datos para gestionar mi reserva, según la <Link href="/privacidad" target="_blank">Política de Privacidad</Link>.</label></div>}
                 {bookingError && <p className="booking-error" role="alert">{bookingError}</p>}
                 <div className="modal-actions">{step > 1 && <button className="back" onClick={() => setStep(step - 1)} disabled={bookingLoading}>← Volver</button>}<button className="continue" disabled={(step === 3 && (!time || availabilityLoading)) || (step === 4 && (!name.trim() || !phone.trim() || !privacyConsent || bookingLoading))} onClick={() => step < 4 ? setStep(step + 1) : void submitBooking()}>{step === 4 ? (bookingLoading ? "Guardando…" : "Confirmar solicitud") : "Continuar"} <span>→</span></button></div>
               </>
             ) : (
-              <div className="confirmation"><div className="checkmark">✓</div><p>HORA RESERVADA · {confirmationCode}</p><h2>Tu momento BIOBELLE comienza aquí.</h2><p>La hora del <b>{date.split("-").reverse().join("/")} a las {time}</b> quedó bloqueada a tu nombre. Conserva tu código de reserva.</p><div className="confirmation-card"><span>{recommended?.eyebrow ?? "Evaluación personalizada"}</span><b>{professional}</b><small>{confirmationCode} · Bueras 218, Oficina 302 · Rancagua</small></div><a className="whatsapp-confirm full" href={bookingWhatsAppUrl} target="_blank" rel="noreferrer">Enviar confirmación por WhatsApp <span>↗</span></a><button className="modal-done full" onClick={closeBooking}>Listo, cerrar</button></div>
+              <div className="confirmation"><div className="checkmark">✓</div><p>HORA RESERVADA · {confirmationCode}</p><h2>Tu momento BIOBELLE comienza aquí.</h2><p>La hora del <b>{date.split("-").reverse().join("/")} a las {time}</b> quedó bloqueada a tu nombre. Conserva tu código de reserva.</p><div className="confirmation-card"><span>{recommended?.eyebrow ?? "Evaluación personalizada"}</span><b>{professional}</b><small>{confirmationCode} · Bueras 218, Oficina 302 · Rancagua</small></div>{managementUrl && <a className="manage-booking-link full" href={managementUrl}>Reprogramar o cancelar mi hora <span>→</span></a>}<a className="whatsapp-confirm full" href={bookingWhatsAppUrl} target="_blank" rel="noreferrer">Enviar confirmación por WhatsApp <span>↗</span></a><button className="modal-done full" onClick={closeBooking}>Listo, cerrar</button></div>
             )}
           </section>
         </div>

@@ -15,6 +15,13 @@
       "when": 1784438475384,
       "tag": "0001_lyrical_the_spike",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1784447467347,
+      "tag": "0002_dazzling_random",
+      "breakpoints": true
     }
   ]
 }

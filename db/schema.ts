@@ -1,10 +1,11 @@
-import { integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { index, integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const bookings = sqliteTable(
   "bookings",
   {
     id: text("id").primaryKey(),
     confirmationCode: text("confirmation_code").notNull().unique(),
+    managementToken: text("management_token").unique(),
     concernId: text("concern_id").notNull(),
     treatmentId: text("treatment_id").notNull(),
     treatmentName: text("treatment_name").notNull(),
@@ -24,5 +25,34 @@ export const bookings = sqliteTable(
       table.appointmentDate,
       table.appointmentTime,
     ),
+    index("bookings_phone_idx").on(table.phone),
+    index("bookings_date_idx").on(table.appointmentDate),
   ],
+);
+
+export const waitlist = sqliteTable(
+  "waitlist",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    phone: text("phone").notNull(),
+    treatmentId: text("treatment_id").notNull(),
+    preferredDate: text("preferred_date"),
+    professional: text("professional").notNull().default("Primera disponible"),
+    privacyConsent: integer("privacy_consent", { mode: "boolean" }).notNull().default(false),
+    status: text("status").notNull().default("waiting"),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [index("waitlist_phone_idx").on(table.phone), index("waitlist_status_idx").on(table.status)],
+);
+
+export const siteEvents = sqliteTable(
+  "site_events",
+  {
+    id: text("id").primaryKey(),
+    event: text("event").notNull(),
+    path: text("path").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [index("site_events_event_idx").on(table.event), index("site_events_created_idx").on(table.createdAt)],
 );

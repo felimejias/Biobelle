@@ -108,6 +108,7 @@ h1 em,h2 em { color:var(--wine); font-weight:400; }
 .recommendation small { font-size:9px; }
 .team-grid { display:grid; grid-template-columns:1fr 1fr; gap:28px; }
 .team-card { background:#ead8d8; position:relative; overflow:hidden; min-height:630px; }
+.team-card { color:inherit; text-decoration:none; }
 .team-card img { width:100%; height:100%; object-fit:cover; object-position:center top; }
 .team-card:after { content:""; position:absolute; inset:50% 0 0; background:linear-gradient(transparent,rgba(43,14,26,.9)); }
 .team-card>div { position:absolute; z-index:2; left:35px; bottom:32px; color:white; }
@@ -195,6 +196,8 @@ footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1
 .whatsapp-confirm { min-height:48px; padding:14px 18px; background:#176b51; color:white; text-decoration:none; text-transform:uppercase; letter-spacing:.1em; font-size:9px; display:flex; align-items:center; justify-content:center; gap:20px; }
 .whatsapp-confirm:hover { background:#10533f; }
 .modal-done { margin-top:9px; padding:11px; border:0; background:transparent; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; font-size:8px; }
+.manage-booking-link { min-height:48px; margin-bottom:9px; border:1px solid var(--wine); color:var(--wine); text-decoration:none; text-transform:uppercase; letter-spacing:.1em; font-size:9px; display:flex; align-items:center; justify-content:center; gap:20px; }
+.availability-status a { display:block; margin-top:8px; color:var(--wine); font-weight:700; text-decoration:none; text-transform:uppercase; letter-spacing:.08em; }
 
 .treatment-header { position:relative; }
 .back-home { color:var(--wine); text-decoration:none; text-transform:uppercase; letter-spacing:.12em; font-size:9px; }
@@ -236,6 +239,58 @@ footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1
 .legal-document a { color:var(--wine); }
 .legal-note { padding:20px; background:#ead8d5; border-left:3px solid var(--wine); }
 
+.reservation-page,.waitlist-page,.professional-page { min-height:100vh; background:#f6eeea; }
+.reservation-shell { max-width:900px; margin:0 auto; padding:85px 30px 120px; }
+.reservation-heading { margin-bottom:36px; }
+.reservation-heading>p { color:var(--wine); font-size:9px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
+.reservation-heading h1,.waitlist-copy h1 { font-size:clamp(58px,7vw,94px); line-height:.84; letter-spacing:-.05em; }
+.reservation-heading>span,.waitlist-copy>p:last-child { display:block; margin-top:25px; color:var(--muted); font-size:13px; line-height:1.8; }
+.reservation-card { position:relative; display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:#d9c7c3; }
+.reservation-card>div { min-height:145px; padding:28px; background:var(--cream); display:flex; flex-direction:column; }
+.reservation-card small { color:var(--wine); font-size:8px; letter-spacing:.13em; text-transform:uppercase; }
+.reservation-card b { margin-top:15px; font-family:var(--font-serif); font-size:22px; font-weight:500; line-height:1.2; }
+.reservation-status { position:absolute; right:18px; top:-16px; padding:9px 13px; background:var(--wine); color:white; font-size:8px; letter-spacing:.1em; text-transform:uppercase; }
+.reservation-card.cancelled { opacity:.65; }
+.reschedule-panel { margin-top:30px; padding:32px; background:var(--cream); }
+.reschedule-panel h2 { margin-bottom:25px; font-size:34px; }
+.reschedule-panel label,.waitlist-form label { display:flex; flex-direction:column; margin-bottom:17px; color:var(--wine); font-size:8px; letter-spacing:.1em; text-transform:uppercase; }
+.reschedule-panel input,.reschedule-panel select,.waitlist-form input,.waitlist-form select { margin-top:7px; padding:14px; border:1px solid #d5c5c1; background:#fffdfa; color:var(--ink); }
+.reservation-actions { display:flex; justify-content:flex-end; gap:12px; margin-top:28px; }
+.reschedule-button,.cancel-button { padding:15px 21px; border:1px solid var(--wine); background:transparent; color:var(--wine); text-transform:uppercase; letter-spacing:.1em; font-size:9px; }
+.reschedule-button { background:var(--wine); color:white; }
+.cancel-button { border-color:#a89398; color:#75666a; }
+.reservation-cancelled,.reservation-empty,.reservation-loading { padding:35px; background:var(--cream); color:var(--muted); text-align:center; }
+.reservation-cancelled a,.reservation-empty a { color:var(--wine); }
+.reservation-empty h1 { color:var(--deep); font-size:50px; }
+.waitlist-shell { min-height:calc(100vh - 126px); display:grid; grid-template-columns:1fr 1fr; align-items:start; gap:8vw; padding:100px 9vw; }
+.waitlist-copy { position:sticky; top:145px; }
+.waitlist-form,.waitlist-success { padding:38px; background:var(--cream); box-shadow:25px 25px 0 rgba(170,92,112,.15); }
+.waitlist-form .checkbox { flex-direction:row; align-items:flex-start; gap:9px; color:var(--muted); text-transform:none; letter-spacing:0; line-height:1.5; }
+.waitlist-form .checkbox input { margin-top:3px; }
+.waitlist-form a { color:var(--wine); }
+.waitlist-success { text-align:center; }
+.waitlist-success>span { width:55px; height:55px; margin:0 auto 20px; border-radius:50%; display:grid; place-items:center; background:var(--wine); color:white; font-size:24px; }
+.waitlist-success h2 { font-size:42px; }
+.waitlist-success p { color:var(--muted); line-height:1.7; }
+.professional-hero { min-height:720px; display:grid; grid-template-columns:1fr 1fr; background:#ead5d5; }
+.professional-hero figure { margin:0; min-height:720px; overflow:hidden; }
+.professional-hero figure img { width:100%; height:100%; object-fit:cover; object-position:center top; }
+.professional-hero>div { padding:90px 8vw; display:flex; flex-direction:column; justify-content:center; }
+.professional-hero h1 { margin:30px 0 12px; font-size:clamp(58px,6vw,92px); line-height:.86; letter-spacing:-.05em; color:var(--deep); }
+.professional-role { color:var(--wine)!important; text-transform:uppercase; font-weight:700; letter-spacing:.12em; font-size:10px!important; }
+.professional-hero>div>p:not(.kicker):not(.professional-role) { max-width:580px; color:var(--muted); font-size:13px; line-height:1.9; }
+.professional-hero .primary { align-self:flex-start; margin-top:26px; text-decoration:none; }
+.professional-areas { padding:110px 8vw; display:grid; grid-template-columns:.65fr 1.35fr; gap:7vw; }
+.professional-philosophy h2 { margin:30px 0; font-size:clamp(48px,5vw,76px); line-height:.9; }
+.professional-philosophy blockquote { margin:0; padding:22px 0 0; border-top:1px solid #d6c4c0; color:var(--muted); font-family:var(--font-serif); font-size:23px; line-height:1.35; }
+.professional-area-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:#dac7c4; }
+.professional-area-grid article { min-height:280px; padding:30px; background:var(--cream); }
+.professional-area-grid article>span { color:var(--gold); font-family:var(--font-serif); }
+.professional-area-grid h3 { margin:25px 0 15px; font-size:29px; }
+.professional-area-grid ul { margin:0; padding:0; list-style:none; }
+.professional-area-grid li { padding:8px 0; border-bottom:1px solid #e6dcda; color:var(--muted); font-size:10px; line-height:1.45; }
+.profile-disclaimer { padding:45px 10vw; background:var(--deep); color:#d8c9cd; text-align:center; font-size:10px; line-height:1.7; }
+
 @media(max-width:900px){
   .announcement { font-size:8px; }
   .site-header { height:76px; padding:0 20px; }
@@ -271,6 +326,10 @@ footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1
   .treatment-detail-hero figure { min-height:540px; }
   .treatment-information { grid-template-columns:1fr; padding:70px 6vw; }
   .treatment-information article { min-height:auto; }
+  .waitlist-shell,.professional-hero,.professional-areas { grid-template-columns:1fr; }
+  .waitlist-copy { position:static; }
+  .professional-hero figure { min-height:570px; }
+  .professional-hero>div { padding:75px 7vw; }
 }
 @media(max-width:600px){
   .brand-lockup { width:148px; max-width:44vw; }
@@ -312,5 +371,15 @@ footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1
   .treatment-information { padding:50px 20px; }
   .treatment-information article { padding:30px 25px; }
   .treatment-disclaimer { padding:80px 24px; }
+  .reservation-shell { padding:60px 20px 90px; }
+  .reservation-card { grid-template-columns:1fr; }
+  .reservation-card>div { min-height:auto; }
+  .reservation-actions { flex-direction:column; }
+  .waitlist-shell { padding:60px 20px 90px; }
+  .waitlist-form,.waitlist-success { padding:26px 20px; box-shadow:10px 10px 0 rgba(170,92,112,.15); }
+  .professional-hero figure { min-height:470px; }
+  .professional-hero>div { padding:60px 24px; }
+  .professional-areas { padding:75px 22px; }
+  .professional-area-grid { grid-template-columns:1fr; }
 }
 @media(prefers-reduced-motion:reduce){ html { scroll-behavior:auto; } * { transition:none!important; } }
