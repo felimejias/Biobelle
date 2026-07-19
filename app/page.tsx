@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { FaWhatsapp } from "react-icons/fa";
 import { BrandSocial } from "./components/BrandSocial";
 
 function track(event: string, path = window.location.pathname) {
@@ -326,7 +327,7 @@ export default function Home() {
         <small>© 2026 BIOBELLE · Información referencial. Todo procedimiento requiere evaluación profesional.</small>
       </footer>
 
-      <a className="whatsapp" href={`https://wa.me/56979655129?text=${encodeURIComponent("Hola BIOBELLE, quisiera recibir orientación sobre sus tratamientos y disponibilidad.")}`} target="_blank" rel="noreferrer" aria-label="Contactar BIOBELLE por WhatsApp">◉</a>
+      <a className="whatsapp" href={`https://wa.me/56979655129?text=${encodeURIComponent("Hola BIOBELLE, quisiera recibir orientación sobre sus tratamientos y disponibilidad.")}`} target="_blank" rel="noreferrer" aria-label="Contactar BIOBELLE por WhatsApp" onClick={() => track("whatsapp_clicked")}><FaWhatsapp aria-hidden="true" /></a>
 
       {bookingOpen && (
         <div className="modal-backdrop" role="presentation" onMouseDown={(e) => { if (e.currentTarget === e.target) closeBooking(); }}>

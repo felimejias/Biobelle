@@ -143,6 +143,7 @@ footer>div { display:flex; justify-content:flex-end; gap:18px; }
 footer>div a { color:var(--muted); font-size:9px; text-transform:uppercase; text-decoration:none; }
 footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1; padding-top:22px; color:#998b8d; font-size:8px; letter-spacing:.08em; }
 .whatsapp { position:fixed; z-index:20; right:24px; bottom:24px; width:50px; height:50px; border-radius:50%; display:grid; place-items:center; background:#275f48; color:white; text-decoration:none; font-size:25px; box-shadow:0 8px 25px rgba(0,0,0,.18); }
+.whatsapp svg { width:27px; height:27px; }
 .modal-backdrop { position:fixed; inset:0; z-index:100; background:rgba(33,12,20,.72); backdrop-filter:blur(8px); display:grid; place-items:center; padding:18px; }
 .booking-modal { width:min(660px,100%); max-height:94vh; overflow:auto; background:#fbf7f2; padding:34px 38px; position:relative; box-shadow:0 30px 100px rgba(0,0,0,.35); }
 .modal-close { position:absolute; right:18px; top:15px; width:36px; height:36px; border:0; background:none; font-size:28px; color:var(--wine); }
