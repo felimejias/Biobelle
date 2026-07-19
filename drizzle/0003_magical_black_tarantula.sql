@@ -1,0 +1,2 @@
+DROP INDEX `bookings_professional_slot_unique`;--> statement-breakpoint
+CREATE UNIQUE INDEX `bookings_professional_slot_unique` ON `bookings` (`professional`,`appointment_date`,`appointment_time`) WHERE "bookings"."status" IN ('pending', 'confirmed');

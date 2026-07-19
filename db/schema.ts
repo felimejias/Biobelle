@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { index, integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const bookings = sqliteTable(
@@ -24,7 +25,7 @@ export const bookings = sqliteTable(
       table.professional,
       table.appointmentDate,
       table.appointmentTime,
-    ),
+    ).where(sql`${table.status} IN ('pending', 'confirmed')`),
     index("bookings_phone_idx").on(table.phone),
     index("bookings_date_idx").on(table.appointmentDate),
   ],
