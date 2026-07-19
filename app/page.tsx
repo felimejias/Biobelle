@@ -35,7 +35,7 @@ const slots = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"];
 function BrandLockup({ className = "", compact = false }: { className?: string; compact?: boolean }) {
   return (
     <span className={`brand-lockup${compact ? " compact" : ""}${className ? ` ${className}` : ""}`}>
-      <img src="/images/biobelle-logo.jpg" alt="BIOBELLE Centro Médico Estético" />
+      <img src="/images/biobelle-lockup.png" alt="BIOBELLE Centro Médico Estético" />
       <span className="sr-only">BIOBELLE Centro Médico Estético</span>
     </span>
   );
