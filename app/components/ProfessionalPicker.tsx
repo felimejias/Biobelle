@@ -17,14 +17,14 @@ const options = [
     name: "Kiara Moscoso",
     role: "Enfermera dermoestética · Cosmetóloga",
     note: "Armonización · Láser · Dermocosmética",
-    image: "/images/kiara-moscoso.jpg",
+    image: "/images/kiara-moscoso-clean.png",
   },
   {
     value: "Pía Orellana",
     name: "Pía Orellana",
     role: "Enfermera dermoestética · Cosmetóloga",
     note: "Armonización · Láser · Salud integral",
-    image: "/images/pia-orellana.jpg",
+    image: "/images/pia-orellana-clean.png",
   },
 ];
 
