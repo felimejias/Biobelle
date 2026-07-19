@@ -33,6 +33,34 @@ function formatDate(value: string) {
   return new Intl.DateTimeFormat("es-CL", { weekday: "long", day: "numeric", month: "long" }).format(new Date(`${value}T12:00:00`));
 }
 
+function formatMonth(value: string) {
+  return new Intl.DateTimeFormat("es-CL", { month: "long", year: "numeric" }).format(new Date(`${value}T12:00:00`));
+}
+
+function shortWeekday(value: string) {
+  return new Intl.DateTimeFormat("es-CL", { weekday: "short" }).format(new Date(`${value}T12:00:00`)).replace(".", "");
+}
+
+function dayNumber(value: string) {
+  return new Intl.DateTimeFormat("es-CL", { day: "2-digit" }).format(new Date(`${value}T12:00:00`));
+}
+
+function monthCalendarDays(value: string) {
+  const selected = new Date(`${value}T12:00:00`);
+  const start = new Date(selected.getFullYear(), selected.getMonth(), 1, 12);
+  const mondayOffset = (start.getDay() + 6) % 7;
+  start.setDate(start.getDate() - mondayOffset);
+  return Array.from({ length: 35 }, (_, index) => {
+    const day = new Date(start);
+    day.setDate(start.getDate() + index);
+    return isoDate(day);
+  });
+}
+
+function treatmentClass(value: string) {
+  return `treatment-${value.replace(/[^a-z0-9_-]/gi, "").toLowerCase()}`;
+}
+
 export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdentity: AdminIdentity; signOutPath: string }) {
   const [tab, setTab] = useState("agenda");
   const [date, setDate] = useState(isoDate());
@@ -121,15 +149,80 @@ export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdenti
 }
 
 function AgendaView({ date, setDate, data, canEdit, onBooking, onBlock, onDeleteBlock }: { date: string; setDate: (value: string) => void; data: AdminData; canEdit: boolean; onBooking: (booking: Booking) => void; onBlock: () => void; onDeleteBlock: (id: string) => void }) {
+  const [selectedProfessional, setSelectedProfessional] = useState("Todas");
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [agendaSearch, setAgendaSearch] = useState("");
+  const visibleProfessionals = selectedProfessional === "Todas" ? professionals : professionals.filter((professional) => professional === selectedProfessional);
+  const query = agendaSearch.trim().toLowerCase();
+  const filteredBookings = data.bookings.filter((item) => item.status !== "cancelled")
+    .filter((item) => selectedProfessional === "Todas" || item.professional === selectedProfessional)
+    .filter((item) => selectedStatus === "all" || item.status === selectedStatus)
+    .filter((item) => !query || `${item.patientName} ${item.phone} ${item.treatmentName} ${item.confirmationCode}`.toLowerCase().includes(query));
+  const filteredBlocks = data.blocks.filter((item) => selectedProfessional === "Todas" || item.professional === selectedProfessional);
+  const weekDays = Array.from({ length: 7 }, (_, index) => addDays(date, index - 3));
+  const miniDays = monthCalendarDays(date);
+  const selectedMonth = new Date(`${date}T12:00:00`).getMonth();
+  const legend = [
+    ["evaluacion", "Evaluación"],
+    ["armonizacion", "Armonización"],
+    ["laser", "Tecnología láser"],
+    ["piel", "Dermoestética"],
+    ["regenerativa", "PRP"],
+    ["lesiones", "Clínico"],
+  ];
+
   return <div className="admin-content agenda-content">
-    <section className="admin-kpis"><article><span>Reservas del día</span><b>{data.metrics.total}</b><small>{data.metrics.confirmed} confirmadas</small></article><article><span>Ocupación estimada</span><b>{data.metrics.occupancy}%</b><small>Sobre horarios disponibles</small></article><article><span>Pendientes</span><b>{data.metrics.pending}</b><small>Requieren confirmación</small></article><article><span>Lista de espera</span><b>{data.metrics.waiting}</b><small>Solicitudes activas</small></article></section>
-    <section className="agenda-toolbar"><div><button onClick={() => setDate(addDays(date, -1))} aria-label="Día anterior"><FiChevronLeft /></button><button onClick={() => setDate(isoDate())}>Hoy</button><button onClick={() => setDate(addDays(date, 1))} aria-label="Día siguiente"><FiChevronRight /></button><input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></div><h2>{formatDate(date)}</h2>{canEdit && <button className="block-time" onClick={onBlock}><FiClock /> Bloquear horario</button>}</section>
-    <section className="agenda-grid"><div className="agenda-corner">Hora</div>{professionals.map((professional) => <div className="agenda-professional" key={professional}><span>{professional.slice(0, 1)}</span><div><b>{professional}</b><small>Enfermera dermoestética</small></div></div>)}
-      {slots.flatMap((time) => [<div className="agenda-time" key={`time-${time}`}>{time}</div>, ...professionals.map((professional) => {
-        const booking = data.bookings.find((item) => item.appointmentTime === time && item.professional === professional && item.status !== "cancelled");
-        const block = data.blocks.find((item) => item.professional === professional && time >= item.startTime && time < item.endTime);
-        return <div className="agenda-slot" key={`${professional}-${time}`}>{booking ? <button className={`booking-pill ${booking.status}`} onClick={() => onBooking(booking)}><span>{booking.treatmentName}</span><b>{booking.patientName}</b><small>{statusLabel[booking.status]}</small></button> : block ? <div className="blocked-pill"><span>Horario bloqueado</span><b>{block.reason}</b>{canEdit && <button onClick={() => onDeleteBlock(block.id)}>Liberar</button>}</div> : <span className="slot-free">Disponible</span>}</div>;
-      })])}
+    <section className="agenda-productbar" aria-label="Módulos operativos BIOBELLE">
+      <button className="active"><FiCalendar /> Agenda</button>
+      <button className="future">Ventas <small>QuantusChile</small></button>
+      <button className="future">Recordatorios <small>Pronto</small></button>
+      <button>Pacientes</button>
+      <button>Reportes</button>
+      <button>Administración</button>
+      <span>Agenda médica · Rancagua</span>
+    </section>
+
+    <section className="admin-kpis agenda-kpis"><article><span>Reservas del día</span><b>{data.metrics.total}</b><small>{data.metrics.confirmed} confirmadas</small></article><article><span>Ocupación estimada</span><b>{data.metrics.occupancy}%</b><small>Sobre horarios disponibles</small></article><article><span>Pendientes</span><b>{data.metrics.pending}</b><small>Requieren confirmación</small></article><article><span>Lista de espera</span><b>{data.metrics.waiting}</b><small>Solicitudes activas</small></article></section>
+
+    <section className="agenda-workspace">
+      <aside className="agenda-filter-panel">
+        <div className="agenda-filter-card agenda-search-card">
+          <span>Gestión de agenda</span>
+          <h3>Reserva, filtra y coordina el día clínico.</h3>
+          <label className="agenda-quick-search"><FiSearch /><input value={agendaSearch} onChange={(event) => setAgendaSearch(event.target.value)} placeholder="Buscar paciente, teléfono o tratamiento" /></label>
+        </div>
+        <label className="agenda-filter-field">Selecciona la sucursal<select value="BIOBELLE Rancagua" disabled><option>BIOBELLE Rancagua</option></select></label>
+        <label className="agenda-filter-field">Agenda<select value="Agenda médica" disabled><option>Agenda médica</option></select></label>
+        <label className="agenda-filter-field">Profesional<select value={selectedProfessional} onChange={(event) => setSelectedProfessional(event.target.value)}><option>Todas</option>{professionals.map((professional) => <option key={professional}>{professional}</option>)}</select></label>
+        <label className="agenda-filter-field">Estado de la reserva<select value={selectedStatus} onChange={(event) => setSelectedStatus(event.target.value)}><option value="all">Todas las reservas</option><option value="pending">Pendiente</option><option value="confirmed">Confirmada</option><option value="completed">Atendida</option><option value="no_show">No asistió</option></select></label>
+        <div className="agenda-mini-calendar">
+          <div><b>{formatMonth(date)}</b><input type="date" value={date} onChange={(event) => setDate(event.target.value)} aria-label="Elegir fecha" /></div>
+          <div className="mini-weekdays"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+          <div className="mini-days">{miniDays.map((day) => <button key={day} className={`${day === date ? "active" : ""} ${new Date(`${day}T12:00:00`).getMonth() !== selectedMonth ? "muted" : ""}`} onClick={() => setDate(day)}>{dayNumber(day)}</button>)}</div>
+        </div>
+        <div className="agenda-legend">
+          <span>Colores por tipo de atención</span>
+          {legend.map(([id, label]) => <small key={id}><i className={treatmentClass(id)} />{label}</small>)}
+        </div>
+      </aside>
+
+      <section className="agenda-board">
+        <div className="agenda-board-head">
+          <div><p>Vista diaria</p><h2>{formatDate(date)}</h2><span>{filteredBookings.length} reservas visibles · {filteredBlocks.length} bloqueos</span></div>
+          <div className="agenda-board-actions"><button onClick={() => setDate(addDays(date, -1))} aria-label="Día anterior"><FiChevronLeft /></button><button onClick={() => setDate(isoDate())}>Hoy</button><button onClick={() => setDate(addDays(date, 1))} aria-label="Día siguiente"><FiChevronRight /></button>{canEdit && <button className="block-time" onClick={onBlock}><FiClock /> Bloquear horario</button>}</div>
+        </div>
+        <div className="agenda-week-strip">{weekDays.map((day) => <button key={day} className={day === date ? "active" : ""} onClick={() => setDate(day)}><span>{shortWeekday(day)}</span><b>{dayNumber(day)}</b></button>)}</div>
+        <div className="agenda-grid-shell">
+          <section className="agenda-grid agenda-grid-colorful" style={{ gridTemplateColumns: `76px repeat(${visibleProfessionals.length}, minmax(250px, 1fr))` }}>
+            <div className="agenda-corner">Hora</div>{visibleProfessionals.map((professional) => <div className="agenda-professional" key={professional}><span>{professional.slice(0, 1)}</span><div><b>{professional}</b><small>Enfermera dermoestética · Cosmetóloga</small></div></div>)}
+            {slots.flatMap((time) => [<div className="agenda-time" key={`time-${time}`}>{time}</div>, ...visibleProfessionals.map((professional) => {
+              const booking = filteredBookings.find((item) => item.appointmentTime === time && item.professional === professional);
+              const block = filteredBlocks.find((item) => item.professional === professional && time >= item.startTime && time < item.endTime);
+              return <div className="agenda-slot" key={`${professional}-${time}`}>{booking ? <button className={`booking-pill ${booking.status} ${treatmentClass(booking.treatmentId)}`} onClick={() => onBooking(booking)}><span>{booking.treatmentName}</span><b>{booking.patientName}</b><small>{time} · {statusLabel[booking.status]} · {booking.phone}</small></button> : block ? <div className="blocked-pill"><span>Horario bloqueado</span><b>{block.reason}</b>{canEdit && <button onClick={() => onDeleteBlock(block.id)}>Liberar</button>}</div> : <span className="slot-free"><i />Disponible</span>}</div>;
+            })])}
+          </section>
+        </div>
+      </section>
     </section>
   </div>;
 }

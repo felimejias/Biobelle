@@ -66,6 +66,14 @@ como implementadas.
   asignada si corresponde.
 - Activar/suspender usuarios.
 - Vista de agenda diaria por profesional.
+- Vista administrativa de agenda redisenada con inspiracion AgendaPro:
+  - barra superior de modulos operativos.
+  - filtros por sucursal, agenda, profesional, estado y busqueda rapida.
+  - mini calendario lateral.
+  - selector semanal.
+  - grilla diaria por hora y profesional.
+  - reservas con colores por tipo de tratamiento.
+  - leyenda visual de tratamientos.
 - Crear reservas desde administracion.
 - Editar reservas existentes.
 - Cambiar estado de reserva: pendiente, confirmada, atendida, no asistio,
@@ -94,8 +102,7 @@ como implementadas.
 - Tests de validacion del sitio y del panel administrativo.
 - Build verificado localmente con `npm run build`.
 - Test suite verificada con `npm test`.
-- Version 20 guardada en Sites con el acceso usuario/clave, pendiente de
-  despliegue publico si no ha sido aprobada explicitamente.
+- Sitio publicado en produccion por Sites y apuntado al dominio `biobelle.cl`.
 
 ## Pendiente urgente por implementar
 
@@ -177,6 +184,53 @@ Segunda fase recomendada:
 - IA conversacional para entender respuestas naturales.
 - Recomendacion automatica de horarios.
 - Recuperacion de cancelaciones con lista de espera.
+
+## Idea futura obligatoria: modulo QuantusChile tipo AgendaPro
+
+Esto queda anotado como mejora futura para integrar con QuantusChile. No esta
+implementado todavia en BIOBELLE y no debe comunicarse como disponible.
+
+Inspiracion tomada del menu funcional de AgendaPro:
+
+### Captar pacientes
+
+- Agenda online avanzada.
+- Reservas online por tratamiento, profesional, sucursal y disponibilidad real.
+- Recordatorios automaticos.
+- Ficha clinica digital.
+- Agenda medica completa.
+- Historia clinica.
+
+### Gestionar operacion
+
+- Pago online.
+- Control de inventarios.
+- Integraciones API.
+- Reportes de gestion.
+- Reporte de comisiones.
+- Sistema de caja.
+- Facturacion electronica.
+- Maquina POS.
+- Boleta de honorarios.
+- Ventas internas de tratamientos, packs, productos y abonos.
+
+### Crecer el centro
+
+- Email marketing.
+- Encuestas de satisfaccion.
+- Fidelizacion de clientes.
+- Gift cards.
+- Asistente IA comercial/operativa tipo Charly, adaptada a BIOBELLE.
+
+### Enfoque recomendado para QuantusChile
+
+- Mantener BIOBELLE como experiencia publica y agenda premium.
+- Usar QuantusChile como capa operacional futura para ventas, caja, inventario,
+  pagos, reportes y automatizaciones.
+- Integrar por API cuando existan reglas reales, usuarios definidos y flujo de
+  caja/pagos validado.
+- Evitar duplicar datos sensibles: definir una fuente de verdad para pacientes,
+  reservas, pagos e historial clinico antes de sincronizar.
 
 ## Idea futura obligatoria: pagos online
 
