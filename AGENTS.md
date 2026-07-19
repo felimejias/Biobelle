@@ -72,8 +72,10 @@ como implementadas.
 - Vista de agenda diaria por profesional.
 - Vista administrativa de agenda redisenada con inspiracion AgendaPro:
   - barra superior de modulos operativos.
-  - filtros por sucursal, agenda, profesional, estado y busqueda rapida.
-  - mini calendario lateral.
+  - filtros visuales tipo app por sucursal, agenda, profesional, estado y busqueda rapida.
+  - selector de profesional con miniaturas reales de Kiara y Pia.
+  - filtros de estado por capsulas, evitando desplegables antiguos.
+  - mini calendario lateral con navegacion por mes anterior/siguiente.
   - selector semanal.
   - grilla diaria por hora y profesional.
   - reservas con colores por tipo de tratamiento.

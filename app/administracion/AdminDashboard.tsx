@@ -15,6 +15,10 @@ type Metrics = { total: number; confirmed: number; pending: number; completed: n
 type AdminData = { identity: AdminIdentity; bookings: Booking[]; blocks: Block[]; waitlist: WaitlistEntry[]; clients: Client[]; users: User[]; notes: Note[]; treatments: AdminTreatment[]; metrics: Metrics };
 
 const professionals = ["Kiara Moscoso", "Pía Orellana"];
+const professionalProfiles: Record<string, { image: string; role: string; focus: string }> = {
+  "Kiara Moscoso": { image: "/images/kiara-moscoso-clean.png", role: "Enfermera dermoestética · Cosmetóloga", focus: "Armonización · Láser · Dermoestética" },
+  "Pía Orellana": { image: "/images/pia-orellana-clean.png", role: "Enfermera dermoestética · Cosmetóloga", focus: "Armonización · Láser · Salud integral" },
+};
 const slots = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"];
 const treatments = [["evaluacion", "Evaluación estética personalizada"], ["armonizacion", "Armonización facial"], ["piel", "Evaluación dermoestética"], ["laser", "Tecnología láser"], ["regenerativa", "Medicina regenerativa"], ["lesiones", "Cuidado clínico"], ["corporal", "Dermoestética corporal"]];
 const statusLabel: Record<string, string> = { pending: "Pendiente", confirmed: "Confirmada", completed: "Atendida", no_show: "No asistió", cancelled: "Cancelada" };
@@ -27,6 +31,13 @@ function isoDate(date = new Date()) {
 function addDays(value: string, amount: number) {
   const date = new Date(`${value}T12:00:00`);
   date.setDate(date.getDate() + amount);
+  return isoDate(date);
+}
+
+function addMonths(value: string, amount: number) {
+  const date = new Date(`${value}T12:00:00`);
+  date.setDate(1);
+  date.setMonth(date.getMonth() + amount);
   return isoDate(date);
 }
 
@@ -51,7 +62,7 @@ function monthCalendarDays(value: string) {
   const start = new Date(selected.getFullYear(), selected.getMonth(), 1, 12);
   const mondayOffset = (start.getDay() + 6) % 7;
   start.setDate(start.getDate() - mondayOffset);
-  return Array.from({ length: 35 }, (_, index) => {
+  return Array.from({ length: 42 }, (_, index) => {
     const day = new Date(start);
     day.setDate(start.getDate() + index);
     return isoDate(day);
@@ -173,6 +184,13 @@ function AgendaView({ date, setDate, data, canEdit, onBooking, onBlock, onDelete
     ["regenerativa", "PRP"],
     ["lesiones", "Clínico"],
   ];
+  const statusFilters = [
+    ["all", "Todas"],
+    ["pending", "Pendientes"],
+    ["confirmed", "Confirmadas"],
+    ["completed", "Atendidas"],
+    ["no_show", "No asistió"],
+  ];
 
   return <div className="admin-content agenda-content">
     <section className="agenda-productbar" aria-label="Módulos operativos BIOBELLE">
@@ -194,12 +212,32 @@ function AgendaView({ date, setDate, data, canEdit, onBooking, onBlock, onDelete
           <h3>Reserva, filtra y coordina el día clínico.</h3>
           <label className="agenda-quick-search"><FiSearch /><input value={agendaSearch} onChange={(event) => setAgendaSearch(event.target.value)} placeholder="Buscar paciente, teléfono o tratamiento" /></label>
         </div>
-        <label className="agenda-filter-field">Selecciona la sucursal<select value="BIOBELLE Rancagua" disabled><option>BIOBELLE Rancagua</option></select></label>
-        <label className="agenda-filter-field">Agenda<select value="Agenda médica" disabled><option>Agenda médica</option></select></label>
-        <label className="agenda-filter-field">Profesional<select value={selectedProfessional} onChange={(event) => setSelectedProfessional(event.target.value)}><option>Todas</option>{professionals.map((professional) => <option key={professional}>{professional}</option>)}</select></label>
-        <label className="agenda-filter-field">Estado de la reserva<select value={selectedStatus} onChange={(event) => setSelectedStatus(event.target.value)}><option value="all">Todas las reservas</option><option value="pending">Pendiente</option><option value="confirmed">Confirmada</option><option value="completed">Atendida</option><option value="no_show">No asistió</option></select></label>
+        <div className="agenda-filter-stack" aria-label="Contexto de agenda">
+          <div className="agenda-filter-chip"><span>Sucursal</span><b>BIOBELLE Rancagua</b><small>Edificio Olavarría · Oficina 302</small></div>
+          <div className="agenda-filter-chip"><span>Agenda</span><b>Agenda médica</b><small>Atenciones desde el 10 de agosto</small></div>
+        </div>
+        <div className="agenda-filter-group">
+          <span>Profesional</span>
+          <div className="agenda-segmented professional-segmented" role="group" aria-label="Filtrar por profesional">
+            {["Todas", ...professionals].map((option) => <button key={option} className={selectedProfessional === option ? "active" : ""} onClick={() => setSelectedProfessional(option)}>
+              {option === "Todas" ? <i className="segment-all">ALL</i> : <img src={professionalProfiles[option].image} alt="" />}
+              <b>{option}</b>
+            </button>)}
+          </div>
+        </div>
+        <div className="agenda-filter-group">
+          <span>Estado de la reserva</span>
+          <div className="agenda-status-pills" role="group" aria-label="Filtrar por estado">
+            {statusFilters.map(([value, label]) => <button key={value} className={selectedStatus === value ? "active" : ""} onClick={() => setSelectedStatus(value)}>{label}</button>)}
+          </div>
+        </div>
         <div className="agenda-mini-calendar">
-          <div><b>{formatMonth(date)}</b><input type="date" value={date} onChange={(event) => setDate(event.target.value)} aria-label="Elegir fecha" /></div>
+          <div className="mini-calendar-head">
+            <button onClick={() => setDate(addMonths(date, -1))} aria-label="Mes anterior"><FiChevronLeft /></button>
+            <b>{formatMonth(date)}</b>
+            <button onClick={() => setDate(addMonths(date, 1))} aria-label="Mes siguiente"><FiChevronRight /></button>
+            <input type="date" value={date} onChange={(event) => setDate(event.target.value)} aria-label="Elegir fecha" />
+          </div>
           <div className="mini-weekdays"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
           <div className="mini-days">{miniDays.map((day) => <button key={day} className={`${day === date ? "active" : ""} ${new Date(`${day}T12:00:00`).getMonth() !== selectedMonth ? "muted" : ""}`} onClick={() => setDate(day)}>{dayNumber(day)}</button>)}</div>
         </div>
@@ -217,7 +255,10 @@ function AgendaView({ date, setDate, data, canEdit, onBooking, onBlock, onDelete
         <div className="agenda-week-strip">{weekDays.map((day) => <button key={day} className={day === date ? "active" : ""} onClick={() => setDate(day)}><span>{shortWeekday(day)}</span><b>{dayNumber(day)}</b></button>)}</div>
         <div className="agenda-grid-shell">
           <section className="agenda-grid agenda-grid-colorful" style={{ gridTemplateColumns: `76px repeat(${visibleProfessionals.length}, minmax(250px, 1fr))` }}>
-            <div className="agenda-corner">Hora</div>{visibleProfessionals.map((professional) => <div className="agenda-professional" key={professional}><span>{professional.slice(0, 1)}</span><div><b>{professional}</b><small>Enfermera dermoestética · Cosmetóloga</small></div></div>)}
+            <div className="agenda-corner">Hora</div>{visibleProfessionals.map((professional) => {
+              const profile = professionalProfiles[professional];
+              return <div className="agenda-professional" key={professional}><img src={profile.image} alt={`Foto de ${professional}`} /><div><b>{professional}</b><small>{profile.role}</small><em>{profile.focus}</em></div></div>;
+            })}
             {slots.flatMap((time) => [<div className="agenda-time" key={`time-${time}`}>{time}</div>, ...visibleProfessionals.map((professional) => {
               const booking = filteredBookings.find((item) => item.appointmentTime === time && item.professional === professional);
               const block = filteredBlocks.find((item) => item.professional === professional && time >= item.startTime && time < item.endTime);
