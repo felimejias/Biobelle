@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FaInstagram, FaWhatsapp } from "react-icons/fa";
 
 export function BrandSocial() {
   return (
@@ -9,10 +10,10 @@ export function BrandSocial() {
       <span className="brand-divider" aria-hidden="true" />
       <nav className="brand-socials" aria-label="Redes sociales BIOBELLE">
         <a className="brand-social instagram-link" href="https://instagram.com/biobelle_center" target="_blank" rel="noreferrer" aria-label="Instagram de BIOBELLE">
-          <span className="social-monogram" aria-hidden="true">IG</span><span className="social-name">Instagram</span>
+          <FaInstagram aria-hidden="true" />
         </a>
         <a className="brand-social whatsapp-link" href={`https://wa.me/56979655129?text=${encodeURIComponent("Hola BIOBELLE, quisiera recibir orientación sobre sus tratamientos.")}`} target="_blank" rel="noreferrer" aria-label="WhatsApp de BIOBELLE">
-          <span className="social-monogram" aria-hidden="true">WA</span><span className="social-name">WhatsApp</span>
+          <FaWhatsapp aria-hidden="true" />
         </a>
       </nav>
     </div>

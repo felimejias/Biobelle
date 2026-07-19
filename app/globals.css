@@ -19,14 +19,11 @@ img { max-width:100%; display:block; }
 .footer-brand .brand-lockup { width:260px; max-width:100%; }
 .footer-brand .brand-lockup img { max-height:82px; }
 .brand-divider { width:1px; height:34px; background:linear-gradient(transparent,rgba(111,38,61,.28),transparent); }
-.brand-socials { display:flex; align-items:center; gap:8px; }
-.brand-social { min-height:34px; padding:3px 10px 3px 3px; border:1px solid rgba(111,38,61,.17); border-radius:999px; color:var(--wine); text-decoration:none; display:flex; align-items:center; gap:7px; background:rgba(255,255,255,.48); transition:transform .2s ease,background .2s ease,border-color .2s ease; }
-.brand-social:hover { transform:translateY(-2px); background:#fff; border-color:rgba(111,38,61,.36); }
-.social-monogram { width:27px; height:27px; border-radius:50%; display:grid; place-items:center; background:var(--wine); color:white; font-size:7px; font-weight:700; letter-spacing:.04em; }
-.social-name { padding-right:2px; font-size:7px; text-transform:uppercase; letter-spacing:.11em; }
-.whatsapp-link { color:#176b51; border-color:rgba(23,107,81,.18); }
-.whatsapp-link .social-monogram { background:#176b51; }
-.whatsapp-link:hover { border-color:rgba(23,107,81,.42); }
+.brand-socials { display:flex; align-items:center; gap:13px; }
+.brand-social { color:var(--wine); text-decoration:none; display:grid; place-items:center; font-size:23px; line-height:1; transition:transform .2s ease,color .2s ease,opacity .2s ease; }
+.brand-social:hover { transform:translateY(-2px) scale(1.06); color:var(--rose); }
+.whatsapp-link { color:#176b51; }
+.whatsapp-link:hover { color:#0f533e; }
 .nav { display:flex; align-items:center; gap:32px; }
 .nav a { color:#55484b; text-decoration:none; text-transform:uppercase; font-size:10px; letter-spacing:.13em; }
 .nav a:hover { color:var(--wine); }
@@ -273,19 +270,13 @@ footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1
   .treatment-information { grid-template-columns:1fr; padding:70px 6vw; }
   .treatment-information article { min-height:auto; }
 }
-@media(max-width:1200px) and (min-width:901px){
-  .brand-social { padding-right:3px; }
-  .social-name { display:none; }
-}
 @media(max-width:600px){
   .brand-lockup { width:148px; max-width:44vw; }
   .brand-lockup.compact { width:128px; max-width:128px; }
   .brand-zone { gap:7px; }
   .brand-divider { height:28px; }
-  .brand-socials { gap:5px; }
-  .brand-social { min-height:31px; padding:2px; }
-  .social-monogram { width:26px; height:26px; }
-  .social-name { display:none; }
+  .brand-socials { gap:10px; }
+  .brand-social { font-size:21px; }
   .hero-actions { flex-direction:column; align-items:stretch; }
   .primary { width:100%; }
   .trust-strip { gap:35px; }
