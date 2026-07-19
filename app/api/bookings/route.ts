@@ -22,6 +22,7 @@ type BookingPayload = {
   time?: string;
   name?: string;
   phone?: string;
+  privacyConsent?: boolean;
   reminderConsent?: boolean;
   website?: string;
 };
@@ -58,6 +59,7 @@ export async function POST(request: Request) {
     if (!SLOTS.includes(time as typeof SLOTS[number])) return Response.json({ error: "La hora seleccionada no está disponible." }, { status: 400 });
     if (patientName.length < 3 || patientName.length > 100) return Response.json({ error: "Ingresa tu nombre completo." }, { status: 400 });
     if (phone.length < 10 || phone.length > 16) return Response.json({ error: "Ingresa un WhatsApp válido." }, { status: 400 });
+    if (payload.privacyConsent !== true) return Response.json({ error: "Debes aceptar el uso de tus datos para gestionar la reserva." }, { status: 400 });
 
     const candidates = PROFESSIONALS.includes(requestedProfessional as typeof PROFESSIONALS[number])
       ? [requestedProfessional]
@@ -89,6 +91,7 @@ export async function POST(request: Request) {
           appointmentTime: time,
           patientName,
           phone,
+          privacyConsent: true,
           reminderConsent: payload.reminderConsent !== false,
           status: "pending",
           createdAt: new Date(),

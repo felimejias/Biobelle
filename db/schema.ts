@@ -13,6 +13,7 @@ export const bookings = sqliteTable(
     appointmentTime: text("appointment_time").notNull(),
     patientName: text("patient_name").notNull(),
     phone: text("phone").notNull(),
+    privacyConsent: integer("privacy_consent", { mode: "boolean" }).notNull().default(false),
     reminderConsent: integer("reminder_consent", { mode: "boolean" }).notNull().default(true),
     status: text("status").notNull().default("pending"),
     createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),

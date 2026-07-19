@@ -1,0 +1,1 @@
+ALTER TABLE `bookings` ADD `privacy_consent` integer DEFAULT false NOT NULL;
