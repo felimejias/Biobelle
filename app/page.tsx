@@ -187,7 +187,7 @@ export default function Home() {
 
   return (
     <main>
-      <div className="announcement">Agenda online abierta · Atenciones desde el 10 de agosto de 2026</div>
+      <div className="announcement">Agenda online abierta · 25% descuento en láser durante agosto · Atenciones desde el 10 de agosto de 2026</div>
       <header className="site-header">
         <BrandSocial />
         <nav className={menuOpen ? "nav open" : "nav"} aria-label="Navegación principal">
@@ -223,6 +223,25 @@ export default function Home() {
 
       <section className="trust-strip" aria-label="Atributos BIOBELLE">
         <span>✦ Atención profesional</span><span>✦ Tecnología certificada</span><span>✦ Planes personalizados</span><span>✦ Acompañamiento post tratamiento</span>
+      </section>
+
+      <section className="laser-spotlight" aria-labelledby="laser-title">
+        <div className="laser-offer">
+          <span>Especial apertura</span>
+          <b>25%</b>
+          <small>descuento todo agosto</small>
+        </div>
+        <div className="laser-copy">
+          <p className="section-number">Tecnología láser BIOBELLE</p>
+          <h2 id="laser-title">Nd:YAG Q-Switched,<br /><em>Hollywood Peel</em> y eliminación de tatuajes.</h2>
+          <p>Protocolos láser indicados por profesionales para tratar manchas, textura, luminosidad y remoción de pigmentos con evaluación previa.</p>
+        </div>
+        <div className="laser-treatments" aria-label="Tratamientos láser destacados">
+          <span>Nd:YAG Q-Switched</span>
+          <span>Hollywood Peel</span>
+          <span>Eliminación de tatuajes</span>
+        </div>
+        <button className="laser-cta" onClick={() => openBooking("laser")}>Agendar evaluación láser <span>↗</span></button>
       </section>
 
       <section className="intro" id="experiencia">
