@@ -275,12 +275,12 @@ export default function Home() {
           <p>Formación clínica, actualización constante y una mirada humana para recomendar solo aquello que aporte a tu bienestar.</p>
         </div>
         <div className="team-grid">
-          <Link className="team-card" href="/equipo/kiara-moscoso">
-            <img src="/images/kiara-moscoso-clean.png" alt="EU. Kiara Moscoso Villegas, enfermera dermoestética y cosmetóloga" />
+          <Link className="team-card poster-card" href="/equipo/kiara-moscoso">
+            <img src="/images/kiara-moscoso.jpg" alt="EU. Kiara Moscoso Villegas, enfermera dermoestética y cosmetóloga" />
             <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Kiara Moscoso V.</h3><span>Armonización · Láser · Dermocosmética · Ver perfil →</span></div>
           </Link>
-          <Link className="team-card" href="/equipo/pia-orellana">
-            <img src="/images/pia-orellana-clean.png" alt="EU. Pía Orellana, enfermera dermoestética y cosmetóloga" />
+          <Link className="team-card poster-card" href="/equipo/pia-orellana">
+            <img src="/images/pia-orellana.jpg" alt="EU. Pía Orellana, enfermera dermoestética y cosmetóloga" />
             <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Pía Orellana G.</h3><span>Armonización · Láser · Salud integral · Ver perfil →</span></div>
           </Link>
         </div>

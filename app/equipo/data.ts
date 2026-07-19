@@ -15,7 +15,7 @@ export const professionals: Professional[] = [
     name: "EU. Kiara Moscoso Villegas",
     shortName: "Kiara Moscoso",
     role: "Enfermera dermoestética · Cosmetóloga",
-    image: "/images/kiara-moscoso-clean.png",
+    image: "/images/kiara-moscoso.jpg",
     introduction: "Profesional dedicada a la medicina dermoestética, comprometida con una atención cercana, segura y personalizada para realzar la belleza natural de cada paciente.",
     philosophy: "Creemos en una belleza que no cambia quién eres, sino que resalta tu esencia con seguridad, armonía y cuidado integral de la piel.",
     areas: [
@@ -30,7 +30,7 @@ export const professionals: Professional[] = [
     name: "EU. Pía Orellana G.",
     shortName: "Pía Orellana",
     role: "Enfermera dermoestética · Cosmetóloga",
-    image: "/images/pia-orellana-clean.png",
+    image: "/images/pia-orellana.jpg",
     introduction: "Profesional apasionada por el cuidado de la piel y la medicina estética, enfocada en tratamientos seguros y personalizados que mantienen la esencia de cada persona.",
     philosophy: "Cada piel tiene su historia. Nuestro compromiso es cuidarla con ciencia, cercanía y una mirada integral del bienestar.",
     areas: [

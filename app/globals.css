@@ -114,6 +114,9 @@ h1 em,h2 em { color:var(--wine); font-weight:400; }
 .team-card>div { position:absolute; z-index:2; left:35px; bottom:32px; color:white; }
 .team-card p,.team-card span { font-size:9px; letter-spacing:.12em; text-transform:uppercase; }
 .team-card h3 { font-size:40px; margin:7px 0; }
+.team-card.poster-card { aspect-ratio:1086/1536; min-height:0; background:#8d2448; }
+.team-card.poster-card img { object-fit:contain; object-position:center; }
+.team-card.poster-card:after,.team-card.poster-card>div { display:none; }
 .journey { background:#ede1dc; text-align:center; }
 .journey-steps { text-align:left; display:grid; grid-template-columns:repeat(4,1fr); margin-top:70px; border-top:1px solid #cbb7b4; }
 .journey-steps article { padding:30px 25px; border-right:1px solid #cbb7b4; }
