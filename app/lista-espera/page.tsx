@@ -8,7 +8,7 @@ import { ProfessionalPicker } from "../components/ProfessionalPicker";
 const treatments = [
   ["evaluacion", "Evaluación personalizada"],
   ["armonizacion", "Armonización facial"],
-  ["piel", "Dermocosmética"],
+  ["piel", "Dermoestética"],
   ["laser", "Tecnología láser"],
   ["regenerativa", "Medicina regenerativa"],
   ["lesiones", "Cuidado clínico"],

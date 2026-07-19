@@ -16,7 +16,7 @@ const options = [
     value: "Kiara Moscoso",
     name: "Kiara Moscoso",
     role: "Enfermera dermoestética · Cosmetóloga",
-    note: "Armonización · Láser · Dermocosmética",
+    note: "Armonización · Láser · Dermoestética",
     image: "/images/kiara-moscoso-clean.png",
   },
   {

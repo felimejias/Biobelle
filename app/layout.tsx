@@ -9,7 +9,7 @@ const sans = Manrope({ variable: "--font-sans", subsets: ["latin"], weight: ["40
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.biobelle.cl"),
   title: "BIOBELLE | Centro Médico Estético en Rancagua",
-  description: "Medicina estética consciente, tecnología láser y dermocosmética. Agenda tu evaluación personalizada en BIOBELLE Rancagua.",
+  description: "Medicina estética consciente, tecnología láser y dermoestética. Agenda tu evaluación personalizada en BIOBELLE Rancagua.",
   icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
   openGraph: {
     title: "BIOBELLE | Tu belleza, en equilibrio.",

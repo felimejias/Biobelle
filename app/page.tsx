@@ -27,7 +27,7 @@ type Treatment = {
 
 const treatments: Treatment[] = [
   { id: "armonizacion", eyebrow: "Armonización facial", title: "Belleza que respeta tus rasgos", copy: "Evaluación personalizada, toxina botulínica y ácido hialurónico para resultados sutiles y armónicos.", duration: "45–60 min", price: "Evaluación previa", tone: "rose" },
-  { id: "piel", eyebrow: "Dermocosmética", title: "Una piel luminosa y saludable", copy: "Limpieza facial profesional, Dermapen y protocolos regenerativos según las necesidades reales de tu piel.", duration: "60–75 min", price: "Desde $35.000", tone: "sand" },
+  { id: "piel", eyebrow: "Dermoestética", title: "Una piel luminosa y saludable", copy: "Limpieza facial profesional, Dermapen y protocolos regenerativos según las necesidades reales de tu piel.", duration: "60–75 min", price: "Desde $35.000", tone: "sand" },
   { id: "laser", eyebrow: "Tecnología láser", title: "Precisión clínica, cambios visibles", copy: "Hollywood Peel, Nd:YAG Q-Switched y eliminación de tatuajes con una indicación responsable.", duration: "30–60 min", price: "Según evaluación", tone: "wine" },
   { id: "regenerativa", eyebrow: "Medicina regenerativa", title: "Activa el potencial de tu piel", copy: "Plasma rico en plaquetas y técnicas de estimulación para rostro, cuello y cuero cabelludo.", duration: "60 min", price: "Desde $85.000", tone: "clay" },
   { id: "lesiones", eyebrow: "Cuidado clínico", title: "Atención segura y cercana", copy: "Evaluación y extracción de acrocordones, milliums y otras lesiones cutáneas seleccionadas.", duration: "30–45 min", price: "Desde $30.000", tone: "pearl" },
@@ -265,7 +265,7 @@ export default function Home() {
           <div className="preview-top"><span>✦ Recomendación personalizada</span><b>1 min</b></div>
           <h3>¿Qué te gustaría mejorar?</h3>
           <div className="preview-options"><span>Líneas de expresión</span><span>Manchas</span><span className="active">Luminosidad y textura ✓</span><span>No estoy segura</span></div>
-          <div className="recommendation"><span>Tu mejor primer paso</span><b>Evaluación dermocosmética</b><small>40 min · con Kiara o Pía</small></div>
+          <div className="recommendation"><span>Tu mejor primer paso</span><b>Evaluación dermoestética</b><small>40 min · con Kiara o Pía</small></div>
         </div>
       </section>
 
@@ -277,7 +277,7 @@ export default function Home() {
         <div className="team-grid">
           <Link className="team-card poster-card" href="/equipo/kiara-moscoso">
             <img src="/images/kiara-moscoso.jpg" alt="EU. Kiara Moscoso Villegas, enfermera dermoestética y cosmetóloga" />
-            <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Kiara Moscoso V.</h3><span>Armonización · Láser · Dermocosmética · Ver perfil →</span></div>
+            <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Kiara Moscoso V.</h3><span>Armonización · Láser · Dermoestética · Ver perfil →</span></div>
           </Link>
           <Link className="team-card poster-card" href="/equipo/pia-orellana">
             <img src="/images/pia-orellana.jpg" alt="EU. Pía Orellana, enfermera dermoestética y cosmetóloga" />

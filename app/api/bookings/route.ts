@@ -7,7 +7,7 @@ const SLOTS = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"] as const;
 const OPENING_DATE = "2026-08-10";
 const TREATMENTS: Record<string, string> = {
   armonizacion: "Armonización facial",
-  piel: "Evaluación dermocosmética",
+  piel: "Evaluación dermoestética",
   laser: "Tecnología láser",
   regenerativa: "Medicina regenerativa",
   lesiones: "Cuidado clínico",

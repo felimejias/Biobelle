@@ -26,7 +26,7 @@ export const treatmentDetails: TreatmentDetail[] = [
   },
   {
     slug: "piel",
-    eyebrow: "Dermocosmética",
+    eyebrow: "Dermoestética",
     title: "Una piel cuidada desde sus necesidades reales",
     summary: "Protocolos de limpieza facial profesional, Dermapen y cuidado dermocosmético seleccionados según textura, luminosidad, sensibilidad y objetivos de cada piel.",
     image: "/images/catalogo-tratamientos.jpg",

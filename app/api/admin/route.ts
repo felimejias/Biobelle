@@ -8,7 +8,7 @@ const STATUSES = ["pending", "confirmed", "completed", "no_show", "cancelled"];
 const TREATMENTS: Record<string, string> = {
   evaluacion: "Evaluación estética personalizada",
   armonizacion: "Armonización facial",
-  piel: "Evaluación dermocosmética",
+  piel: "Evaluación dermoestética",
   laser: "Tecnología láser",
   regenerativa: "Medicina regenerativa",
   lesiones: "Cuidado clínico",

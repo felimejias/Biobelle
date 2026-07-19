@@ -15,7 +15,7 @@ type AdminData = { identity: AdminIdentity; bookings: Booking[]; blocks: Block[]
 
 const professionals = ["Kiara Moscoso", "Pía Orellana"];
 const slots = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"];
-const treatments = [["evaluacion", "Evaluación estética personalizada"], ["armonizacion", "Armonización facial"], ["piel", "Evaluación dermocosmética"], ["laser", "Tecnología láser"], ["regenerativa", "Medicina regenerativa"], ["lesiones", "Cuidado clínico"], ["corporal", "Dermoestética corporal"]];
+const treatments = [["evaluacion", "Evaluación estética personalizada"], ["armonizacion", "Armonización facial"], ["piel", "Evaluación dermoestética"], ["laser", "Tecnología láser"], ["regenerativa", "Medicina regenerativa"], ["lesiones", "Cuidado clínico"], ["corporal", "Dermoestética corporal"]];
 const statusLabel: Record<string, string> = { pending: "Pendiente", confirmed: "Confirmada", completed: "Atendida", no_show: "No asistió", cancelled: "Cancelada" };
 const roleLabel: Record<string, string> = { general_admin: "Administradora general", location_admin: "Administradora del centro", receptionist: "Recepción", professional: "Profesional", readonly: "Solo lectura" };
 
