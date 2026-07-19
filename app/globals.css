@@ -152,8 +152,12 @@ footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1
 .schedule-step select,.schedule-step input,.details-step input { margin-top:7px; border:1px solid #d5c5c1; padding:13px; background:#fffdfa; color:var(--ink); font:11px var(--font-sans); }
 .schedule-step>p { font-family:var(--font-sans); font-size:9px; text-transform:uppercase; letter-spacing:.12em; color:var(--wine); margin:16px 0 9px; }
 .time-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-.time-grid button { justify-content:center; }
+.time-grid button { justify-content:center; flex-direction:column; gap:2px; min-height:47px; }
+.time-grid button small { font-size:7px; text-transform:uppercase; letter-spacing:.08em; }
+.time-grid button:disabled { opacity:.42; cursor:not-allowed; background:#eee7e4; }
 .schedule-step>small { display:block; color:#796b6d; font-size:9px; margin-top:14px; }
+.availability-status { min-height:71px; display:grid; place-items:center; border:1px dashed #d5c5c1; color:var(--muted); font-size:10px; text-align:center; padding:14px; }
+.booking-error { margin:16px 0 0; padding:11px 13px; background:#f5dfe1; border-left:3px solid var(--wine); color:var(--deep); font-size:10px; line-height:1.5; }
 .booking-summary { background:#f0dfdd; padding:16px; margin-bottom:18px; display:flex; flex-direction:column; }
 .booking-summary span { color:var(--wine); font-size:9px; }
 .booking-summary b { font-family:var(--font-serif); font-size:23px; font-weight:500; margin:3px 0; }

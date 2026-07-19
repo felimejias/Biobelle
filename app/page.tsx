@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Treatment = {
   id: string;
@@ -30,7 +30,18 @@ const concerns = [
   { id: "orientacion", label: "No sé qué necesito", treatment: "evaluacion" },
 ];
 
-const slots = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"];
+type AvailableSlot = {
+  time: string;
+  available: boolean;
+  availableProfessionals: string[];
+};
+
+function nextBusinessDate() {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  while (date.getDay() === 0) date.setDate(date.getDate() + 1);
+  return date.toISOString().slice(0, 10);
+}
 
 function BrandLockup({ className = "", compact = false }: { className?: string; compact?: boolean }) {
   return (
@@ -46,12 +57,18 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [concern, setConcern] = useState("orientacion");
-  const [professional, setProfessional] = useState("La primera disponible");
-  const [date, setDate] = useState("2026-07-21");
-  const [time, setTime] = useState("11:00");
+  const [professional, setProfessional] = useState("Primera disponible");
+  const [date, setDate] = useState(nextBusinessDate);
+  const [time, setTime] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [reminderConsent, setReminderConsent] = useState(true);
   const [confirmed, setConfirmed] = useState(false);
+  const [availability, setAvailability] = useState<AvailableSlot[]>([]);
+  const [availabilityLoading, setAvailabilityLoading] = useState(false);
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingError, setBookingError] = useState("");
+  const [confirmationCode, setConfirmationCode] = useState("");
 
   const recommendedId = concerns.find((item) => item.id === concern)?.treatment ?? "evaluacion";
   const recommended = useMemo(
@@ -59,17 +76,82 @@ export default function Home() {
     [recommendedId],
   );
 
+  useEffect(() => {
+    if (!bookingOpen || step !== 3 || !date) return;
+    const controller = new AbortController();
+    setAvailabilityLoading(true);
+    setBookingError("");
+
+    fetch(`/api/availability?date=${encodeURIComponent(date)}&professional=${encodeURIComponent(professional)}`, {
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        const data = await response.json() as { slots?: AvailableSlot[]; error?: string };
+        if (!response.ok) throw new Error(data.error ?? "No pudimos consultar las horas.");
+        const nextSlots = data.slots ?? [];
+        setAvailability(nextSlots);
+        const selectedIsAvailable = nextSlots.some((slot) => slot.time === time && slot.available);
+        if (!selectedIsAvailable) setTime(nextSlots.find((slot) => slot.available)?.time ?? "");
+      })
+      .catch((error) => {
+        if (error instanceof Error && error.name !== "AbortError") {
+          setAvailability([]);
+          setTime("");
+          setBookingError(error.message);
+        }
+      })
+      .finally(() => setAvailabilityLoading(false));
+
+    return () => controller.abort();
+  }, [bookingOpen, date, professional, step, time]);
+
   const openBooking = (preset?: string) => {
     if (preset) {
       const match = concerns.find((item) => item.treatment === preset);
       if (match) setConcern(match.id);
     }
     setConfirmed(false);
+    setBookingError("");
+    setConfirmationCode("");
     setStep(1);
     setBookingOpen(true);
   };
 
   const closeBooking = () => setBookingOpen(false);
+
+  const submitBooking = async () => {
+    setBookingLoading(true);
+    setBookingError("");
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          concernId: concern,
+          treatmentId: recommended?.id ?? "evaluacion",
+          professional,
+          date,
+          time,
+          name,
+          phone,
+          reminderConsent,
+        }),
+      });
+      const data = await response.json() as {
+        booking?: { confirmationCode: string; professional: string };
+        error?: string;
+      };
+      if (!response.ok || !data.booking) throw new Error(data.error ?? "No pudimos guardar la reserva.");
+      setProfessional(data.booking.professional);
+      setConfirmationCode(data.booking.confirmationCode);
+      setConfirmed(true);
+    } catch (error) {
+      setBookingError(error instanceof Error ? error.message : "No pudimos guardar la reserva.");
+      if (error instanceof Error && /ocup/i.test(error.message)) setStep(3);
+    } finally {
+      setBookingLoading(false);
+    }
+  };
 
   return (
     <main>
@@ -232,12 +314,13 @@ export default function Home() {
                 <div className="progress"><span style={{ width: `${step * 25}%` }} /></div>
                 {step === 1 && <div className="booking-step"><p>¿Qué te gustaría mejorar o cuidar?</p><div className="concern-grid">{concerns.map((item) => <button className={concern === item.id ? "selected" : ""} onClick={() => setConcern(item.id)} key={item.id}>{item.label}<span>{concern === item.id ? "✓" : "→"}</span></button>)}</div></div>}
                 {step === 2 && <div className="booking-step"><p>Según tu objetivo, te recomendamos comenzar por:</p><div className="result-card"><span>RECOMENDACIÓN BIOBELLE</span><h3>{recommended ? recommended.eyebrow : "Evaluación estética personalizada"}</h3><p>{recommended ? recommended.copy : "Una conversación clínica para entender tu piel, tus expectativas y recomendarte opciones seguras."}</p><div><b>{recommended?.duration ?? "40 min"}</b><b>{recommended?.price ?? "Sin compromiso"}</b></div></div><p className="disclaimer">Esta orientación no reemplaza una evaluación clínica. La indicación final siempre será realizada por una profesional.</p></div>}
-                {step === 3 && <div className="booking-step schedule-step"><label>Profesional<select value={professional} onChange={(e) => setProfessional(e.target.value)}><option>La primera disponible</option><option>Kiara Moscoso</option><option>Pía Orellana</option></select></label><label>Fecha<input type="date" min="2026-07-20" value={date} onChange={(e) => setDate(e.target.value)} /></label><p>Horas disponibles</p><div className="time-grid">{slots.map((slot) => <button className={time === slot ? "selected" : ""} onClick={() => setTime(slot)} key={slot}>{slot}</button>)}</div><small>✦ Sugerencia: 11:00 tiene menor tiempo de espera.</small></div>}
-                {step === 4 && <div className="booking-step details-step"><div className="booking-summary"><span>{date.split("-").reverse().join("/")} · {time}</span><b>{recommended?.eyebrow ?? "Evaluación personalizada"}</b><small>{professional}</small></div><label>Nombre completo<input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tu nombre" /></label><label>WhatsApp<input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+56 9 1234 5678" inputMode="tel" /></label><label className="checkbox"><input type="checkbox" defaultChecked /> Quiero recibir recordatorios e indicaciones por WhatsApp.</label></div>}
-                <div className="modal-actions">{step > 1 && <button className="back" onClick={() => setStep(step - 1)}>← Volver</button>}<button className="continue" disabled={step === 4 && (!name || !phone)} onClick={() => step < 4 ? setStep(step + 1) : setConfirmed(true)}>{step === 4 ? "Confirmar solicitud" : "Continuar"} <span>→</span></button></div>
+                {step === 3 && <div className="booking-step schedule-step"><label>Profesional<select value={professional} onChange={(e) => setProfessional(e.target.value)}><option>Primera disponible</option><option>Kiara Moscoso</option><option>Pía Orellana</option></select></label><label>Fecha<input type="date" min={nextBusinessDate()} value={date} onChange={(e) => setDate(e.target.value)} /></label><p>Horas disponibles en tiempo real</p>{availabilityLoading ? <div className="availability-status">Consultando agenda…</div> : availability.length ? <div className="time-grid">{availability.map((slot) => <button type="button" className={time === slot.time ? "selected" : ""} disabled={!slot.available} onClick={() => setTime(slot.time)} key={slot.time}>{slot.time}{!slot.available && <small>Ocupada</small>}</button>)}</div> : <div className="availability-status">No hay horas disponibles para esta fecha.</div>}<small>✦ Las horas se bloquean al confirmar para evitar reservas duplicadas.</small></div>}
+                {step === 4 && <div className="booking-step details-step"><div className="booking-summary"><span>{date.split("-").reverse().join("/")} · {time}</span><b>{recommended?.eyebrow ?? "Evaluación personalizada"}</b><small>{professional}</small></div><label>Nombre completo<input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tu nombre" autoComplete="name" /></label><label>WhatsApp<input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+56 9 1234 5678" inputMode="tel" autoComplete="tel" /></label><label className="checkbox"><input type="checkbox" checked={reminderConsent} onChange={(e) => setReminderConsent(e.target.checked)} /> Quiero recibir recordatorios e indicaciones por WhatsApp.</label></div>}
+                {bookingError && <p className="booking-error" role="alert">{bookingError}</p>}
+                <div className="modal-actions">{step > 1 && <button className="back" onClick={() => setStep(step - 1)} disabled={bookingLoading}>← Volver</button>}<button className="continue" disabled={(step === 3 && (!time || availabilityLoading)) || (step === 4 && (!name.trim() || !phone.trim() || bookingLoading))} onClick={() => step < 4 ? setStep(step + 1) : void submitBooking()}>{step === 4 ? (bookingLoading ? "Guardando…" : "Confirmar solicitud") : "Continuar"} <span>→</span></button></div>
               </>
             ) : (
-              <div className="confirmation"><div className="checkmark">✓</div><p>SOLICITUD RECIBIDA</p><h2>Tu momento BIOBELLE comienza aquí.</h2><p>Te reservamos la hora del <b>{date.split("-").reverse().join("/")} a las {time}</b>. Enviaremos la confirmación y las indicaciones a tu WhatsApp.</p><div className="confirmation-card"><span>{recommended?.eyebrow ?? "Evaluación personalizada"}</span><b>{professional}</b><small>Bueras 218, Oficina 302 · Rancagua</small></div><button className="continue full" onClick={closeBooking}>Listo, cerrar</button></div>
+              <div className="confirmation"><div className="checkmark">✓</div><p>HORA RESERVADA · {confirmationCode}</p><h2>Tu momento BIOBELLE comienza aquí.</h2><p>La hora del <b>{date.split("-").reverse().join("/")} a las {time}</b> quedó bloqueada a tu nombre. Conserva tu código de reserva.</p><div className="confirmation-card"><span>{recommended?.eyebrow ?? "Evaluación personalizada"}</span><b>{professional}</b><small>{confirmationCode} · Bueras 218, Oficina 302 · Rancagua</small></div><button className="continue full" onClick={closeBooking}>Listo, cerrar</button></div>
             )}
           </section>
         </div>
