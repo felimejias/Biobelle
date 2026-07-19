@@ -1,11 +1,10 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "../../../db";
 import { bookings, scheduleBlocks } from "../../../db/schema";
+import { OPENING_DATE, SLOTS, isProfessional } from "../../clinic-config";
+import { getEligibleProfessionals } from "../../treatment-service";
 
-const PROFESSIONALS = ["Kiara Moscoso", "Pía Orellana"] as const;
-const SLOTS = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"] as const;
-const OPENING_DATE = "2026-08-10";
-
+// Apertura operacional BIOBELLE: 2026-08-10.
 function isValidDate(value: string) {
   return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T12:00:00`));
 }
@@ -13,7 +12,8 @@ function isValidDate(value: string) {
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const date = url.searchParams.get("date") ?? "";
-  const requestedProfessional = url.searchParams.get("professional") ?? "Primera disponible";
+  const treatmentId = url.searchParams.get("treatmentId") ?? "evaluacion";
+  const requestedProfessional = url.searchParams.get("professional") ?? "";
 
   if (!isValidDate(date)) {
     return Response.json({ error: "Selecciona una fecha válida." }, { status: 400 });
@@ -28,11 +28,16 @@ export async function GET(request: Request) {
     return Response.json({ date, slots: [], closed: true });
   }
 
-  const professionals = PROFESSIONALS.includes(requestedProfessional as typeof PROFESSIONALS[number])
-    ? [requestedProfessional]
-    : [...PROFESSIONALS];
-
   const db = getDb();
+  const eligible = await getEligibleProfessionals(db, treatmentId);
+  const professionals = isProfessional(requestedProfessional) && eligible.includes(requestedProfessional)
+    ? [requestedProfessional]
+    : eligible;
+
+  if (!professionals.length) {
+    return Response.json({ date, slots: [], closed: true, message: "Este tratamiento aún no tiene profesional asignada." });
+  }
+
   const reserved = await db
     .select({ professional: bookings.professional, time: bookings.appointmentTime })
     .from(bookings)

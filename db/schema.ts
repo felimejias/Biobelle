@@ -39,7 +39,7 @@ export const waitlist = sqliteTable(
     phone: text("phone").notNull(),
     treatmentId: text("treatment_id").notNull(),
     preferredDate: text("preferred_date"),
-    professional: text("professional").notNull().default("Primera disponible"),
+    professional: text("professional").notNull().default("Sin preferencia"),
     privacyConsent: integer("privacy_consent", { mode: "boolean" }).notNull().default(false),
     status: text("status").notNull().default("waiting"),
     createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
@@ -128,4 +128,33 @@ export const clientNotes = sqliteTable(
     createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
   },
   (table) => [index("client_notes_phone_idx").on(table.phone)],
+);
+
+export const treatmentCatalog = sqliteTable(
+  "treatment_catalog",
+  {
+    id: text("id").primaryKey(),
+    label: text("label").notNull(),
+    publicLabel: text("public_label").notNull(),
+    duration: text("duration").notNull().default("Según evaluación"),
+    price: text("price").notNull().default("Según evaluación"),
+    active: integer("active", { mode: "boolean" }).notNull().default(true),
+    sortOrder: integer("sort_order").notNull().default(100),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [index("treatment_catalog_active_idx").on(table.active), index("treatment_catalog_sort_idx").on(table.sortOrder)],
+);
+
+export const professionalTreatments = sqliteTable(
+  "professional_treatments",
+  {
+    professional: text("professional").notNull(),
+    treatmentId: text("treatment_id").notNull(),
+    enabled: integer("enabled", { mode: "boolean" }).notNull().default(true),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [
+    uniqueIndex("professional_treatments_unique").on(table.professional, table.treatmentId),
+    index("professional_treatments_treatment_idx").on(table.treatmentId),
+  ],
 );

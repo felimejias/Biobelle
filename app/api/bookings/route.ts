@@ -1,20 +1,10 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "../../../db";
 import { bookings, scheduleBlocks } from "../../../db/schema";
+import { OPENING_DATE, SLOTS, isProfessional } from "../../clinic-config";
+import { getTreatmentById } from "../../treatment-service";
 
-const PROFESSIONALS = ["Kiara Moscoso", "Pía Orellana"] as const;
-const SLOTS = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"] as const;
-const OPENING_DATE = "2026-08-10";
-const TREATMENTS: Record<string, string> = {
-  armonizacion: "Armonización facial",
-  piel: "Evaluación dermoestética",
-  laser: "Tecnología láser",
-  regenerativa: "Medicina regenerativa",
-  lesiones: "Cuidado clínico",
-  corporal: "Dermoestética corporal",
-  evaluacion: "Evaluación estética personalizada",
-};
-
+// Apertura operacional BIOBELLE: 2026-08-10.
 type BookingPayload = {
   concernId?: string;
   treatmentId?: string;
@@ -47,13 +37,15 @@ export async function POST(request: Request) {
 
     const concernId = payload.concernId?.trim() ?? "orientacion";
     const treatmentId = payload.treatmentId?.trim() ?? "evaluacion";
-    const requestedProfessional = payload.professional?.trim() ?? "Primera disponible";
+    const requestedProfessional = payload.professional?.trim() ?? "";
     const date = payload.date?.trim() ?? "";
     const time = payload.time?.trim() ?? "";
     const patientName = payload.name?.trim() ?? "";
     const phone = normalizePhone(payload.phone?.trim() ?? "");
 
-    if (!TREATMENTS[treatmentId]) return Response.json({ error: "Tratamiento no válido." }, { status: 400 });
+    const db = getDb();
+    const treatment = await getTreatmentById(db, treatmentId);
+    if (!treatment) return Response.json({ error: "Tratamiento no válido." }, { status: 400 });
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || new Date(`${date}T12:00:00`).getDay() === 0) {
       return Response.json({ error: "La fecha seleccionada no está disponible." }, { status: 400 });
     }
@@ -63,10 +55,10 @@ export async function POST(request: Request) {
     if (phone.length < 10 || phone.length > 16) return Response.json({ error: "Ingresa un WhatsApp válido." }, { status: 400 });
     if (payload.privacyConsent !== true) return Response.json({ error: "Debes aceptar el uso de tus datos para gestionar la reserva." }, { status: 400 });
 
-    const candidates = PROFESSIONALS.includes(requestedProfessional as typeof PROFESSIONALS[number])
+    const candidates = isProfessional(requestedProfessional) && treatment.professionals.includes(requestedProfessional)
       ? [requestedProfessional]
-      : [...PROFESSIONALS];
-    const db = getDb();
+      : treatment.professionals;
+    if (!candidates.length) return Response.json({ error: "Este tratamiento aún no tiene profesional asignada." }, { status: 400 });
     const occupied = await db
       .select({ professional: bookings.professional })
       .from(bookings)
@@ -98,7 +90,10 @@ export async function POST(request: Request) {
       .limit(1);
     if (duplicate.length) return Response.json({ error: "Ya existe una reserva activa con este WhatsApp para esa fecha y hora." }, { status: 409 });
 
-    for (const professional of availableCandidates) {
+    const seed = `${date}-${time}-${treatmentId}`.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    const balancedCandidates = seed % 2 === 0 ? availableCandidates : [...availableCandidates].reverse();
+
+    for (const professional of balancedCandidates) {
       const code = confirmationCode();
       const managementToken = crypto.randomUUID().replaceAll("-", "") + crypto.randomUUID().replaceAll("-", "");
       try {
@@ -108,7 +103,7 @@ export async function POST(request: Request) {
           managementToken,
           concernId,
           treatmentId,
-          treatmentName: TREATMENTS[treatmentId],
+          treatmentName: treatment.label,
           professional,
           appointmentDate: date,
           appointmentTime: time,
@@ -126,7 +121,7 @@ export async function POST(request: Request) {
             professional,
             date,
             time,
-            treatmentName: TREATMENTS[treatmentId],
+            treatmentName: treatment.label,
             managementUrl: `${new URL(request.url).origin}/reserva/${managementToken}`,
           },
         }, { status: 201 });

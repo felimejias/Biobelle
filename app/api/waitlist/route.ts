@@ -1,9 +1,8 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "../../../db";
 import { waitlist } from "../../../db/schema";
-
-const TREATMENTS = ["armonizacion", "piel", "laser", "regenerativa", "lesiones", "corporal", "evaluacion"];
-const PROFESSIONALS = ["Primera disponible", "Kiara Moscoso", "Pía Orellana"];
+import { isProfessional } from "../../clinic-config";
+import { getTreatmentById } from "../../treatment-service";
 
 function normalizePhone(value: string) {
   return value.replace(/[^+\d]/g, "");
@@ -25,17 +24,18 @@ export async function POST(request: Request) {
   const phone = normalizePhone(payload.phone?.trim() ?? "");
   const treatmentId = payload.treatmentId?.trim() ?? "evaluacion";
   const preferredDate = payload.preferredDate?.trim() || null;
-  const professional = payload.professional?.trim() ?? "Primera disponible";
+  const professional = payload.professional?.trim() ?? "";
   if (name.length < 3 || name.length > 100) return Response.json({ error: "Ingresa tu nombre completo." }, { status: 400 });
   if (phone.length < 10 || phone.length > 16) return Response.json({ error: "Ingresa un WhatsApp válido." }, { status: 400 });
-  if (!TREATMENTS.includes(treatmentId)) return Response.json({ error: "Tratamiento no válido." }, { status: 400 });
-  if (!PROFESSIONALS.includes(professional)) return Response.json({ error: "Profesional no válida." }, { status: 400 });
+  const db = getDb();
+  const treatment = await getTreatmentById(db, treatmentId);
+  if (!treatment) return Response.json({ error: "Tratamiento no válido." }, { status: 400 });
+  if (professional && (!isProfessional(professional) || !treatment.professionals.includes(professional))) return Response.json({ error: "Profesional no válida para este tratamiento." }, { status: 400 });
   if (preferredDate && (!/^\d{4}-\d{2}-\d{2}$/.test(preferredDate) || preferredDate < "2026-08-10")) {
     return Response.json({ error: "La fecha preferida debe ser desde el 10 de agosto de 2026." }, { status: 400 });
   }
   if (payload.privacyConsent !== true) return Response.json({ error: "Debes aceptar el uso de tus datos." }, { status: 400 });
 
-  const db = getDb();
   const existing = await db.select({ id: waitlist.id }).from(waitlist).where(and(
     eq(waitlist.phone, phone),
     eq(waitlist.treatmentId, treatmentId),
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     phone,
     treatmentId,
     preferredDate,
-    professional,
+    professional: professional || "Sin preferencia",
     privacyConsent: true,
     status: "waiting",
     createdAt: new Date(),

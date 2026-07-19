@@ -38,13 +38,17 @@ como implementadas.
 - Seleccion de tratamiento, profesional, fecha, hora y datos de paciente.
 - Fecha minima de reserva: 10 de agosto de 2026.
 - Horarios visibles actuales: 09:30, 11:00, 12:30, 15:30, 17:00 y 18:30.
-- Profesionales: Kiara Moscoso, Pia Orellana y "Primera disponible".
+- Profesionales visibles: Kiara Moscoso y Pia Orellana con la misma jerarquia
+  visual. La opcion sin preferencia existe solo como asignacion secundaria y
+  equilibrada, no como tarjeta principal.
 - Validacion para evitar reservas duplicadas activas en el mismo horario.
 - Confirmacion de reserva con codigo.
 - Link de gestion de reserva para reprogramar o cancelar.
 - Consentimiento de privacidad y consentimiento para recordatorios.
 - Lista de espera publica para cuando no haya hora ideal.
 - API de disponibilidad que considera reservas y bloqueos administrativos.
+- API de disponibilidad que considera tratamiento elegido, profesionales
+  habilitadas, reservas y bloqueos administrativos.
 
 ## Panel administrativo implementado
 
@@ -84,6 +88,13 @@ como implementadas.
 - Notas internas de pacientes.
 - Reportes operativos basicos: reservas, ocupacion, pendientes, atendidas,
   inasistencias y lista de espera.
+- Modulo administrativo de tratamientos:
+  - agregar nuevos procedimientos.
+  - activar u ocultar tratamientos.
+  - marcar si Kiara y/o Pia realizan cada tratamiento.
+  - impedir que un tratamiento quede sin profesional asignada.
+  - filtrar automaticamente la agenda publica segun la matriz tratamiento /
+    profesional.
 
 ## Infraestructura implementada
 

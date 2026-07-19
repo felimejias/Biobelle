@@ -8,6 +8,7 @@ import { ProfessionalPicker } from "../../components/ProfessionalPicker";
 
 type Booking = {
   confirmationCode: string;
+  treatmentId: string;
   treatmentName: string;
   professional: string;
   date: string;
@@ -17,6 +18,7 @@ type Booking = {
 };
 
 type Slot = { time: string; available: boolean };
+type ClinicTreatmentView = { id: string; professionals: string[] };
 
 function nextBusinessDate() {
   const openingDate = "2026-08-10";
@@ -36,8 +38,9 @@ export default function ReservationPage() {
   const [error, setError] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [professional, setProfessional] = useState("Primera disponible");
+  const [professional, setProfessional] = useState("");
   const [slots, setSlots] = useState<Slot[]>([]);
+  const [clinicTreatments, setClinicTreatments] = useState<ClinicTreatmentView[]>([]);
 
   useEffect(() => {
     const loadBooking = async () => {
@@ -59,7 +62,7 @@ export default function ReservationPage() {
 
   useEffect(() => {
     if (!editing || !date) return;
-    fetch(`/api/availability/?date=${encodeURIComponent(date)}&professional=${encodeURIComponent(professional)}`)
+    fetch(`/api/availability/?date=${encodeURIComponent(date)}&treatmentId=${encodeURIComponent(booking?.treatmentId ?? "evaluacion")}&professional=${encodeURIComponent(professional)}`)
       .then((response) => response.json())
       .then((data: { slots?: Slot[] }) => {
         const nextSlots = data.slots ?? [];
@@ -67,7 +70,20 @@ export default function ReservationPage() {
         setTime((currentTime) => nextSlots.some((slot) => slot.time === currentTime && slot.available) ? currentTime : nextSlots.find((slot) => slot.available)?.time ?? "");
       })
       .catch(() => setSlots([]));
-  }, [date, editing, professional]);
+  }, [booking?.treatmentId, date, editing, professional]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/treatments/", { signal: controller.signal })
+      .then(async (response) => {
+        const data = await response.json() as { treatments?: ClinicTreatmentView[] };
+        if (response.ok && data.treatments?.length) setClinicTreatments(data.treatments);
+      })
+      .catch(() => undefined);
+    return () => controller.abort();
+  }, []);
+
+  const eligibleProfessionals = clinicTreatments.find((item) => item.id === booking?.treatmentId)?.professionals ?? ["Kiara Moscoso", "Pía Orellana"];
 
   const changeBooking = async (action: "cancel" | "reschedule") => {
     if (action === "cancel" && !window.confirm("¿Confirmas que deseas cancelar esta hora?")) return;
@@ -103,7 +119,7 @@ export default function ReservationPage() {
 
           {editing && booking.status !== "cancelled" && <div className="reschedule-panel">
             <h2>Elige una nueva hora</h2>
-            <fieldset className="professional-fieldset"><legend>Elige quién te atenderá</legend><ProfessionalPicker value={professional} onChange={setProfessional} compact /></fieldset>
+            <fieldset className="professional-fieldset"><legend>{eligibleProfessionals.length === 1 ? "Profesional habilitada" : "Elige quién te atenderá"}</legend><ProfessionalPicker value={professional} onChange={setProfessional} compact professionals={eligibleProfessionals} allowNoPreference={eligibleProfessionals.length > 1} /></fieldset>
             <label>Fecha<input type="date" min={nextBusinessDate()} value={date} onChange={(event) => setDate(event.target.value)} /></label>
             <div className="time-grid">{slots.map((slot) => <button type="button" disabled={!slot.available} className={time === slot.time ? "selected" : ""} onClick={() => setTime(slot.time)} key={slot.time}>{slot.time}</button>)}</div>
             {error && <p className="booking-error">{error}</p>}

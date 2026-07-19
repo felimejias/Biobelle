@@ -15,12 +15,15 @@ const treatments = [
   ["corporal", "Dermoestética corporal"],
 ];
 
+type ClinicTreatmentView = { id: string; label: string; publicLabel: string; professionals: string[] };
+
 export default function WaitlistPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [treatmentId, setTreatmentId] = useState("evaluacion");
   const [preferredDate, setPreferredDate] = useState("");
-  const [professional, setProfessional] = useState("Primera disponible");
+  const [professional, setProfessional] = useState("");
+  const [clinicTreatments, setClinicTreatments] = useState<ClinicTreatmentView[]>([]);
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -30,6 +33,26 @@ export default function WaitlistPage() {
     const preset = new URLSearchParams(window.location.search).get("tratamiento");
     if (preset && treatments.some(([id]) => id === preset)) queueMicrotask(() => setTreatmentId(preset));
   }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/treatments/", { signal: controller.signal })
+      .then(async (response) => {
+        const data = await response.json() as { treatments?: ClinicTreatmentView[] };
+        if (response.ok && data.treatments?.length) setClinicTreatments(data.treatments);
+      })
+      .catch(() => undefined);
+    return () => controller.abort();
+  }, []);
+
+  const treatmentOptions = clinicTreatments.length ? clinicTreatments : treatments.map(([id, label]) => ({ id, label, publicLabel: label, professionals: ["Kiara Moscoso", "Pía Orellana"] }));
+  const selectedTreatment = treatmentOptions.find((item) => item.id === treatmentId);
+  const eligibleProfessionals = selectedTreatment?.professionals ?? ["Kiara Moscoso", "Pía Orellana"];
+
+  useEffect(() => {
+    if (eligibleProfessionals.length === 1) setProfessional(eligibleProfessionals[0]);
+    else if (professional && !eligibleProfessionals.includes(professional)) setProfessional("");
+  }, [eligibleProfessionals, professional]);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -49,7 +72,7 @@ export default function WaitlistPage() {
     setLoading(false);
   };
 
-  const whatsappText = encodeURIComponent(`Hola BIOBELLE, me uní a la lista de espera para ${treatments.find(([id]) => id === treatmentId)?.[1]}. Mi nombre es ${name}.`);
+  const whatsappText = encodeURIComponent(`Hola BIOBELLE, me uní a la lista de espera para ${selectedTreatment?.publicLabel ?? selectedTreatment?.label}. Mi nombre es ${name}.`);
 
   return (
     <main className="waitlist-page">
@@ -60,8 +83,8 @@ export default function WaitlistPage() {
         {message ? <div className="waitlist-success"><span>✓</span><h2>Ya estás en la lista.</h2><p>{message}</p><a className="whatsapp-confirm" href={`https://wa.me/56979655129?text=${whatsappText}`} target="_blank" rel="noreferrer">Avisar también por WhatsApp</a></div> : <form className="waitlist-form" onSubmit={submit}>
           <label>Nombre completo<input value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" required /></label>
           <label>WhatsApp<input value={phone} onChange={(event) => setPhone(event.target.value)} autoComplete="tel" inputMode="tel" placeholder="+56 9 1234 5678" required /></label>
-          <label>Tratamiento<select value={treatmentId} onChange={(event) => setTreatmentId(event.target.value)}>{treatments.map(([id, label]) => <option value={id} key={id}>{label}</option>)}</select></label>
-          <fieldset className="professional-fieldset"><legend>Profesional preferida</legend><ProfessionalPicker value={professional} onChange={setProfessional} compact /></fieldset>
+          <label>Tratamiento<select value={treatmentId} onChange={(event) => setTreatmentId(event.target.value)}>{treatmentOptions.map((item) => <option value={item.id} key={item.id}>{item.publicLabel || item.label}</option>)}</select></label>
+          <fieldset className="professional-fieldset"><legend>{eligibleProfessionals.length === 1 ? "Profesional habilitada" : "Profesional preferida"}</legend><ProfessionalPicker value={professional} onChange={setProfessional} compact professionals={eligibleProfessionals} allowNoPreference={eligibleProfessionals.length > 1} /></fieldset>
           <label>Fecha preferida, opcional<input type="date" min="2026-08-10" value={preferredDate} onChange={(event) => setPreferredDate(event.target.value)} /></label>
           <label className="checkbox required-consent"><input type="checkbox" checked={privacyConsent} onChange={(event) => setPrivacyConsent(event.target.checked)} /> Acepto el uso de estos datos para gestionar la lista de espera, según la <Link href="/privacidad" target="_blank">Política de Privacidad</Link>.</label>
           {error && <p className="booking-error">{error}</p>}

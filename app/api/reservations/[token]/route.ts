@@ -1,16 +1,15 @@
 import { and, eq, inArray, ne } from "drizzle-orm";
 import { getDb } from "../../../../db";
 import { bookings } from "../../../../db/schema";
-
-const PROFESSIONALS = ["Kiara Moscoso", "Pía Orellana"] as const;
-const SLOTS = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"] as const;
-const OPENING_DATE = "2026-08-10";
+import { OPENING_DATE, SLOTS, isProfessional } from "../../../clinic-config";
+import { getEligibleProfessionals } from "../../../treatment-service";
 
 type RouteContext = { params: Promise<{ token: string }> };
 
 function publicBooking(row: typeof bookings.$inferSelect) {
   return {
     confirmationCode: row.confirmationCode,
+    treatmentId: row.treatmentId,
     treatmentName: row.treatmentName,
     professional: row.professional,
     date: row.appointmentDate,
@@ -50,16 +49,18 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 
   const date = payload.date?.trim() ?? "";
   const time = payload.time?.trim() ?? "";
-  const requestedProfessional = payload.professional?.trim() ?? "Primera disponible";
+  const requestedProfessional = payload.professional?.trim() ?? "";
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || new Date(`${date}T12:00:00`).getDay() === 0) {
     return Response.json({ error: "La fecha seleccionada no está disponible." }, { status: 400 });
   }
   if (date < OPENING_DATE) return Response.json({ error: "La agenda BIOBELLE comienza el 10 de agosto de 2026." }, { status: 400 });
   if (!SLOTS.includes(time as typeof SLOTS[number])) return Response.json({ error: "La hora seleccionada no está disponible." }, { status: 400 });
 
-  const candidates = PROFESSIONALS.includes(requestedProfessional as typeof PROFESSIONALS[number])
+  const eligible = await getEligibleProfessionals(db, current.treatmentId);
+  const candidates = isProfessional(requestedProfessional) && eligible.includes(requestedProfessional)
     ? [requestedProfessional]
-    : [...PROFESSIONALS];
+    : eligible;
+  if (!candidates.length) return Response.json({ error: "Este tratamiento aún no tiene profesional asignada." }, { status: 400 });
   const occupied = await db
     .select({ professional: bookings.professional })
     .from(bookings)

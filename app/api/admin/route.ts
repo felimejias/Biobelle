@@ -1,19 +1,11 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { getDb } from "../../../db";
-import { adminUsers, bookingHistory, bookings, clientNotes, scheduleBlocks, waitlist } from "../../../db/schema";
+import { adminUsers, bookingHistory, bookings, clientNotes, scheduleBlocks, treatmentCatalog, waitlist } from "../../../db/schema";
 import { canEditAgenda, canManageUsers, getAdminIdentity, hashPassword, normalizeUsername } from "../../admin-auth";
+import { PROFESSIONALS, slugifyTreatment } from "../../clinic-config";
+import { ensureTreatmentAssignments, getClinicTreatments, getTreatmentById, nextTreatmentId } from "../../treatment-service";
 
-const PROFESSIONALS = ["Kiara Moscoso", "Pía Orellana"];
 const STATUSES = ["pending", "confirmed", "completed", "no_show", "cancelled"];
-const TREATMENTS: Record<string, string> = {
-  evaluacion: "Evaluación estética personalizada",
-  armonizacion: "Armonización facial",
-  piel: "Evaluación dermoestética",
-  laser: "Tecnología láser",
-  regenerativa: "Medicina regenerativa",
-  lesiones: "Cuidado clínico",
-  corporal: "Dermoestética corporal",
-};
 
 function unauthorized() {
   return Response.json({ error: "Acceso administrativo no autorizado." }, { status: 401 });
@@ -37,7 +29,7 @@ export async function GET(request: Request) {
   const dateConditions = [gte(bookings.appointmentDate, from), lte(bookings.appointmentDate, to)];
   if (identity.role === "professional" && identity.professional) dateConditions.push(eq(bookings.professional, identity.professional));
 
-  const [bookingRows, blockRows, waitlistRows, recentRows, noteRows, userRows] = await Promise.all([
+  const [bookingRows, blockRows, waitlistRows, recentRows, noteRows, userRows, treatmentRows] = await Promise.all([
     db.select().from(bookings).where(and(...dateConditions)).orderBy(bookings.appointmentDate, bookings.appointmentTime),
     db.select().from(scheduleBlocks).where(and(gte(scheduleBlocks.blockDate, from), lte(scheduleBlocks.blockDate, to))).orderBy(scheduleBlocks.blockDate, scheduleBlocks.startTime),
     identity.role === "professional" ? Promise.resolve([]) : db.select().from(waitlist).orderBy(desc(waitlist.createdAt)).limit(100),
@@ -48,6 +40,7 @@ export async function GET(request: Request) {
     canManageUsers(identity)
       ? db.select({ id: adminUsers.id, username: adminUsers.username, name: adminUsers.name, role: adminUsers.role, professional: adminUsers.professional, active: adminUsers.active }).from(adminUsers).orderBy(adminUsers.name)
       : Promise.resolve([]),
+    identity.role === "professional" ? getClinicTreatments(db, true) : getClinicTreatments(db, false),
   ]);
 
   const clientMap = new Map<string, { name: string; phone: string; visits: number; lastDate: string; treatments: Set<string> }>();
@@ -67,6 +60,7 @@ export async function GET(request: Request) {
     blocks: blockRows,
     waitlist: waitlistRows,
     users: userRows,
+    treatments: treatmentRows,
     notes: noteRows,
     clients: [...clientMap.values()].map((client) => ({ ...client, treatments: [...client.treatments] })).slice(0, 250),
     metrics: {
@@ -96,7 +90,8 @@ export async function POST(request: Request) {
     const treatmentId = String(payload.treatmentId ?? "evaluacion");
     const patientName = String(payload.patientName ?? "").trim();
     const phone = normalizePhone(String(payload.phone ?? ""));
-    if (!PROFESSIONALS.includes(professional) || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time) || patientName.length < 3 || phone.length < 10) {
+    const treatment = await getTreatmentById(db, treatmentId);
+    if (!treatment || !PROFESSIONALS.includes(professional as typeof PROFESSIONALS[number]) || !treatment.professionals.includes(professional as typeof PROFESSIONALS[number]) || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time) || patientName.length < 3 || phone.length < 10) {
       return Response.json({ error: "Revisa los datos de la nueva reserva." }, { status: 400 });
     }
     if (identity.role === "professional" && identity.professional !== professional) return unauthorized();
@@ -107,7 +102,7 @@ export async function POST(request: Request) {
       managementToken: crypto.randomUUID().replaceAll("-", "") + crypto.randomUUID().replaceAll("-", ""),
       concernId: "administracion",
       treatmentId,
-      treatmentName: TREATMENTS[treatmentId] ?? "Evaluación personalizada",
+      treatmentName: treatment.label,
       professional,
       appointmentDate: date,
       appointmentTime: time,
@@ -132,7 +127,8 @@ export async function POST(request: Request) {
     const professional = String(payload.professional ?? current.professional);
     const date = String(payload.date ?? current.appointmentDate);
     const time = String(payload.time ?? current.appointmentTime);
-    if (!STATUSES.includes(status) || !PROFESSIONALS.includes(professional)) return Response.json({ error: "Actualización no válida." }, { status: 400 });
+    const treatment = await getTreatmentById(db, current.treatmentId);
+    if (!STATUSES.includes(status) || !PROFESSIONALS.includes(professional as typeof PROFESSIONALS[number]) || (treatment && !treatment.professionals.includes(professional as typeof PROFESSIONALS[number]))) return Response.json({ error: "Actualización no válida." }, { status: 400 });
     await db.update(bookings).set({ status, professional, appointmentDate: date, appointmentTime: time }).where(eq(bookings.id, id));
     await addHistory(id, "updated", identity.email, { before: { status: current.status, professional: current.professional, date: current.appointmentDate, time: current.appointmentTime }, after: { status, professional, date, time } });
     return Response.json({ ok: true });
@@ -141,7 +137,7 @@ export async function POST(request: Request) {
   if (action === "create_block") {
     if (!canEditAgenda(identity)) return unauthorized();
     const professional = String(payload.professional ?? "");
-    if (!PROFESSIONALS.includes(professional) || (identity.role === "professional" && identity.professional !== professional)) return unauthorized();
+    if (!PROFESSIONALS.includes(professional as typeof PROFESSIONALS[number]) || (identity.role === "professional" && identity.professional !== professional)) return unauthorized();
     await db.insert(scheduleBlocks).values({
       id: crypto.randomUUID(),
       professional,
@@ -202,6 +198,51 @@ export async function POST(request: Request) {
   if (action === "toggle_user") {
     if (!canManageUsers(identity)) return unauthorized();
     await db.update(adminUsers).set({ active: Boolean(payload.active) }).where(eq(adminUsers.id, String(payload.id ?? "")));
+    return Response.json({ ok: true });
+  }
+
+  if (action === "add_treatment") {
+    if (!canManageUsers(identity)) return unauthorized();
+    const label = String(payload.label ?? "").trim();
+    const publicLabel = String(payload.publicLabel ?? label).trim();
+    const duration = String(payload.duration ?? "Según evaluación").trim() || "Según evaluación";
+    const price = String(payload.price ?? "Según evaluación").trim() || "Según evaluación";
+    const enabledProfessionals = Array.isArray(payload.professionals) ? payload.professionals.map(String).filter((item) => PROFESSIONALS.includes(item as typeof PROFESSIONALS[number])) : [...PROFESSIONALS];
+    if (label.length < 3 || !enabledProfessionals.length) return Response.json({ error: "Agrega un nombre y al menos una profesional habilitada." }, { status: 400 });
+    const treatments = await getClinicTreatments(db, false);
+    const id = nextTreatmentId(slugifyTreatment(label), treatments.map((item) => item.id));
+    await db.insert(treatmentCatalog).values({
+      id,
+      label: label.slice(0, 120),
+      publicLabel: publicLabel.slice(0, 120),
+      duration: duration.slice(0, 60),
+      price: price.slice(0, 60),
+      active: true,
+      sortOrder: Math.max(100, ...treatments.map((item) => item.sortOrder)) + 10,
+      createdAt: new Date(),
+    });
+    await ensureTreatmentAssignments(db, id, enabledProfessionals);
+    return Response.json({ ok: true });
+  }
+
+  if (action === "update_treatment_assignment") {
+    if (!canManageUsers(identity)) return unauthorized();
+    const treatmentId = String(payload.treatmentId ?? "");
+    const professional = String(payload.professional ?? "");
+    const enabled = Boolean(payload.enabled);
+    const treatment = await getTreatmentById(db, treatmentId);
+    if (!treatment || !PROFESSIONALS.includes(professional as typeof PROFESSIONALS[number])) return Response.json({ error: "Tratamiento o profesional no válido." }, { status: 400 });
+    const nextProfessionals = enabled
+      ? [...new Set([...treatment.professionals, professional])]
+      : treatment.professionals.filter((item) => item !== professional);
+    if (!nextProfessionals.length) return Response.json({ error: "Cada tratamiento debe tener al menos una profesional habilitada." }, { status: 400 });
+    await ensureTreatmentAssignments(db, treatmentId, nextProfessionals);
+    return Response.json({ ok: true });
+  }
+
+  if (action === "toggle_treatment") {
+    if (!canManageUsers(identity)) return unauthorized();
+    await db.update(treatmentCatalog).set({ active: Boolean(payload.active) }).where(eq(treatmentCatalog.id, String(payload.treatmentId ?? "")));
     return Response.json({ ok: true });
   }
 

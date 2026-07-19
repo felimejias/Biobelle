@@ -2,16 +2,11 @@ type ProfessionalPickerProps = {
   value: string;
   onChange: (value: string) => void;
   compact?: boolean;
+  professionals?: string[];
+  allowNoPreference?: boolean;
 };
 
 const options = [
-  {
-    value: "Primera disponible",
-    name: "Primera profesional disponible",
-    role: "La opción más rápida",
-    note: "Te asignamos a Kiara o Pía según la primera hora libre.",
-    image: null,
-  },
   {
     value: "Kiara Moscoso",
     name: "Kiara Moscoso",
@@ -28,10 +23,12 @@ const options = [
   },
 ];
 
-export function ProfessionalPicker({ value, onChange, compact = false }: ProfessionalPickerProps) {
+export function ProfessionalPicker({ value, onChange, compact = false, professionals, allowNoPreference = true }: ProfessionalPickerProps) {
+  const visibleOptions = options.filter((option) => !professionals || professionals.includes(option.value));
+  const showNoPreference = allowNoPreference && visibleOptions.length > 1;
   return (
-    <div className={`professional-picker${compact ? " compact" : ""}`} role="radiogroup" aria-label="Elige una profesional">
-      {options.map((option) => {
+    <div className={`professional-picker${compact ? " compact" : ""}${showNoPreference ? " with-flex-choice" : ""}`} role="radiogroup" aria-label="Elige una profesional">
+      {visibleOptions.map((option) => {
         const selected = value === option.value;
         return (
           <button
@@ -42,11 +39,7 @@ export function ProfessionalPicker({ value, onChange, compact = false }: Profess
             className={selected ? "professional-option selected" : "professional-option"}
             onClick={() => onChange(option.value)}
           >
-            {option.image ? (
-              <img src={option.image} alt="" />
-            ) : (
-              <span className="professional-any" aria-hidden="true">✦</span>
-            )}
+            <img src={option.image} alt="" />
             <span className="professional-option-copy">
               <small>{option.role}</small>
               <b>{option.name}</b>
@@ -56,6 +49,19 @@ export function ProfessionalPicker({ value, onChange, compact = false }: Profess
           </button>
         );
       })}
+      {showNoPreference && (
+        <button
+          type="button"
+          role="radio"
+          aria-checked={!value}
+          className={!value ? "professional-flex-choice selected" : "professional-flex-choice"}
+          onClick={() => onChange("")}
+        >
+          <span>✦</span>
+          <b>Sin preferencia: asignar de forma equilibrada según disponibilidad.</b>
+          <small>Kiara y Pía mantienen la misma visibilidad; BIOBELLE elige la hora/profesional libre más conveniente.</small>
+        </button>
+      )}
     </div>
   );
 }
