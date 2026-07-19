@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BrandSocial } from "../../components/BrandSocial";
+import { ProfessionalPicker } from "../../components/ProfessionalPicker";
 
 type Booking = {
   confirmationCode: string;
@@ -102,7 +103,7 @@ export default function ReservationPage() {
 
           {editing && booking.status !== "cancelled" && <div className="reschedule-panel">
             <h2>Elige una nueva hora</h2>
-            <label>Profesional<select value={professional} onChange={(event) => setProfessional(event.target.value)}><option>Primera disponible</option><option>Kiara Moscoso</option><option>Pía Orellana</option></select></label>
+            <fieldset className="professional-fieldset"><legend>Elige quién te atenderá</legend><ProfessionalPicker value={professional} onChange={setProfessional} compact /></fieldset>
             <label>Fecha<input type="date" min={nextBusinessDate()} value={date} onChange={(event) => setDate(event.target.value)} /></label>
             <div className="time-grid">{slots.map((slot) => <button type="button" disabled={!slot.available} className={time === slot.time ? "selected" : ""} onClick={() => setTime(slot.time)} key={slot.time}>{slot.time}</button>)}</div>
             {error && <p className="booking-error">{error}</p>}

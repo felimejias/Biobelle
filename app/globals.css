@@ -184,6 +184,27 @@ footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1
 .schedule-step select,.schedule-step input,.details-step input { margin-top:8px; border:0; border-bottom:1px solid #bfa9a5; padding:13px 3px; background:transparent; color:var(--ink); font:12px var(--font-sans); outline:none; }
 .schedule-step select:focus,.schedule-step input:focus,.details-step input:focus { border-color:var(--wine); }
 .schedule-fields,.detail-fields { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+.schedule-fields.date-only { grid-template-columns:minmax(240px,1fr); margin-top:18px; }
+.professional-fieldset { min-width:0; margin:0; padding:0; border:0; }
+.professional-fieldset legend { margin:0 0 9px; color:var(--wine); font-size:7px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
+.professional-picker { display:grid; grid-template-columns:1.12fr 1fr 1fr; gap:8px; }
+.professional-option { position:relative; min-width:0; min-height:118px; padding:12px; border:1px solid #d8c7c3; background:rgba(255,253,250,.72); color:var(--ink); display:grid; grid-template-columns:44px 1fr; gap:11px; align-items:center; text-align:left; transition:transform .2s ease,border-color .2s ease,background .2s ease,box-shadow .2s ease; }
+.professional-option:hover { transform:translateY(-2px); border-color:var(--gold); box-shadow:0 10px 25px rgba(72,27,41,.08); }
+.professional-option:focus-visible { outline:2px solid var(--wine); outline-offset:3px; }
+.professional-option.selected { border-color:var(--wine); background:linear-gradient(145deg,#76233f,#5f1831); color:#fff; box-shadow:0 12px 25px rgba(73,22,40,.18); }
+.professional-option img,.professional-any { width:44px; height:54px; object-fit:cover; object-position:center top; border-radius:24px 24px 18px 18px; }
+.professional-any { display:grid; place-items:center; background:linear-gradient(145deg,#ead7d3,#d8b8b8); color:var(--wine); font-size:18px; }
+.professional-option-copy { min-width:0; display:flex; flex-direction:column; }
+.professional-option-copy small { color:var(--rose); font-size:6px; font-weight:700; line-height:1.35; letter-spacing:.08em; text-transform:uppercase; }
+.professional-option-copy b { margin:5px 0 4px; font-family:var(--font-serif); font-size:17px; font-weight:500; line-height:.95; }
+.professional-option-copy>span { color:var(--muted); font-size:6px; line-height:1.4; }
+.professional-option.selected small,.professional-option.selected .professional-option-copy>span { color:#ead9df; }
+.professional-check { position:absolute; right:8px; top:8px; width:18px; height:18px; display:grid; place-items:center; border:1px solid #cbb8b5; border-radius:50%; color:var(--gold); font-size:9px; }
+.professional-option.selected .professional-check { border-color:var(--gold); background:rgba(255,255,255,.06); }
+.professional-picker.compact { grid-template-columns:repeat(3,1fr); margin-bottom:18px; }
+.professional-picker.compact .professional-option { min-height:96px; grid-template-columns:38px 1fr; }
+.professional-picker.compact .professional-option img,.professional-picker.compact .professional-any { width:38px; height:46px; }
+.professional-picker.compact .professional-option-copy b { font-size:15px; }
 .slots-label { font-family:var(--font-sans); font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:.15em; color:var(--wine); margin:12px 0 10px; }
 .time-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
 .time-grid button { justify-content:center; flex-direction:column; gap:5px; min-height:58px; }
@@ -390,6 +411,9 @@ footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1
   .concern-grid { grid-template-columns:1fr; }
   .concern-grid button { min-height:68px; }
   .schedule-fields,.detail-fields { grid-template-columns:1fr; gap:0; }
+  .professional-picker,.professional-picker.compact { grid-template-columns:1fr; }
+  .professional-option,.professional-picker.compact .professional-option { min-height:82px; grid-template-columns:46px 1fr; padding:10px 12px; }
+  .professional-option img,.professional-any,.professional-picker.compact .professional-option img,.professional-picker.compact .professional-any { width:42px; height:54px; }
   .time-grid { grid-template-columns:1fr 1fr; }
   .schedule-step select,.schedule-step input,.details-step input,.waitlist-form input,.waitlist-form select,.reschedule-panel input,.reschedule-panel select { font-size:16px; }
   .step-question { font-size:24px; }

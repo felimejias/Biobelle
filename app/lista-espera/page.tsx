@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BrandSocial } from "../components/BrandSocial";
+import { ProfessionalPicker } from "../components/ProfessionalPicker";
 
 const treatments = [
   ["evaluacion", "Evaluación personalizada"],
@@ -60,7 +61,7 @@ export default function WaitlistPage() {
           <label>Nombre completo<input value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" required /></label>
           <label>WhatsApp<input value={phone} onChange={(event) => setPhone(event.target.value)} autoComplete="tel" inputMode="tel" placeholder="+56 9 1234 5678" required /></label>
           <label>Tratamiento<select value={treatmentId} onChange={(event) => setTreatmentId(event.target.value)}>{treatments.map(([id, label]) => <option value={id} key={id}>{label}</option>)}</select></label>
-          <label>Profesional<select value={professional} onChange={(event) => setProfessional(event.target.value)}><option>Primera disponible</option><option>Kiara Moscoso</option><option>Pía Orellana</option></select></label>
+          <fieldset className="professional-fieldset"><legend>Profesional preferida</legend><ProfessionalPicker value={professional} onChange={setProfessional} compact /></fieldset>
           <label>Fecha preferida, opcional<input type="date" min="2026-08-10" value={preferredDate} onChange={(event) => setPreferredDate(event.target.value)} /></label>
           <label className="checkbox required-consent"><input type="checkbox" checked={privacyConsent} onChange={(event) => setPrivacyConsent(event.target.checked)} /> Acepto el uso de estos datos para gestionar la lista de espera, según la <Link href="/privacidad" target="_blank">Política de Privacidad</Link>.</label>
           {error && <p className="booking-error">{error}</p>}
