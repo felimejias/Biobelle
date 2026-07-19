@@ -32,6 +32,15 @@ const concerns = [
 
 const slots = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"];
 
+function BrandLockup({ className = "", compact = false }: { className?: string; compact?: boolean }) {
+  return (
+    <span className={`brand-lockup${compact ? " compact" : ""}${className ? ` ${className}` : ""}`}>
+      <img src="/images/biobelle-logo.jpg" alt="BIOBELLE Centro Médico Estético" />
+      <span className="sr-only">BIOBELLE Centro Médico Estético</span>
+    </span>
+  );
+}
+
 export default function Home() {
   const [bookingOpen, setBookingOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -67,8 +76,7 @@ export default function Home() {
       <div className="announcement">Primera evaluación personalizada · Agenda online disponible 24/7</div>
       <header className="site-header">
         <a className="brand" href="#inicio" aria-label="BIOBELLE inicio">
-          <span className="brand-mark">B</span>
-          <span><b>BIOBELLE</b><small>Centro médico · estético</small></span>
+          <BrandLockup />
         </a>
         <nav className={menuOpen ? "nav open" : "nav"} aria-label="Navegación principal">
           <a href="#tratamientos" onClick={() => setMenuOpen(false)}>Tratamientos</a>
@@ -203,7 +211,7 @@ export default function Home() {
       </section>
 
       <footer>
-        <a className="brand footer-brand" href="#inicio"><span className="brand-mark">B</span><span><b>BIOBELLE</b><small>Centro médico · estético</small></span></a>
+        <a className="brand footer-brand" href="#inicio" aria-label="BIOBELLE inicio"><BrandLockup /></a>
         <p>Belleza natural. Cuidado profesional.</p>
         <div><a href="#tratamientos">Tratamientos</a><a href="#equipo">Equipo</a><a href="mailto:biobelleesthetic@gmail.com">Email</a><a href="https://instagram.com/biobelle_center">Instagram</a></div>
         <small>© 2026 BIOBELLE · Información referencial. Todo procedimiento requiere evaluación profesional.</small>
@@ -218,7 +226,7 @@ export default function Home() {
             {!confirmed ? (
               <>
                 <div className="modal-header">
-                  <div className="mini-brand">B</div>
+                  <BrandLockup compact />
                   <div><p>AGENDA INTELIGENTE</p><h2>{step === 1 ? "Partamos por ti" : step === 2 ? "Tu mejor primer paso" : step === 3 ? "Elige tu hora" : "Confirma tus datos"}</h2></div>
                 </div>
                 <div className="progress"><span style={{ width: `${step * 25}%` }} /></div>

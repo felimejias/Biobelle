@@ -1,0 +1,27 @@
+services:
+  biobelle:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: biobelle-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+    networks:
+      - biobelle
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: biobelle-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --url http://biobelle:3000
+    depends_on:
+      - biobelle
+    networks:
+      - biobelle
+
+networks:
+  biobelle:
+    name: biobelle
