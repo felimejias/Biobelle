@@ -82,7 +82,7 @@ export default function Home() {
     setAvailabilityLoading(true);
     setBookingError("");
 
-    fetch(`/api/availability?date=${encodeURIComponent(date)}&professional=${encodeURIComponent(professional)}`, {
+    fetch(`/api/availability/?date=${encodeURIComponent(date)}&professional=${encodeURIComponent(professional)}`, {
       signal: controller.signal,
     })
       .then(async (response) => {
@@ -123,7 +123,7 @@ export default function Home() {
     setBookingLoading(true);
     setBookingError("");
     try {
-      const response = await fetch("/api/bookings", {
+      const response = await fetch("/api/bookings/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
