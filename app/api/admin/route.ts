@@ -1,7 +1,7 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { getDb } from "../../../db";
 import { adminUsers, bookingHistory, bookings, clientNotes, scheduleBlocks, waitlist } from "../../../db/schema";
-import { canEditAgenda, canManageUsers, getAdminIdentity } from "../../admin-auth";
+import { canEditAgenda, canManageUsers, getAdminIdentity, hashPassword, normalizeUsername } from "../../admin-auth";
 
 const PROFESSIONALS = ["Kiara Moscoso", "Pía Orellana"];
 const STATUSES = ["pending", "confirmed", "completed", "no_show", "cancelled"];
@@ -45,7 +45,9 @@ export async function GET(request: Request) {
       ? db.select().from(bookings).where(eq(bookings.professional, identity.professional)).orderBy(desc(bookings.createdAt)).limit(500)
       : db.select().from(bookings).orderBy(desc(bookings.createdAt)).limit(1000),
     identity.role === "professional" ? Promise.resolve([]) : db.select().from(clientNotes).orderBy(desc(clientNotes.createdAt)).limit(500),
-    canManageUsers(identity) ? db.select().from(adminUsers).orderBy(adminUsers.name) : Promise.resolve([]),
+    canManageUsers(identity)
+      ? db.select({ id: adminUsers.id, username: adminUsers.username, name: adminUsers.name, role: adminUsers.role, professional: adminUsers.professional, active: adminUsers.active }).from(adminUsers).orderBy(adminUsers.name)
+      : Promise.resolve([]),
   ]);
 
   const clientMap = new Map<string, { name: string; phone: string; visits: number; lastDate: string; treatments: Set<string> }>();
@@ -177,10 +179,23 @@ export async function POST(request: Request) {
 
   if (action === "add_user") {
     if (!canManageUsers(identity)) return unauthorized();
-    const email = String(payload.email ?? "").trim().toLowerCase();
+    const username = normalizeUsername(String(payload.username ?? ""));
+    const password = String(payload.password ?? "");
     const role = String(payload.role ?? "receptionist");
-    if (!email.includes("@") || !["general_admin", "location_admin", "receptionist", "professional", "readonly"].includes(role)) return Response.json({ error: "Usuario no válido." }, { status: 400 });
-    await db.insert(adminUsers).values({ id: crypto.randomUUID(), email, name: String(payload.name ?? email).slice(0, 100), role, professional: role === "professional" ? String(payload.professional ?? "") : null, active: true, createdAt: new Date() });
+    if (username.length < 3 || password.length < 4 || !["general_admin", "location_admin", "receptionist", "professional", "readonly"].includes(role)) return Response.json({ error: "Usuario no válido." }, { status: 400 });
+    const salt = crypto.randomUUID();
+    await db.insert(adminUsers).values({
+      id: crypto.randomUUID(),
+      username,
+      email: `${username}@biobelle.local`,
+      passwordHash: await hashPassword(password, salt),
+      passwordSalt: salt,
+      name: String(payload.name ?? username).slice(0, 100),
+      role,
+      professional: role === "professional" ? String(payload.professional ?? "") : null,
+      active: true,
+      createdAt: new Date(),
+    });
     return Response.json({ ok: true });
   }
 

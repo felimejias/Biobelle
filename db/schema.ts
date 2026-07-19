@@ -62,7 +62,10 @@ export const adminUsers = sqliteTable(
   "admin_users",
   {
     id: text("id").primaryKey(),
+    username: text("username").notNull().unique(),
     email: text("email").notNull().unique(),
+    passwordHash: text("password_hash").notNull(),
+    passwordSalt: text("password_salt").notNull(),
     name: text("name").notNull(),
     role: text("role").notNull().default("receptionist"),
     professional: text("professional"),
@@ -70,6 +73,21 @@ export const adminUsers = sqliteTable(
     createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
   },
   (table) => [index("admin_users_role_idx").on(table.role)],
+);
+
+export const adminSessions = sqliteTable(
+  "admin_sessions",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    tokenHash: text("token_hash").notNull().unique(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+    expiresAt: integer("expires_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [
+    index("admin_sessions_user_idx").on(table.userId),
+    index("admin_sessions_expires_idx").on(table.expiresAt),
+  ],
 );
 
 export const scheduleBlocks = sqliteTable(
