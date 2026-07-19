@@ -1,6 +1,6 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "../../../db";
-import { bookings } from "../../../db/schema";
+import { bookings, scheduleBlocks } from "../../../db/schema";
 
 const PROFESSIONALS = ["Kiara Moscoso", "Pía Orellana"] as const;
 const SLOTS = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"] as const;
@@ -77,7 +77,14 @@ export async function POST(request: Request) {
         inArray(bookings.status, ["pending", "confirmed"]),
       ));
     const occupiedProfessionals = new Set(occupied.map((row) => row.professional));
-    const availableCandidates = candidates.filter((candidate) => !occupiedProfessionals.has(candidate));
+    const blocks = await db
+      .select({ professional: scheduleBlocks.professional, startTime: scheduleBlocks.startTime, endTime: scheduleBlocks.endTime })
+      .from(scheduleBlocks)
+      .where(and(eq(scheduleBlocks.blockDate, date), inArray(scheduleBlocks.professional, candidates)));
+    const availableCandidates = candidates.filter((candidate) => {
+      const blocked = blocks.some((block) => block.professional === candidate && time >= block.startTime && time < block.endTime);
+      return !blocked && !occupiedProfessionals.has(candidate);
+    });
 
     const duplicate = await db
       .select({ id: bookings.id })

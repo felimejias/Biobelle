@@ -1,6 +1,6 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "../../../db";
-import { bookings } from "../../../db/schema";
+import { bookings, scheduleBlocks } from "../../../db/schema";
 
 const PROFESSIONALS = ["Kiara Moscoso", "Pía Orellana"] as const;
 const SLOTS = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"] as const;
@@ -32,7 +32,8 @@ export async function GET(request: Request) {
     ? [requestedProfessional]
     : [...PROFESSIONALS];
 
-  const reserved = await getDb()
+  const db = getDb();
+  const reserved = await db
     .select({ professional: bookings.professional, time: bookings.appointmentTime })
     .from(bookings)
     .where(and(
@@ -41,9 +42,20 @@ export async function GET(request: Request) {
       inArray(bookings.status, ["pending", "confirmed"]),
     ));
 
+  const blocks = await db
+    .select({ professional: scheduleBlocks.professional, startTime: scheduleBlocks.startTime, endTime: scheduleBlocks.endTime })
+    .from(scheduleBlocks)
+    .where(and(
+      eq(scheduleBlocks.blockDate, date),
+      inArray(scheduleBlocks.professional, professionals),
+    ));
+
   const occupied = new Set(reserved.map((row) => `${row.professional}|${row.time}`));
   const slots = SLOTS.map((time) => {
-    const availableProfessionals = professionals.filter((professional) => !occupied.has(`${professional}|${time}`));
+    const availableProfessionals = professionals.filter((professional) => {
+      const blocked = blocks.some((block) => block.professional === professional && time >= block.startTime && time < block.endTime);
+      return !blocked && !occupied.has(`${professional}|${time}`);
+    });
     return { time, available: availableProfessionals.length > 0, availableProfessionals };
   });
 

@@ -60,3 +60,26 @@ test("publishes local SEO metadata and indexable public routes", async () => {
     access(new URL("app/equipo/[slug]/page.tsx", root)),
   ]);
 });
+
+test("protects and ships the BIOBELLE operations console", async () => {
+  const [adminPage, dashboard, adminApi, auth, schema, availability] = await Promise.all([
+    source("app/administracion/page.tsx"),
+    source("app/administracion/AdminDashboard.tsx"),
+    source("app/api/admin/route.ts"),
+    source("app/admin-auth.ts"),
+    source("db/schema.ts"),
+    source("app/api/availability/route.ts"),
+  ]);
+  assert.match(adminPage, /requireChatGPTUser/);
+  assert.match(auth, /BIOBELLE_ADMIN_EMAILS/);
+  assert.match(dashboard, /Usuarios y permisos/);
+  assert.match(dashboard, /Bloquear horario/);
+  assert.match(dashboard, /Lista de espera/);
+  assert.match(adminApi, /create_booking/);
+  assert.match(adminApi, /update_booking/);
+  assert.match(schema, /export const adminUsers/);
+  assert.match(schema, /export const scheduleBlocks/);
+  assert.match(schema, /export const bookingHistory/);
+  assert.match(schema, /export const clientNotes/);
+  assert.match(availability, /scheduleBlocks/);
+});

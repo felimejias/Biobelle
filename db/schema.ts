@@ -57,3 +57,57 @@ export const siteEvents = sqliteTable(
   },
   (table) => [index("site_events_event_idx").on(table.event), index("site_events_created_idx").on(table.createdAt)],
 );
+
+export const adminUsers = sqliteTable(
+  "admin_users",
+  {
+    id: text("id").primaryKey(),
+    email: text("email").notNull().unique(),
+    name: text("name").notNull(),
+    role: text("role").notNull().default("receptionist"),
+    professional: text("professional"),
+    active: integer("active", { mode: "boolean" }).notNull().default(true),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [index("admin_users_role_idx").on(table.role)],
+);
+
+export const scheduleBlocks = sqliteTable(
+  "schedule_blocks",
+  {
+    id: text("id").primaryKey(),
+    professional: text("professional").notNull(),
+    blockDate: text("block_date").notNull(),
+    startTime: text("start_time").notNull(),
+    endTime: text("end_time").notNull(),
+    reason: text("reason").notNull(),
+    createdBy: text("created_by").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [index("schedule_blocks_date_idx").on(table.blockDate), index("schedule_blocks_professional_idx").on(table.professional)],
+);
+
+export const bookingHistory = sqliteTable(
+  "booking_history",
+  {
+    id: text("id").primaryKey(),
+    bookingId: text("booking_id").notNull(),
+    action: text("action").notNull(),
+    actorEmail: text("actor_email").notNull(),
+    detail: text("detail").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [index("booking_history_booking_idx").on(table.bookingId), index("booking_history_created_idx").on(table.createdAt)],
+);
+
+export const clientNotes = sqliteTable(
+  "client_notes",
+  {
+    id: text("id").primaryKey(),
+    phone: text("phone").notNull(),
+    note: text("note").notNull(),
+    authorEmail: text("author_email").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [index("client_notes_phone_idx").on(table.phone)],
+);
