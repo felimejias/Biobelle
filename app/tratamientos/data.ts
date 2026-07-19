@@ -28,7 +28,7 @@ export const treatmentDetails: TreatmentDetail[] = [
     slug: "piel",
     eyebrow: "Dermoestética",
     title: "Una piel cuidada desde sus necesidades reales",
-    summary: "Protocolos de limpieza facial profesional, Dermapen y cuidado dermocosmético seleccionados según textura, luminosidad, sensibilidad y objetivos de cada piel.",
+    summary: "Protocolos de limpieza facial profesional, Dermapen y cuidado dermoestético seleccionados según textura, luminosidad, sensibilidad y objetivos de cada piel.",
     image: "/images/catalogo-tratamientos.jpg",
     duration: "60–75 minutos",
     price: "Desde $35.000",

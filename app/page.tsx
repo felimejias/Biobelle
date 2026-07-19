@@ -31,7 +31,7 @@ const treatments: Treatment[] = [
   { id: "laser", eyebrow: "Tecnología láser", title: "Precisión clínica, cambios visibles", copy: "Hollywood Peel, Nd:YAG Q-Switched y eliminación de tatuajes con una indicación responsable.", duration: "30–60 min", price: "Según evaluación", tone: "wine" },
   { id: "regenerativa", eyebrow: "Medicina regenerativa", title: "Activa el potencial de tu piel", copy: "Plasma rico en plaquetas y técnicas de estimulación para rostro, cuello y cuero cabelludo.", duration: "60 min", price: "Desde $85.000", tone: "clay" },
   { id: "lesiones", eyebrow: "Cuidado clínico", title: "Atención segura y cercana", copy: "Evaluación y extracción de acrocordones, milliums y otras lesiones cutáneas seleccionadas.", duration: "30–45 min", price: "Desde $30.000", tone: "pearl" },
-  { id: "corporal", eyebrow: "Dermosestética corporal", title: "Cuidado integral, de pies a cabeza", copy: "Fibroblast y protocolos corporales diseñados por profesionales para objetivos específicos.", duration: "45–75 min", price: "Plan personalizado", tone: "blush" },
+  { id: "corporal", eyebrow: "Dermoestética corporal", title: "Cuidado integral, de pies a cabeza", copy: "Fibroblast y protocolos corporales diseñados por profesionales para objetivos específicos.", duration: "45–75 min", price: "Plan personalizado", tone: "blush" },
 ];
 
 const concerns = [
