@@ -33,17 +33,18 @@ INSERT OR IGNORE INTO `treatment_catalog` (`id`, `label`, `public_label`, `durat
   ('lesiones', 'Cuidado clínico', 'Cuidado clínico', '30–45 min', 'Desde $30.000', true, 60, unixepoch() * 1000),
   ('corporal', 'Dermoestética corporal', 'Dermoestética corporal', '45–75 min', 'Plan personalizado', true, 70, unixepoch() * 1000);
 --> statement-breakpoint
-INSERT OR IGNORE INTO `professional_treatments` (`professional`, `treatment_id`, `enabled`, `updated_at`)
-SELECT professional, treatment_id, true, unixepoch() * 1000
-FROM (
-  SELECT 'Kiara Moscoso' AS professional UNION ALL SELECT 'Pía Orellana'
-) professionals
-CROSS JOIN (
-  SELECT 'evaluacion' AS treatment_id UNION ALL
-  SELECT 'armonizacion' UNION ALL
-  SELECT 'piel' UNION ALL
-  SELECT 'laser' UNION ALL
-  SELECT 'regenerativa' UNION ALL
-  SELECT 'lesiones' UNION ALL
-  SELECT 'corporal'
-) treatments;
+INSERT OR IGNORE INTO `professional_treatments` (`professional`, `treatment_id`, `enabled`, `updated_at`) VALUES
+  ('Kiara Moscoso', 'evaluacion', true, unixepoch() * 1000),
+  ('Kiara Moscoso', 'armonizacion', true, unixepoch() * 1000),
+  ('Kiara Moscoso', 'piel', true, unixepoch() * 1000),
+  ('Kiara Moscoso', 'laser', true, unixepoch() * 1000),
+  ('Kiara Moscoso', 'regenerativa', true, unixepoch() * 1000),
+  ('Kiara Moscoso', 'lesiones', true, unixepoch() * 1000),
+  ('Kiara Moscoso', 'corporal', true, unixepoch() * 1000),
+  ('Pía Orellana', 'evaluacion', true, unixepoch() * 1000),
+  ('Pía Orellana', 'armonizacion', true, unixepoch() * 1000),
+  ('Pía Orellana', 'piel', true, unixepoch() * 1000),
+  ('Pía Orellana', 'laser', true, unixepoch() * 1000),
+  ('Pía Orellana', 'regenerativa', true, unixepoch() * 1000),
+  ('Pía Orellana', 'lesiones', true, unixepoch() * 1000),
+  ('Pía Orellana', 'corporal', true, unixepoch() * 1000);
