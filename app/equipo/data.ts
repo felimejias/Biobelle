@@ -20,7 +20,7 @@ export const professionals: Professional[] = [
     philosophy: "Creemos en una belleza que no cambia quién eres, sino que resalta tu esencia con seguridad, armonía y cuidado integral de la piel.",
     areas: [
       { title: "Armonización facial", items: ["Toxina botulínica", "Ácido hialurónico", "Plasma rico en plaquetas (PRP)"] },
-      { title: "Tecnología láser", items: ["Nd:YAG Q-Switched", "Hollywood Peel", "Eliminación progresiva de tatuajes"] },
+      { title: "Tecnología láser", items: ["Nd:YAG Q‑Switched", "Hollywood Peel", "Eliminación progresiva de tatuajes"] },
       { title: "Dermoestética", items: ["Fibroblast facial y corporal", "Técnica Dermapen", "Limpieza facial profesional", "Extracción de lesiones cutáneas seleccionadas"] },
       { title: "Procedimientos clínicos", items: ["Toma de electrocardiograma (ECG)", "Curaciones simples y avanzadas", "Administración de medicamentos por vía intravenosa e intramuscular"] },
     ],
@@ -35,7 +35,7 @@ export const professionals: Professional[] = [
     philosophy: "Cada piel tiene su historia. Nuestro compromiso es cuidarla con ciencia, cercanía y una mirada integral del bienestar.",
     areas: [
       { title: "Armonización facial", items: ["Toxina botulínica", "Ácido hialurónico", "Plasma rico en plaquetas (PRP)"] },
-      { title: "Tecnología láser", items: ["Nd:YAG Q-Switched", "Hollywood Peel", "Eliminación progresiva de tatuajes"] },
+      { title: "Tecnología láser", items: ["Nd:YAG Q‑Switched", "Hollywood Peel", "Eliminación progresiva de tatuajes"] },
       { title: "Dermoestética", items: ["Fibroblast facial y corporal", "Técnica Dermapen", "Limpieza facial profesional", "Extracción de lesiones cutáneas seleccionadas"] },
       { title: "Procedimientos clínicos", items: ["Curaciones simples y avanzadas", "Toma de electrocardiograma (ECG)", "Administración de medicamentos por vía intravenosa e intramuscular"] },
     ],

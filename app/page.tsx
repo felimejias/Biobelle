@@ -28,7 +28,7 @@ type Treatment = {
 const treatments: Treatment[] = [
   { id: "armonizacion", eyebrow: "Armonización facial", title: "Belleza que respeta tus rasgos", copy: "Evaluación personalizada, toxina botulínica y ácido hialurónico para resultados sutiles y armónicos.", duration: "45–60 min", price: "Evaluación previa", tone: "rose" },
   { id: "piel", eyebrow: "Dermoestética", title: "Una piel luminosa y saludable", copy: "Limpieza facial profesional, Dermapen y protocolos regenerativos según las necesidades reales de tu piel.", duration: "60–75 min", price: "Desde $35.000", tone: "sand" },
-  { id: "laser", eyebrow: "Tecnología láser", title: "Precisión clínica, cambios visibles", copy: "Hollywood Peel, Nd:YAG Q-Switched y eliminación de tatuajes con una indicación responsable.", duration: "30–60 min", price: "Según evaluación", tone: "wine" },
+  { id: "laser", eyebrow: "Tecnología láser", title: "Precisión clínica, cambios visibles", copy: "Hollywood Peel, Nd:YAG Q‑Switched y eliminación de tatuajes con una indicación responsable.", duration: "30–60 min", price: "Según evaluación", tone: "wine" },
   { id: "regenerativa", eyebrow: "Medicina regenerativa", title: "Activa el potencial de tu piel", copy: "Plasma rico en plaquetas y técnicas de estimulación para rostro, cuello y cuero cabelludo.", duration: "60 min", price: "Desde $85.000", tone: "clay" },
   { id: "lesiones", eyebrow: "Cuidado clínico", title: "Atención segura y cercana", copy: "Evaluación y extracción de acrocordones, milliums y otras lesiones cutáneas seleccionadas.", duration: "30–45 min", price: "Desde $30.000", tone: "pearl" },
   { id: "corporal", eyebrow: "Dermoestética corporal", title: "Cuidado integral, de pies a cabeza", copy: "Fibroblast y protocolos corporales diseñados por profesionales para objetivos específicos.", duration: "45–75 min", price: "Plan personalizado", tone: "blush" },
@@ -233,11 +233,11 @@ export default function Home() {
         </div>
         <div className="laser-copy">
           <p className="section-number">Tecnología láser BIOBELLE</p>
-          <h2 id="laser-title">Nd:YAG Q-Switched,<br /><em>Hollywood Peel</em> y eliminación de tatuajes.</h2>
+          <h2 id="laser-title">Nd:YAG Q‑Switched,<br /><em>Hollywood Peel</em> y eliminación de tatuajes.</h2>
           <p>Protocolos láser indicados por profesionales para tratar manchas, textura, luminosidad y remoción de pigmentos con evaluación previa.</p>
         </div>
         <div className="laser-treatments" aria-label="Tratamientos láser destacados">
-          <span>Nd:YAG Q-Switched</span>
+          <span>Nd:YAG Q‑Switched</span>
           <span>Hollywood Peel</span>
           <span>Eliminación de tatuajes</span>
         </div>

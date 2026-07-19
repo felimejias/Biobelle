@@ -40,7 +40,7 @@ export const treatmentDetails: TreatmentDetail[] = [
     slug: "laser",
     eyebrow: "Tecnología láser",
     title: "Precisión clínica para objetivos específicos",
-    summary: "Evaluación y protocolos con Nd:YAG Q-Switched para Hollywood Peel, pigmentación seleccionada y eliminación progresiva de tatuajes.",
+    summary: "Evaluación y protocolos con Nd:YAG Q‑Switched para Hollywood Peel, pigmentación seleccionada y eliminación progresiva de tatuajes.",
     image: "/images/servicios-biobelle.jpg",
     duration: "30–60 minutos",
     price: "Según zona y evaluación",
