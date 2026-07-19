@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BrandSocial } from "../../components/BrandSocial";
 import { getTreatment, treatmentDetails } from "../data";
 
 type TreatmentPageProps = { params: Promise<{ slug: string }> };
@@ -32,7 +33,7 @@ export default async function TreatmentPage({ params }: TreatmentPageProps) {
     <main className="treatment-page">
       <div className="announcement">Evaluación personalizada · Atención profesional en Rancagua</div>
       <header className="site-header treatment-header">
-        <Link className="brand" href="/" aria-label="BIOBELLE inicio"><span className="brand-lockup"><img src="/images/biobelle-lockup.png" alt="BIOBELLE Centro Médico Estético" /></span></Link>
+        <BrandSocial />
         <Link className="back-home" href="/#tratamientos">← Todos los tratamientos</Link>
       </header>
 

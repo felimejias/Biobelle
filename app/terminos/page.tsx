@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BrandSocial } from "../components/BrandSocial";
 
 export const metadata: Metadata = {
   title: "Términos de Reserva | BIOBELLE",
@@ -10,7 +11,7 @@ export default function TermsPage() {
   return (
     <main className="legal-page">
       <div className="announcement">BIOBELLE · Condiciones claras desde el comienzo</div>
-      <header className="site-header legal-header"><Link className="brand" href="/"><span className="brand-lockup"><img src="/images/biobelle-lockup.png" alt="BIOBELLE Centro Médico Estético" /></span></Link><Link className="back-home" href="/">← Volver al inicio</Link></header>
+      <header className="site-header legal-header"><BrandSocial /><Link className="back-home" href="/">← Volver al inicio</Link></header>
       <article className="legal-document">
         <p>Términos de uso y reserva</p><h1>Una experiencia clara desde el primer contacto.</h1><p className="legal-updated">Última actualización: 19 de julio de 2026</p>
         <section><h2>1. Solicitudes de hora</h2><p>La agenda bloquea el horario seleccionado y entrega un código de reserva. BIOBELLE podrá contactar a la persona para validar información, entregar indicaciones o coordinar cambios necesarios.</p></section>

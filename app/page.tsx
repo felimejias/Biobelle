@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { BrandSocial } from "./components/BrandSocial";
 
 type Treatment = {
   id: string;
@@ -169,9 +170,7 @@ export default function Home() {
     <main>
       <div className="announcement">Primera evaluación personalizada · Agenda online disponible 24/7</div>
       <header className="site-header">
-        <a className="brand" href="#inicio" aria-label="BIOBELLE inicio">
-          <BrandLockup />
-        </a>
+        <BrandSocial />
         <nav className={menuOpen ? "nav open" : "nav"} aria-label="Navegación principal">
           <a href="#tratamientos" onClick={() => setMenuOpen(false)}>Tratamientos</a>
           <a href="#equipo" onClick={() => setMenuOpen(false)}>Equipo</a>

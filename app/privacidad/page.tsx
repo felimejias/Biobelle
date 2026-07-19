@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BrandSocial } from "../components/BrandSocial";
 
 export const metadata: Metadata = {
   title: "Política de Privacidad | BIOBELLE",
@@ -10,7 +11,7 @@ export default function PrivacyPage() {
   return (
     <main className="legal-page">
       <div className="announcement">BIOBELLE · Transparencia y cuidado de tus datos</div>
-      <header className="site-header legal-header"><Link className="brand" href="/"><span className="brand-lockup"><img src="/images/biobelle-lockup.png" alt="BIOBELLE Centro Médico Estético" /></span></Link><Link className="back-home" href="/">← Volver al inicio</Link></header>
+      <header className="site-header legal-header"><BrandSocial /><Link className="back-home" href="/">← Volver al inicio</Link></header>
       <article className="legal-document">
         <p>Privacidad BIOBELLE</p><h1>Tu información merece el mismo cuidado que tú.</h1><p className="legal-updated">Última actualización: 19 de julio de 2026</p>
         <section><h2>1. Responsable y alcance</h2><p>BIOBELLE Centro Médico Estético, ubicado en Bueras 218, Edificio Olavarría, Oficina 302, Rancagua, utiliza los datos entregados en biobelle.cl para administrar solicitudes de hora y comunicaciones relacionadas con la atención.</p></section>
