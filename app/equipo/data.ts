@@ -3,6 +3,7 @@ export type Professional = {
   name: string;
   shortName: string;
   role: string;
+  email: string;
   image: string;
   introduction: string;
   philosophy: string;
@@ -15,6 +16,7 @@ export const professionals: Professional[] = [
     name: "EU. Kiara Moscoso Villegas",
     shortName: "Kiara Moscoso",
     role: "Enfermera dermoestética · Cosmetóloga",
+    email: "kiaramoscoso77@gmail.com",
     image: "/images/kiara-moscoso.jpg",
     introduction: "Profesional dedicada a la medicina dermoestética, comprometida con una atención cercana, segura y personalizada para realzar la belleza natural de cada paciente.",
     philosophy: "Creemos en una belleza que no cambia quién eres, sino que resalta tu esencia con seguridad, armonía y cuidado integral de la piel.",
@@ -30,6 +32,7 @@ export const professionals: Professional[] = [
     name: "EU. Pía Orellana G.",
     shortName: "Pía Orellana",
     role: "Enfermera dermoestética · Cosmetóloga",
+    email: "piaorellana96@gmail.com",
     image: "/images/pia-orellana.jpg",
     introduction: "Profesional apasionada por el cuidado de la piel y la medicina estética, enfocada en tratamientos seguros y personalizados que mantienen la esencia de cada persona.",
     philosophy: "Cada piel tiene su historia. Nuestro compromiso es cuidarla con ciencia, cercanía y una mirada integral del bienestar.",
@@ -45,3 +48,4 @@ export const professionals: Professional[] = [
 export function getProfessional(slug: string) {
   return professionals.find((professional) => professional.slug === slug);
 }
+

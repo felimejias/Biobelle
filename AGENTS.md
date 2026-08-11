@@ -37,7 +37,8 @@ como implementadas.
 - Agenda online estilo premium, en modal, con flujo por pasos.
 - Seleccion de tratamiento, profesional, fecha, hora y datos de paciente.
 - Fecha minima de reserva: 10 de agosto de 2026.
-- Horarios visibles actuales: 09:30, 11:00, 12:30, 15:30, 17:00 y 18:30.
+- Horarios de atención Lunes a Viernes (60 min cada cita): 08:30, 09:45, 11:00, 12:15, 13:30, 14:45, 16:00 y 17:15.
+- Horarios de atención Sábados (60 min cada cita): 08:30, 09:45, 11:00 y 12:15.
 - Profesionales visibles: Kiara Moscoso y Pia Orellana con la misma jerarquia
   visual. La opcion sin preferencia existe solo como asignacion secundaria y
   equilibrada, no como tarjeta principal.

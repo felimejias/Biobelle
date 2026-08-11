@@ -23,11 +23,10 @@ const options = [
   },
 ];
 
-export function ProfessionalPicker({ value, onChange, compact = false, professionals, allowNoPreference = true }: ProfessionalPickerProps) {
+export function ProfessionalPicker({ value, onChange, compact = false, professionals }: ProfessionalPickerProps) {
   const visibleOptions = options.filter((option) => !professionals || professionals.includes(option.value));
-  const showNoPreference = allowNoPreference && visibleOptions.length > 1;
   return (
-    <div className={`professional-picker${compact ? " compact" : ""}${showNoPreference ? " with-flex-choice" : ""}`} role="radiogroup" aria-label="Elige una profesional">
+    <div className={`professional-picker${compact ? " compact" : ""}`} role="radiogroup" aria-label="Elige una profesional">
       {visibleOptions.map((option) => {
         const selected = value === option.value;
         return (
@@ -49,19 +48,6 @@ export function ProfessionalPicker({ value, onChange, compact = false, professio
           </button>
         );
       })}
-      {showNoPreference && (
-        <button
-          type="button"
-          role="radio"
-          aria-checked={!value}
-          className={!value ? "professional-flex-choice selected" : "professional-flex-choice"}
-          onClick={() => onChange("")}
-        >
-          <span>✦</span>
-          <b>Sin preferencia: asignar de forma equilibrada según disponibilidad.</b>
-          <small>Kiara y Pía mantienen la misma visibilidad; BIOBELLE elige la hora/profesional libre más conveniente.</small>
-        </button>
-      )}
     </div>
   );
 }

@@ -767,3 +767,76 @@ button.table-row:hover { background:#f6ece9; }
   .progress { margin:18px 0 22px; }
 }
 @media(prefers-reduced-motion:reduce){ html { scroll-behavior:auto; } * { transition:none!important; } }
+
+.discounts-banner { margin: 60px 7vw; padding: 45px 50px; background: linear-gradient(135deg, #4d1829, #7e2341); border: 1px solid rgba(212, 174, 183, 0.3); border-radius: 24px; color: #fffdfa; box-shadow: 0 25px 60px rgba(50, 15, 25, 0.25); }
+.discounts-header { margin-bottom: 30px; }
+.discounts-tag { color: var(--gold); font-size: 8px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+.discounts-header h2 { font-size: 38px; color: #fffdfa; margin: 8px 0; font-family: var(--font-serif); }
+.discounts-header p { color: #f0dede; font-size: 13px; margin: 0; }
+.discounts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.discount-card { padding: 24px; background: rgba(255, 253, 250, 0.08); border: 1px solid rgba(255, 253, 250, 0.15); border-radius: 16px; backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: space-between; }
+.discount-badge { display: inline-block; padding: 6px 12px; background: var(--gold); color: var(--deep); font-size: 9px; font-weight: 800; border-radius: 20px; text-transform: uppercase; letter-spacing: .08em; width: max-content; margin-bottom: 12px; }
+.discount-card h3 { font-size: 20px; color: #ffffff; margin: 0 0 8px; font-family: var(--font-serif); }
+.discount-card p { font-size: 11px; color: #e8d7da; line-height: 1.5; margin: 0; }
+
+.procedure-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 52vh; overflow-y: auto; padding-right: 6px; }
+.procedure-grid button { min-height: 64px; padding: 10px 14px; }
+.procedure-grid .concern-number { font-size: 13px; font-weight: bold; min-width: 22px; }
+.procedure-grid .concern-copy b { font-size: 14px; line-height: 1.25; }
+.procedure-grid .concern-copy small { font-size: 8px; line-height: 1.3; }
+
+.calendar-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+.calendar-btn { padding: 12px; border: 1px solid var(--wine); background: #fdfaf6; color: var(--wine); text-decoration: none; text-align: center; font-size: 9px; text-transform: uppercase; letter-spacing: .08em; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; }
+.calendar-btn:hover { background: var(--wine); color: white; }
+.pro-email-notice { font-size: 8px; color: var(--muted); margin: 6px 0 12px; text-align: center; }
+
+/* POLÍTICAS DE RESERVA STYLING */
+.policy-banner { margin: 50px 0; padding: 36px 40px; background: linear-gradient(145deg, #fdfaf6, #f4e8e4); border: 1px solid #e0d0cb; border-radius: 20px; box-shadow: 0 15px 40px rgba(77, 38, 50, 0.06); }
+.policy-banner-head { text-align: center; margin-bottom: 30px; }
+.policy-banner-head h2 { font-family: var(--font-serif); font-size: 36px; color: var(--deep); margin: 6px 0 10px; }
+.policy-banner-head p { color: var(--muted); font-size: 12px; }
+.policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.policy-item-card { padding: 24px; background: #ffffff; border: 1px solid #e8dad6; border-left: 4px solid var(--wine); border-radius: 12px; display: flex; flex-direction: column; gap: 8px; }
+.policy-item-card.highlight { border-left-color: var(--gold); background: #fffdfa; }
+.policy-icon-title { display: flex; align-items: center; gap: 10px; }
+.policy-icon-title span { font-size: 20px; }
+.policy-icon-title b { font-family: var(--font-serif); font-size: 18px; color: var(--deep); }
+.policy-item-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+.policy-badge-price { display: inline-block; padding: 4px 10px; background: var(--wine); color: #fff; font-size: 10px; font-weight: bold; border-radius: 6px; }
+
+.booking-policy-notice { margin: 15px 0; padding: 14px 16px; background: rgba(126, 35, 65, 0.05); border: 1px solid rgba(184, 145, 101, 0.3); border-radius: 10px; font-size: 10px; color: var(--ink); line-height: 1.5; }
+.booking-policy-notice summary { cursor: pointer; font-weight: 700; color: var(--wine); letter-spacing: .05em; text-transform: uppercase; font-size: 8.5px; }
+.booking-policy-notice ul { margin: 8px 0 0 16px; padding: 0; }
+.booking-policy-notice li { margin-bottom: 4px; }
+
+/* CLINICAL PROCEDURES SHOWCASE STYLING */
+.clinical-showcase { padding: 100px 7vw; background: linear-gradient(180deg, #f5eae6, #fffdfa); }
+.clinical-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 40px; }
+.clinical-card { margin: 0; position: relative; border-radius: 20px; overflow: hidden; background: #1d0a12; box-shadow: 0 20px 50px rgba(39, 16, 24, 0.12); display: flex; flex-direction: column; transition: transform .3s ease, box-shadow .3s ease; }
+.clinical-card:hover { transform: translateY(-4px); box-shadow: 0 30px 70px rgba(39, 16, 24, 0.22); }
+.clinical-card img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center center; transition: transform .5s ease; }
+.clinical-card:hover img { transform: scale(1.03); }
+
+.clinical-card figcaption { padding: 22px 24px; background: linear-gradient(180deg, rgba(39, 16, 24, 0.95), #15060c); color: #fffdfa; margin-top: auto; border-top: 1px solid rgba(200, 161, 95, 0.3); flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+.clinical-badge { display: inline-block; padding: 5px 12px; background: var(--gold); color: var(--deep); font-size: 8px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; border-radius: 20px; margin-bottom: 10px; width: max-content; }
+.clinical-card h3 { font-family: var(--font-serif); font-size: 22px; color: #fffdfa; margin: 0 0 6px; }
+.clinical-card p { color: #d6c6ca; font-size: 11px; line-height: 1.6; margin: 0; }
+
+@media(max-width: 1100px) {
+  .clinical-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media(max-width: 900px) {
+  .discounts-banner { margin: 40px 20px; padding: 30px 24px; }
+  .discounts-grid { grid-template-columns: 1fr; }
+  .procedure-grid { grid-template-columns: 1fr; max-height: 60vh; }
+  .calendar-actions { grid-template-columns: 1fr; }
+  .policy-grid { grid-template-columns: 1fr; }
+  .policy-banner { padding: 24px 18px; }
+  .clinical-showcase { padding: 60px 20px; }
+  .clinical-grid { grid-template-columns: 1fr; }
+  .clinical-card img { aspect-ratio: 4 / 5; }
+}
+
+
+

@@ -1,0 +1,19 @@
+{
+  "name": "site-creator-vinext-starter",
+  "compatibility_date": "2026-05-15",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "routes": [
+    "biobelle.cl/*",
+    "www.biobelle.cl/*"
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "biobelle-db",
+      "database_id": "d56852c0-4586-42d5-ab6d-ce8464248921",
+      "migrations_dir": "drizzle"
+    }
+  ]
+}

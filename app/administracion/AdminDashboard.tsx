@@ -19,7 +19,7 @@ const professionalProfiles: Record<string, { image: string; role: string; focus:
   "Kiara Moscoso": { image: "/images/kiara-moscoso-clean.png", role: "Enfermera dermoestética · Cosmetóloga", focus: "Armonización · Láser · Dermoestética" },
   "Pía Orellana": { image: "/images/pia-orellana-clean.png", role: "Enfermera dermoestética · Cosmetóloga", focus: "Armonización · Láser · Salud integral" },
 };
-const slots = ["09:30", "11:00", "12:30", "15:30", "17:00", "18:30"];
+const slots = ["08:30", "09:45", "11:00", "12:15", "13:30", "14:45", "16:00", "17:15"];
 const treatments = [["evaluacion", "Evaluación estética personalizada"], ["armonizacion", "Armonización facial"], ["piel", "Evaluación dermoestética"], ["laser", "Tecnología láser"], ["regenerativa", "Medicina regenerativa"], ["lesiones", "Cuidado clínico"], ["corporal", "Dermoestética corporal"]];
 const statusLabel: Record<string, string> = { pending: "Pendiente", confirmed: "Confirmada", completed: "Atendida", no_show: "No asistió", cancelled: "Cancelada" };
 const roleLabel: Record<string, string> = { general_admin: "Administradora general", location_admin: "Administradora del centro", receptionist: "Recepción", professional: "Profesional", readonly: "Solo lectura" };

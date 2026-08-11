@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa";
 import { BrandSocial } from "./components/BrandSocial";
 import { ProfessionalPicker } from "./components/ProfessionalPicker";
+import { generateCalendarLinks, PROFESSIONAL_EMAILS, type ProfessionalName } from "./clinic-config";
 
 function track(event: string, path = window.location.pathname) {
   void fetch("/api/events/", {
@@ -26,21 +27,29 @@ type Treatment = {
 };
 
 const treatments: Treatment[] = [
-  { id: "armonizacion", eyebrow: "Armonización facial", title: "Belleza que respeta tus rasgos", copy: "Evaluación personalizada, toxina botulínica y ácido hialurónico para resultados sutiles y armónicos.", duration: "45–60 min", price: "Evaluación previa", tone: "rose" },
-  { id: "piel", eyebrow: "Dermoestética", title: "Una piel luminosa y saludable", copy: "Limpieza facial profesional, Dermapen y protocolos regenerativos según las necesidades reales de tu piel.", duration: "60–75 min", price: "Desde $35.000", tone: "sand" },
-  { id: "laser", eyebrow: "Tecnología láser", title: "Precisión clínica, cambios visibles", copy: "Hollywood Peel, Nd:YAG Q‑Switched y eliminación de tatuajes con una indicación responsable.", duration: "30–60 min", price: "Según evaluación", tone: "wine" },
-  { id: "regenerativa", eyebrow: "Medicina regenerativa", title: "Activa el potencial de tu piel", copy: "Plasma rico en plaquetas y técnicas de estimulación para rostro, cuello y cuero cabelludo.", duration: "60 min", price: "Desde $85.000", tone: "clay" },
-  { id: "lesiones", eyebrow: "Cuidado clínico", title: "Atención segura y cercana", copy: "Evaluación y extracción de acrocordones, milliums y otras lesiones cutáneas seleccionadas.", duration: "30–45 min", price: "Desde $30.000", tone: "pearl" },
-  { id: "corporal", eyebrow: "Dermoestética corporal", title: "Cuidado integral, de pies a cabeza", copy: "Fibroblast y protocolos corporales diseñados por profesionales para objetivos específicos.", duration: "45–75 min", price: "Plan personalizado", tone: "blush" },
+  { id: "armonizacion", eyebrow: "Armonización facial", title: "Realza tu Belleza", copy: "Ácido Hialurónico · Toxina Botulínica (Bótox). Evaluación previa personalizada para resultados sutiles y naturales.", duration: "45–60 min", price: "Evaluación previa", tone: "rose" },
+  { id: "piel", eyebrow: "Dermoestética", title: "Belleza y Bienestar", copy: "Limpieza facial profesional (Cosmetología) · Fibroblast Facial (Técnica Plasma Pen) · Fibroblast Corporal (Técnica Plasma Pen).", duration: "60–75 min", price: "Según evaluación", tone: "sand" },
+  { id: "laser", eyebrow: "Tecnología láser Nd Yag Q Switched", title: "Precisión clínica, cambios visibles", copy: "Hollywood Peel · Eliminación de tatuajes con tecnología láser Nd:YAG Q-Switched.", duration: "30–60 min", price: "Según evaluación", tone: "wine" },
+  { id: "regenerativa", eyebrow: "Medicina regenerativa", title: "Activa el potencial de tu piel", copy: "Plasma rico en plaquetas (PRP) · Técnicas de estimulación para rostro, cuello y cuero cabelludo.", duration: "60 min", price: "Según evaluación", tone: "clay" },
+  { id: "lesiones", eyebrow: "Atención Clínica", title: "Atención integral salud y bienestar", copy: "Evaluación y extracción lesiones cutáneas (Acrocordones, milliums, Verrugas y lentigos solares).", duration: "30–45 min", price: "25% dcto acrocordones", tone: "pearl" },
+  { id: "atencion-medica", eyebrow: "Atención clínica y Consulta médica", title: "Cuidado integral, de pies a cabeza", copy: "Consulta médica personalizada · Administración medicamentos Vía Endovenosa - Intramuscular · Toma de Electrocardiograma · Curación Simple y avanzada", duration: "45–75 min", price: "Plan personalizado", tone: "blush" },
 ];
 
 const concerns = [
-  { id: "expresion", label: "Líneas de expresión", note: "Suavizar preservando tu expresión", treatment: "armonizacion" },
-  { id: "manchas", label: "Manchas o tatuajes", note: "Tecnología láser y evaluación responsable", treatment: "laser" },
-  { id: "luminosidad", label: "Luminosidad y textura", note: "Recuperar una piel uniforme y vital", treatment: "piel" },
-  { id: "regenerar", label: "Regeneración", note: "Cuidado facial o capilar personalizado", treatment: "regenerativa" },
-  { id: "lesion", label: "Lesiones cutáneas", note: "Evaluar antes de intervenir", treatment: "lesiones" },
-  { id: "orientacion", label: "Quiero orientación", note: "Una profesional te ayudará a decidir", treatment: "evaluacion" },
+  { id: "hialuronico", label: "Ácido hialurónico", note: "Perfilado, hidratación y volumen facial", treatment: "armonizacion" },
+  { id: "botox", label: "Toxina Botulina (Bótox)", note: "Prevención y suavizado de líneas de expresión", treatment: "armonizacion" },
+  { id: "prp", label: "Plasma Rico en plaquetas (PRP)", note: "Bioestimulación celular para rostro, cuello y capilar", treatment: "regenerativa" },
+  { id: "hollywood-peel", label: "Hollywood peel Láser", note: "Luminosidad, renovación de textura y poros", treatment: "laser" },
+  { id: "tatuajes", label: "Borrado de tatuajes Láser", note: "Remoción progresiva de pigmentos con láser Q-Switched", treatment: "laser" },
+  { id: "limpieza-facial", label: "Limpieza Facial (Cosmetólogia)", note: "Higiene profunda y renovación dermoestética", treatment: "piel" },
+  { id: "fibroblast-facial", label: "Fibroblast Facial", note: "Técnica Plasma Pen para firmeza facial", treatment: "piel" },
+  { id: "fibroblast-corporal", label: "Fibroblast Corporal", note: "Técnica Plasma Pen para firmeza corporal", treatment: "piel" },
+  { id: "lesiones-cutaneas", label: "Extracción lesiones cutáneas ( Acrocordones - Milliums - Verrugas- lentigos solares)", note: "Evaluación y extracción segura de lesiones cutáneas", treatment: "lesiones" },
+  { id: "consulta-medica", label: "Consulta Medicina general", note: "Evaluación médica integral personalizada", treatment: "atencion-medica" },
+  { id: "electrocardiograma", label: "Toma electrocardiograma", note: "Examen electrocardiográfico de reposo (ECG)", treatment: "atencion-medica" },
+  { id: "medicamentos", label: "Administración de medicamentos ( Via intramuscular - via venosa)", note: "Aplicación endovenosa e intramuscular por profesionales", treatment: "atencion-medica" },
+  { id: "curaciones", label: "curación simple - curación avanzada", note: "Cuidado profesional de heridas y cicatrización", treatment: "atencion-medica" },
+  { id: "orientacion", label: "Necesito orientación sobre que procedimiento debo realizarme.", note: "Evaluación clínica para orientarte según tus objetivos", treatment: "evaluacion" },
 ];
 
 type AvailableSlot = {
@@ -133,7 +142,9 @@ export default function Home() {
 
   useEffect(() => {
     if (eligibleProfessionals.length === 1) setProfessional(eligibleProfessionals[0]);
-    else if (professional && !eligibleProfessionals.includes(professional)) setProfessional("");
+    else if (!professional || !eligibleProfessionals.includes(professional)) {
+      setProfessional(eligibleProfessionals[0] ?? "Kiara Moscoso");
+    }
   }, [eligibleProfessionals, professional]);
 
   useEffect(() => {
@@ -186,12 +197,27 @@ export default function Home() {
 
   useEffect(() => {
     const preset = new URLSearchParams(window.location.search).get("agendar");
-    if (preset && treatments.some((item) => item.id === preset)) queueMicrotask(() => openBooking(preset));
+    if (preset && (treatments.some((item) => item.id === preset) || concerns.some((item) => item.id === preset))) {
+      queueMicrotask(() => openBooking(preset));
+    }
   }, []);
 
   const bookingWhatsAppUrl = `https://wa.me/56979655129?text=${encodeURIComponent(
     `Hola BIOBELLE, acabo de reservar ${recommended?.eyebrow ?? "una evaluación"} para el ${date.split("-").reverse().join("/")} a las ${time}. Código: ${confirmationCode}. Profesional: ${professional}. Mi nombre es ${name}.${managementUrl ? ` Gestionar reserva: ${managementUrl}` : ""}`,
   )}`;
+
+  const calendarInfo = useMemo(() => {
+    return generateCalendarLinks({
+      confirmationCode,
+      treatmentName: recommended?.eyebrow ?? "Evaluación personalizada",
+      professional,
+      date,
+      time,
+      duration: recommended?.duration,
+      patientName: name,
+      phone,
+    });
+  }, [confirmationCode, date, name, phone, professional, recommended?.eyebrow, recommended?.duration, time]);
 
   const submitBooking = async () => {
     setBookingLoading(true);
@@ -232,11 +258,14 @@ export default function Home() {
 
   return (
     <main>
-      <div className="announcement">Agenda online abierta · 25% descuento en láser durante agosto · Atenciones desde el 10 de agosto de 2026</div>
+      <div className="announcement">
+        Agenda online abierta · Descuentos de Agosto - Septiembre: 25% acrocordones, 15% Hollywood Peel y 20% cumpleaños · Atenciones desde el 10 de agosto
+      </div>
       <header className="site-header">
         <BrandSocial />
         <nav className={menuOpen ? "nav open" : "nav"} aria-label="Navegación principal">
           <a href="#tratamientos" onClick={() => setMenuOpen(false)}>Tratamientos</a>
+          <a href="#promociones" onClick={() => setMenuOpen(false)}>Descuentos</a>
           <a href="#equipo" onClick={() => setMenuOpen(false)}>Equipo</a>
           <a href="#experiencia" onClick={() => setMenuOpen(false)}>Experiencia</a>
           <a href="#contacto" onClick={() => setMenuOpen(false)}>Contacto</a>
@@ -257,7 +286,7 @@ export default function Home() {
           </div>
           <div className="hero-proof">
             <div className="avatars"><span>K</span><span>P</span><span>♥</span></div>
-            <p><b>Atención profesional y cercana</b><small>Protocolos diseñados para ti</small></p>
+            <p><b>Atención profesional y cercana</b><small>Kiara Moscoso & Pía Orellana</small></p>
           </div>
         </div>
         <div className="hero-visual">
@@ -270,11 +299,45 @@ export default function Home() {
         <span>✦ Atención profesional</span><span>✦ Tecnología certificada</span><span>✦ Planes personalizados</span><span>✦ Acompañamiento post tratamiento</span>
       </section>
 
+      <section className="discounts-banner" id="promociones" aria-label="Descuentos Mes de Agosto - Septiembre">
+        <div className="discounts-header">
+          <span className="discounts-tag">✦ BENEFICIOS DE TEMPORADA</span>
+          <h2>Descuentos Mes de Agosto - Septiembre</h2>
+          <p>Disfruta de nuestros descuentos especiales diseñados para renovar y cuidar tu piel en BIOBELLE.</p>
+        </div>
+        <div className="discounts-grid">
+          <div className="discount-card">
+            <div>
+              <span className="discount-badge">25% DCTO</span>
+              <h3>Retiro de Lesiones Cutáneas</h3>
+              <p>25% de descuento en retiro de lesiones cutáneas acrocordones con evaluación clínica previa.</p>
+            </div>
+            <button className="laser-cta" style={{ marginTop: 15 }} onClick={() => openBooking("lesiones")}>Agendar acrocordones ↗</button>
+          </div>
+          <div className="discount-card">
+            <div>
+              <span className="discount-badge">15% DCTO</span>
+              <h3>Hollywood Peel Láser</h3>
+              <p>15% de descuento en tratamiento Hollywood Peel con tecnología Nd:YAG Q-Switched.</p>
+            </div>
+            <button className="laser-cta" style={{ marginTop: 15 }} onClick={() => openBooking("laser")}>Agendar Hollywood Peel ↗</button>
+          </div>
+          <div className="discount-card">
+            <div>
+              <span className="discount-badge">20% DCTO</span>
+              <h3>Especial Cumpleaños 🎂</h3>
+              <p>20% de descuento en tu día de cumpleaños verificando con carnet en mano al agendar.</p>
+            </div>
+            <button className="laser-cta" style={{ marginTop: 15 }} onClick={() => openBooking("evaluacion")}>Agendar mi cumpleaños ↗</button>
+          </div>
+        </div>
+      </section>
+
       <section className="laser-spotlight" aria-labelledby="laser-title">
         <div className="laser-offer">
           <span>Especial apertura</span>
-          <b>25%</b>
-          <small>descuento todo agosto</small>
+          <b>15%</b>
+          <small>dcto Hollywood Peel</small>
         </div>
         <div className="laser-copy">
           <p className="section-number">Tecnología láser BIOBELLE</p>
@@ -302,7 +365,7 @@ export default function Home() {
       <section className="treatments" id="tratamientos">
         <div className="section-head">
           <div><p className="section-number">02 / TRATAMIENTOS</p><h2>Diseñados para <em>tu historia.</em></h2></div>
-          <p>No necesitas saber el nombre de un procedimiento. Cuéntanos qué quieres mejorar y te orientaremos con honestidad.</p>
+          <p>Selecciona tu procedimiento o cuéntanos qué buscas para orientarte con transparencia.</p>
         </div>
         <div className="treatment-grid">
           {treatments.map((item, index) => (
@@ -327,8 +390,8 @@ export default function Home() {
         </div>
         <div className="booking-preview">
           <div className="preview-top"><span>✦ Recomendación personalizada</span><b>1 min</b></div>
-          <h3>¿Qué te gustaría mejorar?</h3>
-          <div className="preview-options"><span>Líneas de expresión</span><span>Manchas</span><span className="active">Luminosidad y textura ✓</span><span>No estoy segura</span></div>
+          <h3>¿Qué procedimiento buscas?</h3>
+          <div className="preview-options"><span>Ácido hialurónico</span><span>Toxina Botulínica</span><span className="active">Hollywood Peel ✓</span><span>Orientación clínica</span></div>
           <div className="recommendation"><span>Tu mejor primer paso</span><b>Evaluación dermoestética</b><small>40 min · con Kiara o Pía</small></div>
         </div>
       </section>
@@ -341,12 +404,71 @@ export default function Home() {
         <div className="team-grid">
           <Link className="team-card poster-card" href="/equipo/kiara-moscoso">
             <img src="/images/kiara-moscoso.jpg" alt="EU. Kiara Moscoso Villegas, enfermera dermoestética y cosmetóloga" />
-            <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Kiara Moscoso V.</h3><span>Armonización · Láser · Dermoestética · Ver perfil →</span></div>
+            <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Kiara Moscoso V.</h3><span>kiaramoscoso77@gmail.com · Ver perfil →</span></div>
           </Link>
           <Link className="team-card poster-card" href="/equipo/pia-orellana">
             <img src="/images/pia-orellana.jpg" alt="EU. Pía Orellana, enfermera dermoestética y cosmetóloga" />
-            <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Pía Orellana G.</h3><span>Armonización · Láser · Salud integral · Ver perfil →</span></div>
+            <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Pía Orellana G.</h3><span>piaorellana96@gmail.com · Ver perfil →</span></div>
           </Link>
+        </div>
+      </section>
+
+      <section className="clinical-showcase" id="protocolos-clinicos" aria-labelledby="showcase-title">
+        <div className="section-head">
+          <div>
+            <p className="section-number">03.1 / EN EL BOX CLÍNICO</p>
+            <h2 id="showcase-title">Rigor clínico &<br /><em>armonía facial.</em></h2>
+          </div>
+          <p>
+            Registro real de nuestras atenciones. Cada tratamiento se planifica con marcación anatómica exhaustiva y se ejecuta con criterios de enfermería universitaria, asepsia y máxima precisión.
+          </p>
+        </div>
+
+        <div className="clinical-grid">
+          <figure className="clinical-card">
+            <img src="/images/procedimiento-diseno-facial.jpg" alt="Diseño y marcación anatómica de vectores faciales por Kiara y Pía" />
+            <figcaption>
+              <span className="clinical-badge">Diseño & Marcación Anatómica</span>
+              <h3>Planificación exhaustiva del tratamiento</h3>
+              <p>Evaluación de vectores de tracción, simetría y anatomía facial antes de iniciar cada procedimiento.</p>
+            </figcaption>
+          </figure>
+
+          <figure className="clinical-card">
+            <img src="/images/procedimiento-microinyeccion-precision.jpg" alt="EU. Kiara Moscoso realizando procedimiento de precisión facial" />
+            <figcaption>
+              <span className="clinical-badge">Técnica de Alta Precisión</span>
+              <h3>Microinyecciones & dermoestética</h3>
+              <p>Aplicación técnica depurada con insumos certificados para lograr cambios naturales y armónicos.</p>
+            </figcaption>
+          </figure>
+
+          <figure className="clinical-card">
+            <img src="/images/procedimiento-evaluacion-clinica.jpg" alt="Evaluación y atención conjunta por EU. Kiara Moscoso y EU. Pía Orellana" />
+            <figcaption>
+              <span className="clinical-badge">Atención a Cuatro Manos</span>
+              <h3>Criterio clínico compartido</h3>
+              <p>Kiara y Pía analizan y coordinan cada indicación en equipo para brindar la máxima seguridad.</p>
+            </figcaption>
+          </figure>
+
+          <figure className="clinical-card">
+            <img src="/images/equipo-clinico-biobelle.jpg" alt="EU. Kiara Moscoso Villegas y EU. Pía Orellana G. equipadas en box clínico" />
+            <figcaption>
+              <span className="clinical-badge">Seguridad & Protocolo</span>
+              <h3>Estándares clínicos de excelencia</h3>
+              <p>Profesionales de salud con equipo de protección completo y estrictos protocolos de bioseguridad.</p>
+            </figcaption>
+          </figure>
+
+          <figure className="clinical-card">
+            <img src="/images/equipo-box-atencion.jpg" alt="Equipo BIOBELLE en box clínico acondicionado en Rancagua" />
+            <figcaption>
+              <span className="clinical-badge">Box Clínico Rancagua</span>
+              <h3>Instalaciones privadas & confort</h3>
+              <p>Espacio clínico acondicionado en Edificio Olavarría, Oficina 302, pensado exclusivamente para tu privacidad.</p>
+            </figcaption>
+          </figure>
         </div>
       </section>
 
@@ -370,9 +492,9 @@ export default function Home() {
       <section className="faq">
         <div><p className="section-number">05 / PREGUNTAS FRECUENTES</p><h2>Antes de tu<br /><em>primera visita.</em></h2></div>
         <div className="faq-list">
-          <details open><summary>¿Necesito saber qué tratamiento agendar?<span>+</span></summary><p>No. Puedes elegir “No sé qué necesito” y agendar una evaluación. Definiremos contigo la alternativa más adecuada.</p></details>
-          <details><summary>¿Cómo me preparo para mi cita?<span>+</span></summary><p>Al confirmar recibirás indicaciones específicas. En general, evita maquillaje intenso y trae información sobre medicamentos o tratamientos previos.</p></details>
-          <details><summary>¿Los resultados son inmediatos?<span>+</span></summary><p>Depende del procedimiento. Te explicaremos resultados esperables, evolución y cuidados antes de que tomes una decisión.</p></details>
+          <details open><summary>¿Necesito saber qué tratamiento agendar?<span>+</span></summary><p>No. Puedes elegir la opción 14 ("Necesito orientación") y agendar una evaluación. Definiremos contigo la alternativa más adecuada.</p></details>
+          <details><summary>¿Cómo aplico los descuentos de Agosto y Septiembre?<span>+</span></summary><p>Los descuentos del 25% en acrocordones y 15% en Hollywood Peel se aplican automáticamente. Para el 20% de cumpleaños, solo debes mostrar tu carnet de identidad el día de la cita.</p></details>
+          <details><summary>¿Cómo le llega la cita a la profesional?<span>+</span></summary><p>Las citas se envían automáticamente al calendario de Kiara Moscoso (kiaramoscoso77@gmail.com) y Pía Orellana (piaorellana96@gmail.com) según la selección de tu profesional.</p></details>
           <details><summary>¿Puedo cambiar o cancelar mi hora?<span>+</span></summary><p>Sí. Podrás gestionarla desde el enlace de confirmación o contactarnos por WhatsApp con anticipación.</p></details>
         </div>
       </section>
@@ -382,6 +504,7 @@ export default function Home() {
         <div className="contact-card">
           <p><span>Ubicación</span><b>Bueras 218, Edificio Olavarría<br />Oficina 302, Rancagua</b></p>
           <p><span>Contacto</span><b>+56 9 7965 5129<br />+56 9 6406 1984</b></p>
+          <p><span>Emails agenda</span><b>Kiara: kiaramoscoso77@gmail.com<br />Pía: piaorellana96@gmail.com</b></p>
           <p><span>Redes</span><b>@biobelle_center</b></p>
         </div>
       </section>
@@ -389,7 +512,7 @@ export default function Home() {
       <footer>
         <a className="brand footer-brand" href="#inicio" aria-label="BIOBELLE inicio"><BrandLockup /></a>
         <p>Belleza natural. Cuidado profesional.</p>
-        <div><a href="#tratamientos">Tratamientos</a><a href="#equipo">Equipo</a><a href="https://instagram.com/biobelle_center">Instagram</a><Link href="/privacidad">Privacidad</Link><Link href="/terminos">Términos</Link></div>
+        <div><a href="#tratamientos">Tratamientos</a><a href="#promociones">Descuentos</a><a href="#equipo">Equipo</a><a href="https://instagram.com/biobelle_center">Instagram</a><Link href="/privacidad">Privacidad</Link><Link href="/terminos">Términos</Link></div>
         <small>© 2026 BIOBELLE · Información referencial. Todo procedimiento requiere evaluación profesional.</small>
       </footer>
 
@@ -407,15 +530,84 @@ export default function Home() {
                 </div>
                 <div className="opening-note"><span>APERTURA DE AGENDA</span><b>Desde el 10 de agosto</b><small>Atención privada · Rancagua</small></div>
                 <div className="progress" aria-label={`Paso ${step} de 4`}><span style={{ width: `${step * 25}%` }} /></div>
-                {step === 1 && <div className="booking-step"><p className="step-intro">Cada experiencia comienza escuchándote.</p><h3 className="step-question">¿Qué te gustaría cuidar o realzar?</h3><div className="concern-grid">{concerns.map((item, index) => <button className={concern === item.id ? "selected" : ""} onClick={() => setConcern(item.id)} key={item.id}><span className="concern-number">0{index + 1}</span><span className="concern-copy"><b>{item.label}</b><small>{item.note}</small></span><span className="concern-mark">{concern === item.id ? "✓" : "→"}</span></button>)}</div></div>}
+                {step === 1 && (
+                  <div className="booking-step">
+                    <p className="step-intro">Cada experiencia comienza escuchándote.</p>
+                    <h3 className="step-question">¿Qué procedimiento buscas?</h3>
+                    <div className="concern-grid procedure-grid">
+                      {concerns.map((item, index) => (
+                        <button className={concern === item.id ? "selected" : ""} onClick={() => setConcern(item.id)} key={item.id}>
+                          <span className="concern-number">{String(index + 1).padStart(2, "0")}</span>
+                          <span className="concern-copy">
+                            <b>{item.label}</b>
+                            <small>{item.note}</small>
+                          </span>
+                          <span className="concern-mark">{concern === item.id ? "✓" : "→"}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {step === 2 && <div className="booking-step"><p className="step-intro">Tu objetivo merece una indicación honesta.</p><h3 className="step-question">Este es el mejor lugar para comenzar.</h3><div className="result-card"><span>CURADURÍA BIOBELLE · RECOMENDACIÓN PERSONALIZADA</span><h3>{recommended ? recommended.eyebrow : "Evaluación estética personalizada"}</h3><p>{recommended ? recommended.copy : "Una conversación clínica para entender tu piel, tus expectativas y recomendarte opciones seguras."}</p><div><b>{recommended?.duration ?? "40 min"}</b><b>{recommended?.price ?? "Sin compromiso"}</b></div></div><label className="treatment-select-inline">Tratamiento o procedimiento<select value={selectedTreatmentId} onChange={(event) => setSelectedTreatmentId(event.target.value)}>{(clinicTreatments.length ? clinicTreatments : treatments.map((item) => ({ id: item.id, publicLabel: item.eyebrow, label: item.eyebrow, duration: item.duration, price: item.price, professionals: ["Kiara Moscoso", "Pía Orellana"] }))).map((item) => <option value={item.id} key={item.id}>{item.publicLabel || item.label}</option>)}</select></label><p className="disclaimer">La belleza consciente comienza con una evaluación. La indicación definitiva siempre será realizada por una profesional.</p></div>}
                 {step === 3 && <div className="booking-step schedule-step"><p className="step-intro">Tu tiempo también es parte de la experiencia.</p><h3 className="step-question">Reserva el momento que prefieras.</h3><fieldset className="professional-fieldset"><legend>{eligibleProfessionals.length === 1 ? "Profesional habilitada para este tratamiento" : "Elige quién te atenderá"}</legend><ProfessionalPicker value={professional} onChange={setProfessional} professionals={eligibleProfessionals} allowNoPreference={eligibleProfessionals.length > 1} /></fieldset><div className="schedule-fields date-only"><label>Fecha de atención<input type="date" min={nextBusinessDate()} value={date} onChange={(e) => setDate(e.target.value)} /></label></div><p className="slots-label">Disponibilidad en tiempo real</p>{availabilityLoading ? <div className="availability-status">Preparando las mejores horas para ti…</div> : availability.length ? <div className="time-grid">{availability.map((slot) => <button type="button" className={time === slot.time ? "selected" : ""} disabled={!slot.available} onClick={() => setTime(slot.time)} key={slot.time}><span>{slot.time}</span><small>{slot.available ? "Disponible" : "Ocupada"}</small></button>)}</div> : <div className="availability-status">No encontramos horas para esta fecha.<Link href={`/lista-espera?tratamiento=${recommended?.id ?? recommendedId}`}>Solicitar prioridad en lista de espera →</Link></div>}<small className="booking-assurance">✦ Tu hora se reserva exclusivamente para ti al confirmar.</small></div>}
-                {step === 4 && <div className="booking-step details-step"><p className="step-intro">Estás a un paso de tu experiencia BIOBELLE.</p><div className="booking-summary"><span>SELECCIÓN PERSONALIZADA</span><b>{recommended?.eyebrow ?? "Evaluación personalizada"}</b><small>{date.split("-").reverse().join("/")} · {time} · {professional || "Según disponibilidad equilibrada"}</small></div><div className="detail-fields"><label>Tu nombre completo<input value={name} onChange={(e) => setName(e.target.value)} placeholder="¿Cómo quieres que te recibamos?" autoComplete="name" /></label><label>WhatsApp de contacto<input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+56 9 1234 5678" inputMode="tel" autoComplete="tel" /></label></div><label className="checkbox"><input type="checkbox" checked={reminderConsent} onChange={(e) => setReminderConsent(e.target.checked)} /> Deseo recibir recordatorios e indicaciones de preparación por WhatsApp.</label><label className="checkbox required-consent"><input type="checkbox" checked={privacyConsent} onChange={(e) => setPrivacyConsent(e.target.checked)} /> Acepto que BIOBELLE use estos datos exclusivamente para gestionar mi reserva, según la <Link href="/privacidad" target="_blank">Política de Privacidad</Link>.</label></div>}
+                {step === 4 && (
+                  <div className="booking-step details-step">
+                    <p className="step-intro">Estás a un paso de tu experiencia BIOBELLE.</p>
+                    <div className="booking-summary">
+                      <span>SELECCIÓN PERSONALIZADA</span>
+                      <b>{recommended?.eyebrow ?? "Evaluación personalizada"}</b>
+                      <small>{date.split("-").reverse().join("/")} · {time} · {professional || "Según disponibilidad equilibrada"}</small>
+                    </div>
+
+                    <details className="booking-policy-notice" open>
+                      <summary>✦ POLÍTICAS DE RESERVA BIOBELLE</summary>
+                      <ul>
+                        <li><b>Abono de Reserva:</b> Se requiere un abono de <b>$20.000</b> (descontable del valor total del tratamiento).</li>
+                        <li><b>Evaluación:</b> Si buscas solo consulta de evaluación, el valor es de <b>$10.000</b> (monto no descontable).</li>
+                        <li><b>Confirmación:</b> La hora queda confirmada únicamente tras realizar el depósito/abono.</li>
+                        <li><b>Puntualidad:</b> Tolerancia máxima de <b>10 minutos</b>. Avísanos con 24 hrs de anticipación si necesitas reagendar.</li>
+                      </ul>
+                    </details>
+
+                    <div className="detail-fields">
+                      <label>Tu nombre completo<input value={name} onChange={(e) => setName(e.target.value)} placeholder="¿Cómo quieres que te recibamos?" autoComplete="name" /></label>
+                      <label>WhatsApp de contacto<input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+56 9 1234 5678" inputMode="tel" autoComplete="tel" /></label>
+                    </div>
+                    <label className="checkbox"><input type="checkbox" checked={reminderConsent} onChange={(e) => setReminderConsent(e.target.checked)} /> Deseo recibir recordatorios e indicaciones de preparación por WhatsApp.</label>
+                    <label className="checkbox required-consent"><input type="checkbox" checked={privacyConsent} onChange={(e) => setPrivacyConsent(e.target.checked)} /> Acepto las <Link href="/terminos" target="_blank">Políticas de Reserva</Link> y la <Link href="/privacidad" target="_blank">Política de Privacidad</Link>.</label>
+                  </div>
+                )}
                 {bookingError && <p className="booking-error" role="alert">{bookingError}</p>}
                 <div className="modal-actions"><button className="back" onClick={() => step > 1 ? setStep(step - 1) : closeBooking()} disabled={bookingLoading}>{step > 1 ? "← Volver" : "← Volver al sitio"}</button><button className="continue" disabled={(step === 3 && (!time || availabilityLoading)) || (step === 4 && (!name.trim() || !phone.trim() || !privacyConsent || bookingLoading))} onClick={() => step < 4 ? setStep(step + 1) : void submitBooking()}>{step === 4 ? (bookingLoading ? "Reservando tu momento…" : "Reservar mi experiencia") : "Continuar con mi selección"} <span>→</span></button></div>
               </>
             ) : (
-              <div className="confirmation"><div className="checkmark">✓</div><p>HORA RESERVADA · {confirmationCode}</p><h2>Tu momento BIOBELLE comienza aquí.</h2><p>La hora del <b>{date.split("-").reverse().join("/")} a las {time}</b> quedó bloqueada a tu nombre. Conserva tu código de reserva.</p><div className="confirmation-card"><span>{recommended?.eyebrow ?? "Evaluación personalizada"}</span><b>{professional}</b><small>{confirmationCode} · Bueras 218, Oficina 302 · Rancagua</small></div>{managementUrl && <a className="manage-booking-link full" href={managementUrl}>Reprogramar o cancelar mi hora <span>→</span></a>}<a className="whatsapp-confirm full" href={bookingWhatsAppUrl} target="_blank" rel="noreferrer">Enviar confirmación por WhatsApp <span>↗</span></a><button className="modal-done full" onClick={closeBooking}>Listo, cerrar</button></div>
+              <div className="confirmation">
+                <div className="checkmark">✓</div>
+                <p>HORA RESERVADA · {confirmationCode}</p>
+                <h2>Tu momento BIOBELLE comienza aquí.</h2>
+                <p>La hora del <b>{date.split("-").reverse().join("/")} a las {time}</b> quedó bloqueada a tu nombre. Conserva tu código de reserva.</p>
+                <div className="confirmation-card">
+                  <span>{recommended?.eyebrow ?? "Evaluación personalizada"}</span>
+                  <b>{professional}</b>
+                  <small>{confirmationCode} · Bueras 218, Oficina 302 · Rancagua</small>
+                </div>
+
+                <div className="calendar-actions">
+                  <a className="calendar-btn" href={calendarInfo.googleUrl} target="_blank" rel="noreferrer">
+                    📅 Añadir a Google Calendar
+                  </a>
+                  <a className="calendar-btn" href={calendarInfo.icsUrl} download={`cita-biobelle-${confirmationCode}.ics`}>
+                    📥 Descargar Evento (.ics)
+                  </a>
+                </div>
+                <p className="pro-email-notice">
+                  Cita agendada para <b>{professional}</b> ({calendarInfo.proEmail})
+                </p>
+
+                {managementUrl && <a className="manage-booking-link full" href={managementUrl}>Reprogramar o cancelar mi hora <span>→</span></a>}
+                <a className="whatsapp-confirm full" href={bookingWhatsAppUrl} target="_blank" rel="noreferrer">Enviar confirmación por WhatsApp <span>↗</span></a>
+                <button className="modal-done full" onClick={closeBooking}>Listo, cerrar</button>
+              </div>
             )}
           </section>
         </div>
@@ -423,3 +615,4 @@ export default function Home() {
     </main>
   );
 }
+
