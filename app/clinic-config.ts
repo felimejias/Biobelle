@@ -1,8 +1,8 @@
-export const PROFESSIONALS = ["Kiara Moscoso", "Pía Orellana"] as const;
+export const PROFESSIONALS = ["Kiara Moscoso", "Pía Orellana", "Dr. Luis Moscoso"] as const;
 export const WEEKDAY_SLOTS = ["08:30", "09:45", "11:00", "12:15", "13:30", "14:45", "16:00", "17:15"] as const;
 export const SATURDAY_SLOTS = ["08:30", "09:45", "11:00", "12:15"] as const;
 export const SLOTS = [...WEEKDAY_SLOTS] as const;
-export const OPENING_DATE = "2026-08-10";
+export const OPENING_DATE = "2026-08-18";
 
 export function getSlotsForDay(dayOfWeek: number): readonly string[] {
   if (dayOfWeek === 6) return SATURDAY_SLOTS;
@@ -15,6 +15,7 @@ export type ProfessionalName = typeof PROFESSIONALS[number];
 export const PROFESSIONAL_EMAILS: Record<ProfessionalName, string> = {
   "Kiara Moscoso": "kiaramoscoso77@gmail.com",
   "Pía Orellana": "piaorellana96@gmail.com",
+  "Dr. Luis Moscoso": "consulta@biobelle.cl",
 };
 
 export type ClinicTreatment = {
@@ -34,8 +35,8 @@ export const DEFAULT_TREATMENTS: ClinicTreatment[] = [
   { id: "piel", label: "Dermoestética", publicLabel: "Dermoestética", duration: "60–75 min", price: "Según evaluación", active: true, sortOrder: 30, professionals: [...PROFESSIONALS] },
   { id: "laser", label: "Tecnología láser Nd Yag Q Switched", publicLabel: "Tecnología láser Nd Yag Q Switched", duration: "30–60 min", price: "Según evaluación", active: true, sortOrder: 40, professionals: [...PROFESSIONALS] },
   { id: "regenerativa", label: "Medicina regenerativa", publicLabel: "Medicina regenerativa", duration: "60 min", price: "Según evaluación", active: true, sortOrder: 50, professionals: [...PROFESSIONALS] },
-  { id: "lesiones", label: "Atención Clínica - Lesiones Cutáneas", publicLabel: "Atención Clínica", duration: "30–45 min", price: "Según evaluación", active: true, sortOrder: 60, professionals: [...PROFESSIONALS] },
-  { id: "atencion-medica", label: "Atención clínica y Consulta médica", publicLabel: "Atención clínica y Consulta médica", duration: "45–75 min", price: "Plan personalizado", active: true, sortOrder: 70, professionals: [...PROFESSIONALS] },
+  { id: "lesiones", label: "Atención Clínica - Lesiones Cutáneas", publicLabel: "Atención Clínica", duration: "30–45 min", price: "Según evaluación", active: true, sortOrder: 60, professionals: ["Kiara Moscoso", "Pía Orellana", "Dr. Luis Moscoso"] },
+  { id: "atencion-medica", label: "Atención clínica y Consulta médica", publicLabel: "Atención clínica y Consulta médica", duration: "45–75 min", price: "Plan personalizado", active: true, sortOrder: 70, professionals: ["Dr. Luis Moscoso", "Kiara Moscoso", "Pía Orellana"] },
 ];
 
 export function treatmentMap(treatments = DEFAULT_TREATMENTS) {

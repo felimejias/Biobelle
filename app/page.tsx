@@ -86,6 +86,7 @@ function BrandLockup({ className = "", compact = false }: { className?: string; 
 
 export default function Home() {
   const [bookingOpen, setBookingOpen] = useState(false);
+  const [flyerOpen, setFlyerOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [concern, setConcern] = useState("orientacion");
@@ -259,7 +260,7 @@ export default function Home() {
   return (
     <main>
       <div className="announcement">
-        Agenda online abierta · Descuentos de Agosto - Septiembre: 25% acrocordones, 15% Hollywood Peel y 20% cumpleaños · Atenciones desde el 10 de agosto
+        Agenda online abierta · Descuentos de Agosto - Septiembre: 15% extracción acrocordones, 15% Hollywood Peel y 20% cumpleaños · Inauguración oficial 18 de agosto
       </div>
       <header className="site-header">
         <BrandSocial />
@@ -292,6 +293,11 @@ export default function Home() {
         <div className="hero-visual">
           <img src="/images/identidad-biobelle.jpg" alt="Identidad visual de BIOBELLE Centro Médico Estético" />
           <div className="floating-card"><span>✦</span><p><small>Nuestra filosofía</small><b>Resultados naturales,<br />siempre.</b></p></div>
+          <button className="inauguration-badge-btn" onClick={() => setFlyerOpen(true)} title="Ver flyer oficial de inauguración">
+            <span className="badge-sparkle">✦</span>
+            <span>Inauguración <b>18 de Agosto</b></span>
+            <small>Ver flyer oficial →</small>
+          </button>
         </div>
       </section>
 
@@ -401,7 +407,7 @@ export default function Home() {
           <div><p className="section-number">03 / NUESTRO EQUIPO</p><h2>Profesionales que<br /><em>sí te escuchan.</em></h2></div>
           <p>Formación clínica, actualización constante y una mirada humana para recomendar solo aquello que aporte a tu bienestar.</p>
         </div>
-        <div className="team-grid">
+        <div className="team-grid team-grid-three">
           <Link className="team-card poster-card" href="/equipo/kiara-moscoso">
             <img src="/images/kiara-moscoso.jpg" alt="EU. Kiara Moscoso Villegas, enfermera dermoestética y cosmetóloga" />
             <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Kiara Moscoso V.</h3><span>kiaramoscoso77@gmail.com · Ver perfil →</span></div>
@@ -409,6 +415,15 @@ export default function Home() {
           <Link className="team-card poster-card" href="/equipo/pia-orellana">
             <img src="/images/pia-orellana.jpg" alt="EU. Pía Orellana, enfermera dermoestética y cosmetóloga" />
             <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Pía Orellana G.</h3><span>piaorellana96@gmail.com · Ver perfil →</span></div>
+          </Link>
+          <Link className="team-card doctor-welcome-card" href="/equipo/dr-luis-moscoso">
+            <span className="welcome-badge">✦ BIENVENIDO AL EQUIPO</span>
+            <img src="/images/dr-luis-moscoso.jpg" alt="Dr. Luis Moscoso, Médico General" />
+            <div className="doctor-card-info">
+              <p>Médico General · Atención Clínica Integral</p>
+              <h3>Dr. Luis Moscoso</h3>
+              <small>Disponibilidad y agenda próximamente · Ver perfil →</small>
+            </div>
           </Link>
         </div>
       </section>
@@ -486,7 +501,7 @@ export default function Home() {
       <section className="gallery">
         <div className="gallery-copy"><p className="section-number light">CONOCE BIOBELLE</p><h2>Una marca creada<br />para <em>cuidarte.</em></h2><p>Consulta nuestro catálogo y descubre un espacio donde salud, estética y trato cercano se encuentran.</p></div>
         <img src="/images/catalogo-tratamientos.jpg" alt="Catálogo de tratamientos dermoestéticos BIOBELLE" />
-        <img src="/images/servicios-biobelle.jpg" alt="Servicios e información de ubicación BIOBELLE" />
+        <img src="/images/servicios-biobelle.jpg" alt="Afiche oficial de inauguración BIOBELLE 18 de Agosto" />
       </section>
 
       <section className="faq">
@@ -528,7 +543,7 @@ export default function Home() {
                   <BrandLockup compact />
                   <div><p>PASO 0{step} · DE 04</p><h2>{step === 1 ? "Comencemos por lo que te importa" : step === 2 ? "Una recomendación pensada para ti" : step === 3 ? "Elige tu momento" : "Los últimos detalles"}</h2></div>
                 </div>
-                <div className="opening-note"><span>APERTURA DE AGENDA</span><b>Desde el 10 de agosto</b><small>Atención privada · Rancagua</small></div>
+                <div className="opening-note"><span>APERTURA DE AGENDA</span><b>Desde el 18 de agosto</b><small>Atención privada · Rancagua</small></div>
                 <div className="progress" aria-label={`Paso ${step} de 4`}><span style={{ width: `${step * 25}%` }} /></div>
                 {step === 1 && (
                   <div className="booking-step">
@@ -609,6 +624,22 @@ export default function Home() {
                 <button className="modal-done full" onClick={closeBooking}>Listo, cerrar</button>
               </div>
             )}
+          </section>
+        </div>
+      )}
+
+      {flyerOpen && (
+        <div className="modal-backdrop" role="presentation" onMouseDown={(e) => { if (e.currentTarget === e.target) setFlyerOpen(false); }}>
+          <section className="flyer-modal" role="dialog" aria-modal="true" aria-label="Flyer oficial de inauguración BIOBELLE">
+            <button className="modal-close" onClick={() => setFlyerOpen(false)} aria-label="Cerrar flyer">×</button>
+            <div className="flyer-modal-content">
+              <img src="/images/servicios-biobelle.jpg" alt="Flyer oficial de inauguración BIOBELLE - 18 de Agosto" />
+              <div className="flyer-modal-actions">
+                <button className="primary" onClick={() => { setFlyerOpen(false); openBooking(); }}>
+                  Agendar hora de inauguración <span>↗</span>
+                </button>
+              </div>
+            </div>
           </section>
         </div>
       )}

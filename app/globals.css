@@ -838,5 +838,40 @@ button.table-row:hover { background:#f6ece9; }
   .clinical-card img { aspect-ratio: 4 / 5; }
 }
 
+.team-grid-three { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.doctor-welcome-card { position: relative; display: flex; flex-direction: column; justify-content: flex-end; background: #ffffff; border-radius: 20px; overflow: hidden; border: 1px solid rgba(111, 38, 61, 0.16); transition: transform .3s ease, box-shadow .3s ease; aspect-ratio: 1086 / 1536; }
+.doctor-welcome-card:hover { transform: translateY(-6px); box-shadow: 0 25px 60px rgba(60, 21, 36, 0.2); }
+.welcome-badge { position: absolute; top: 16px; left: 16px; z-index: 5; background: var(--wine); color: #fffdfa; padding: 7px 13px; border-radius: 12px; font-size: 8px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; box-shadow: 0 4px 14px rgba(60, 21, 36, 0.25); }
+.doctor-welcome-card img { width: 100%; height: 100%; object-fit: contain; background: #eae6e3; }
+.doctor-card-info { position: absolute; bottom: 0; inset-x: 0; padding: 28px 22px 22px; background: linear-gradient(0deg, rgba(60, 21, 36, 0.95), rgba(60, 21, 36, 0.6) 70%, transparent); color: #fff; z-index: 4; }
+.doctor-card-info p { color: #ebd2d7; font-size: 9px; text-transform: uppercase; letter-spacing: .12em; margin: 0 0 4px; }
+.doctor-card-info h3 { font-family: var(--font-serif); font-size: 26px; color: #fffdfa; margin: 0 0 6px; }
+.doctor-card-info small { color: var(--gold); font-size: 8.5px; font-weight: bold; text-transform: uppercase; letter-spacing: .08em; display: block; }
+
+@media(max-width: 1100px) {
+  .team-grid-three { grid-template-columns: repeat(2, 1fr); }
+}
+@media(max-width: 700px) {
+  .team-grid-three { grid-template-columns: 1fr; }
+}
+
+.inauguration-badge-btn { position: absolute; left: -75px; top: 6vh; z-index: 10; background: linear-gradient(135deg, #7e2341, #3c1524); color: #fffdfa; border: 1px solid rgba(255, 255, 255, 0.35); padding: 18px 24px; border-radius: 20px; box-shadow: 0 22px 50px rgba(60, 21, 36, 0.5); cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; text-align: left; transition: transform .3s ease, box-shadow .3s ease; }
+.inauguration-badge-btn:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 28px 60px rgba(60, 21, 36, 0.65); background: linear-gradient(135deg, #8d2448, #491328); }
+.badge-sparkle { position: absolute; right: 14px; top: 12px; color: var(--gold); font-size: 16px; }
+.inauguration-badge-btn span { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #ebd2d7; }
+.inauguration-badge-btn span b { font-family: var(--font-serif); font-size: 20px; color: #fff; display: block; margin-top: 3px; }
+.inauguration-badge-btn small { font-size: 9px; color: var(--gold); margin-top: 6px; font-weight: bold; letter-spacing: .1em; text-transform: uppercase; }
+
+.flyer-modal { width: min(520px, 92vw); max-height: 90vh; background: #1a0810; border-radius: 24px; overflow: hidden; position: relative; box-shadow: 0 40px 120px rgba(0, 0, 0, 0.7); border: 1px solid rgba(200, 161, 95, 0.4); display: flex; flex-direction: column; }
+.flyer-modal-content { display: flex; flex-direction: column; overflow-y: auto; max-height: 90vh; }
+.flyer-modal-content img { width: 100%; height: auto; display: block; object-fit: contain; }
+.flyer-modal-actions { padding: 18px 24px; background: #271018; display: flex; justify-content: center; border-top: 1px solid rgba(200, 161, 95, 0.2); }
+.flyer-modal-actions button { width: 100%; border-radius: 12px; font-weight: bold; }
+
+@media(max-width: 900px) {
+  .inauguration-badge-btn { position: relative; left: 0; top: 0; margin: 20px 0; width: 100%; align-items: center; text-align: center; }
+  .badge-sparkle { display: none; }
+}
+
 
 

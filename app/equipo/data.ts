@@ -43,6 +43,20 @@ export const professionals: Professional[] = [
       { title: "Procedimientos clínicos", items: ["Curaciones simples y avanzadas", "Toma de electrocardiograma (ECG)", "Administración de medicamentos por vía intravenosa e intramuscular"] },
     ],
   },
+  {
+    slug: "dr-luis-moscoso",
+    name: "Dr. Luis Moscoso",
+    shortName: "Dr. Luis Moscoso",
+    role: "Médico General · Atención Clínica Integral",
+    email: "consulta@biobelle.cl",
+    image: "/images/dr-luis-moscoso.jpg",
+    introduction: "Le damos una calurosa bienvenida al Dr. Luis Moscoso a BIOBELLE Centro Médico - Estético. Médico cirujano enfocado en la atención médica integral, evaluación diagnóstica y supervisión clínica de nuestros pacientes.",
+    philosophy: "La medicina con visión humana y rigor técnico es el pilar para garantizar un diagnóstico oportuno y la máxima seguridad en cada tratamiento.",
+    areas: [
+      { title: "Consulta médica general", items: ["Evaluación clínica integral", "Diagnóstico preventivo", "Orientación en medicina dermoestética"] },
+      { title: "Procedimientos médicos", items: ["Evaluación y extracción de lesiones cutáneas", "Supervisión de procedimientos endovenosos e intramusculares", "Indicación electrocardiográfica (ECG)"] },
+    ],
+  },
 ];
 
 export function getProfessional(slug: string) {
