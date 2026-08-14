@@ -14,10 +14,11 @@ type AdminTreatment = { id: string; label: string; publicLabel: string; duration
 type Metrics = { total: number; confirmed: number; pending: number; completed: number; noShow: number; occupancy: number; waiting: number };
 type AdminData = { identity: AdminIdentity; bookings: Booking[]; blocks: Block[]; waitlist: WaitlistEntry[]; clients: Client[]; users: User[]; notes: Note[]; treatments: AdminTreatment[]; metrics: Metrics };
 
-const professionals = ["Kiara Moscoso", "Pía Orellana"];
+const professionals = ["Kiara Moscoso", "Pía Orellana", "Dr. Luis Moscoso"];
 const professionalProfiles: Record<string, { image: string; role: string; focus: string }> = {
   "Kiara Moscoso": { image: "/images/kiara-moscoso-clean.png", role: "Enfermera dermoestética · Cosmetóloga", focus: "Armonización · Láser · Dermoestética" },
   "Pía Orellana": { image: "/images/pia-orellana-clean.png", role: "Enfermera dermoestética · Cosmetóloga", focus: "Armonización · Láser · Salud integral" },
+  "Dr. Luis Moscoso": { image: "/images/dr-luis-moscoso.jpg", role: "Médico Cirujano Estético · Director Médico", focus: "Medicina Estética · Armonización Facial" },
 };
 const slots = ["08:30", "09:45", "11:00", "12:15", "13:30", "14:45", "16:00", "17:15"];
 const treatments = [["evaluacion", "Evaluación estética personalizada"], ["armonizacion", "Armonización facial"], ["piel", "Evaluación dermoestética"], ["laser", "Tecnología láser"], ["regenerativa", "Medicina regenerativa"], ["lesiones", "Cuidado clínico"], ["corporal", "Dermoestética corporal"]];

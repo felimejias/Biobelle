@@ -5,7 +5,8 @@ import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa";
 import { BrandSocial } from "./components/BrandSocial";
 import { ProfessionalPicker } from "./components/ProfessionalPicker";
-import { generateCalendarLinks, PROFESSIONAL_EMAILS, type ProfessionalName } from "./clinic-config";
+import { BookingCalendarPicker } from "./components/BookingCalendarPicker";
+import { generateCalendarLinks, OPENING_DATE, PROFESSIONAL_EMAILS, type ProfessionalName } from "./clinic-config";
 
 function track(event: string, path = window.location.pathname) {
   void fetch("/api/events/", {
@@ -68,12 +69,54 @@ type ClinicTreatmentView = {
 };
 
 function nextBusinessDate() {
-  const openingDate = "2026-08-10";
   const date = new Date();
   date.setDate(date.getDate() + 1);
   while (date.getDay() === 0) date.setDate(date.getDate() + 1);
-  return date.toISOString().slice(0, 10) < openingDate ? openingDate : date.toISOString().slice(0, 10);
+  const isoStr = date.toISOString().slice(0, 10);
+  return isoStr < OPENING_DATE ? OPENING_DATE : isoStr;
 }
+
+function getNextBusinessDateStr(currentDateStr: string) {
+  const minDate = nextBusinessDate();
+  const baseStr = currentDateStr && currentDateStr >= minDate ? currentDateStr : minDate;
+  const parts = baseStr.split("-").map(Number);
+  const d = new Date(parts[0], parts[1] - 1, parts[2]);
+  d.setDate(d.getDate() + 1);
+  while (d.getDay() === 0) {
+    d.setDate(d.getDate() + 1);
+  }
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getPrevBusinessDateStr(currentDateStr: string) {
+  const minDate = nextBusinessDate();
+  if (!currentDateStr || currentDateStr <= minDate) return minDate;
+  const parts = currentDateStr.split("-").map(Number);
+  const d = new Date(parts[0], parts[1] - 1, parts[2]);
+  d.setDate(d.getDate() - 1);
+  while (d.getDay() === 0) {
+    d.setDate(d.getDate() - 1);
+  }
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const res = `${year}-${month}-${day}`;
+  return res < minDate ? minDate : res;
+}
+
+function formatDisplayDateSpanish(dateStr: string) {
+  if (!dateStr) return "";
+  const parts = dateStr.split("-").map(Number);
+  if (parts.length !== 3) return dateStr;
+  const d = new Date(parts[0], parts[1] - 1, parts[2]);
+  const days = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+  const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  return `${days[d.getDay()]} ${d.getDate()} de ${months[d.getMonth()]}`;
+}
+
 
 function BrandLockup({ className = "", compact = false }: { className?: string; compact?: boolean }) {
   return (
@@ -109,7 +152,7 @@ export default function Home() {
 
   const recommendedId = selectedTreatmentId || concerns.find((item) => item.id === concern)?.treatment || "evaluacion";
   const clinicTreatment = clinicTreatments.find((item) => item.id === recommendedId);
-  const eligibleProfessionals = clinicTreatment?.professionals ?? ["Kiara Moscoso", "Pía Orellana"];
+  const eligibleProfessionals = clinicTreatment?.professionals ?? ["Kiara Moscoso", "Pía Orellana", "Dr. Luis Moscoso"];
   const recommended = useMemo(() => {
     const marketing = treatments.find((item) => item.id === recommendedId);
     if (marketing) return marketing;
@@ -149,7 +192,7 @@ export default function Home() {
   }, [eligibleProfessionals, professional]);
 
   useEffect(() => {
-    if (!bookingOpen || step !== 3 || !date) return;
+    if (!bookingOpen || step !== 4 || !date) return;
     const controller = new AbortController();
     queueMicrotask(() => {
       setAvailabilityLoading(true);
@@ -251,7 +294,7 @@ export default function Home() {
       track("booking_confirmed");
     } catch (error) {
       setBookingError(error instanceof Error ? error.message : "No pudimos guardar la reserva.");
-      if (error instanceof Error && /ocup/i.test(error.message)) setStep(3);
+      if (error instanceof Error && /ocup/i.test(error.message)) setStep(4);
     } finally {
       setBookingLoading(false);
     }
@@ -541,10 +584,23 @@ export default function Home() {
               <>
                 <div className="modal-header">
                   <BrandLockup compact />
-                  <div><p>PASO 0{step} · DE 04</p><h2>{step === 1 ? "Comencemos por lo que te importa" : step === 2 ? "Una recomendación pensada para ti" : step === 3 ? "Elige tu momento" : "Los últimos detalles"}</h2></div>
+                  <div>
+                    <p>PASO 0{step} · DE 05</p>
+                    <h2>
+                      {step === 1
+                        ? "Comencemos por lo que te importa"
+                        : step === 2
+                        ? "Una recomendación pensada para ti"
+                        : step === 3
+                        ? "Elige quién te atenderá"
+                        : step === 4
+                        ? "Elige tu fecha y hora"
+                        : "Los últimos detalles"}
+                    </h2>
+                  </div>
                 </div>
                 <div className="opening-note"><span>APERTURA DE AGENDA</span><b>Desde el 18 de agosto</b><small>Atención privada · Rancagua</small></div>
-                <div className="progress" aria-label={`Paso ${step} de 4`}><span style={{ width: `${step * 25}%` }} /></div>
+                <div className="progress" aria-label={`Paso ${step} de 5`}><span style={{ width: `${step * 20}%` }} /></div>
                 {step === 1 && (
                   <div className="booking-step">
                     <p className="step-intro">Cada experiencia comienza escuchándote.</p>
@@ -563,15 +619,195 @@ export default function Home() {
                     </div>
                   </div>
                 )}
-                {step === 2 && <div className="booking-step"><p className="step-intro">Tu objetivo merece una indicación honesta.</p><h3 className="step-question">Este es el mejor lugar para comenzar.</h3><div className="result-card"><span>CURADURÍA BIOBELLE · RECOMENDACIÓN PERSONALIZADA</span><h3>{recommended ? recommended.eyebrow : "Evaluación estética personalizada"}</h3><p>{recommended ? recommended.copy : "Una conversación clínica para entender tu piel, tus expectativas y recomendarte opciones seguras."}</p><div><b>{recommended?.duration ?? "40 min"}</b><b>{recommended?.price ?? "Sin compromiso"}</b></div></div><label className="treatment-select-inline">Tratamiento o procedimiento<select value={selectedTreatmentId} onChange={(event) => setSelectedTreatmentId(event.target.value)}>{(clinicTreatments.length ? clinicTreatments : treatments.map((item) => ({ id: item.id, publicLabel: item.eyebrow, label: item.eyebrow, duration: item.duration, price: item.price, professionals: ["Kiara Moscoso", "Pía Orellana"] }))).map((item) => <option value={item.id} key={item.id}>{item.publicLabel || item.label}</option>)}</select></label><p className="disclaimer">La belleza consciente comienza con una evaluación. La indicación definitiva siempre será realizada por una profesional.</p></div>}
-                {step === 3 && <div className="booking-step schedule-step"><p className="step-intro">Tu tiempo también es parte de la experiencia.</p><h3 className="step-question">Reserva el momento que prefieras.</h3><fieldset className="professional-fieldset"><legend>{eligibleProfessionals.length === 1 ? "Profesional habilitada para este tratamiento" : "Elige quién te atenderá"}</legend><ProfessionalPicker value={professional} onChange={setProfessional} professionals={eligibleProfessionals} allowNoPreference={eligibleProfessionals.length > 1} /></fieldset><div className="schedule-fields date-only"><label>Fecha de atención<input type="date" min={nextBusinessDate()} value={date} onChange={(e) => setDate(e.target.value)} /></label></div><p className="slots-label">Disponibilidad en tiempo real</p>{availabilityLoading ? <div className="availability-status">Preparando las mejores horas para ti…</div> : availability.length ? <div className="time-grid">{availability.map((slot) => <button type="button" className={time === slot.time ? "selected" : ""} disabled={!slot.available} onClick={() => setTime(slot.time)} key={slot.time}><span>{slot.time}</span><small>{slot.available ? "Disponible" : "Ocupada"}</small></button>)}</div> : <div className="availability-status">No encontramos horas para esta fecha.<Link href={`/lista-espera?tratamiento=${recommended?.id ?? recommendedId}`}>Solicitar prioridad en lista de espera →</Link></div>}<small className="booking-assurance">✦ Tu hora se reserva exclusivamente para ti al confirmar.</small></div>}
+                {step === 2 && (
+                  <div className="booking-step">
+                    <p className="step-intro">Tu objetivo merece una indicación honesta.</p>
+                    <h3 className="step-question">Este es el mejor lugar para comenzar.</h3>
+                    <div className="result-card">
+                      <span>CURADURÍA BIOBELLE · RECOMENDACIÓN PERSONALIZADA</span>
+                      <h3>{recommended ? recommended.eyebrow : "Evaluación estética personalizada"}</h3>
+                      <p>{recommended ? recommended.copy : "Una conversación clínica para entender tu piel, tus expectativas y recomendarte opciones seguras."}</p>
+                      <div>
+                        <b>{recommended?.duration ?? "40 min"}</b>
+                        <b>{recommended?.price ?? "Sin compromiso"}</b>
+                      </div>
+                    </div>
+                    <label className="treatment-select-inline">
+                      Tratamiento o procedimiento
+                      <select value={selectedTreatmentId} onChange={(event) => setSelectedTreatmentId(event.target.value)}>
+                        {(clinicTreatments.length ? clinicTreatments : treatments.map((item) => ({ id: item.id, publicLabel: item.eyebrow, label: item.eyebrow, duration: item.duration, price: item.price, professionals: ["Kiara Moscoso", "Pía Orellana", "Dr. Luis Moscoso"] }))).map((item) => (
+                          <option value={item.id} key={item.id}>{item.publicLabel || item.label}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <p className="disclaimer">La belleza consciente comienza con una evaluación. La indicación definitiva siempre será realizada por una profesional.</p>
+                  </div>
+                )}
+                {step === 3 && (
+                  <div className="booking-step professional-step">
+                    <p className="step-intro">El trato humano y profesional que mereces.</p>
+                    <h3 className="step-question">¿Quién prefieres que te atienda?</h3>
+
+                    <fieldset className="professional-fieldset">
+                      <legend>
+                        {eligibleProfessionals.length === 1
+                          ? "Profesional habilitada para este tratamiento"
+                          : "Toca una profesional para ver sus días y horarios disponibles"}
+                      </legend>
+                      <ProfessionalPicker
+                        value={professional}
+                        onChange={(selectedPro) => {
+                          setProfessional(selectedPro);
+                          setStep(4);
+                        }}
+                        professionals={eligibleProfessionals}
+                        allowNoPreference={eligibleProfessionals.length > 1}
+                      />
+                    </fieldset>
+
+                    <div className="step-guidance-card">
+                      <span className="guidance-icon">✨</span>
+                      <div className="guidance-text">
+                        <b>{professional ? `Atención con ${professional}` : "Selecciona tu profesional"}</b>
+                        <small>Al continuar verás el calendario interactivo con las horas libres de {professional || "tu profesional"}.</small>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {step === 4 && (
+                  <div className="booking-step schedule-step">
+                    <p className="step-intro">Tu tiempo también es parte de la experiencia.</p>
+                    <h3 className="step-question">Selecciona tu día y horario de atención.</h3>
+
+                    <div className="selected-pro-banner">
+                      <div className="pro-banner-info">
+                        <span>Profesional:</span>
+                        <b>{professional}</b>
+                      </div>
+                      {eligibleProfessionals.length > 1 && (
+                        <button
+                          type="button"
+                          className="change-pro-btn"
+                          onClick={() => setStep(3)}
+                          title="Cambiar profesional"
+                        >
+                          Cambiar profesional ↺
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="calendar-selection-block">
+                      <div className="calendar-block-header">
+                        <h4>1. Selecciona el día en el calendario</h4>
+                        <span className="selected-date-badge">
+                          📅 {formatDisplayDateSpanish(date)}
+                        </span>
+                      </div>
+
+                      <BookingCalendarPicker
+                        selectedDate={date}
+                        onSelectDate={(newDate) => {
+                          setDate(newDate);
+                          setTime("");
+                        }}
+                        minDate={nextBusinessDate()}
+                      />
+                    </div>
+
+                    <div className="slots-header-row">
+                      <p className="slots-label">2. Horas disponibles para el {formatDisplayDateSpanish(date)}</p>
+                      {time && (
+                        <span className="selected-time-chip">
+                          ✓ Hora seleccionada: <b>{time} hrs</b>
+                        </span>
+                      )}
+                    </div>
+
+                    {availabilityLoading ? (
+                      <div className="availability-status loading">
+                        <div className="status-spinner" />
+                        <span>Consultando disponibilidad en tiempo real…</span>
+                      </div>
+                    ) : availability.some((slot) => slot.available) ? (
+                      <>
+                        <div className="time-grid">
+                          {availability.map((slot) => (
+                            <button
+                              type="button"
+                              className={time === slot.time ? "selected" : ""}
+                              disabled={!slot.available}
+                              onClick={() => setTime(slot.time)}
+                              key={slot.time}
+                            >
+                              <span>{slot.time}</span>
+                              <small>{slot.available ? "Disponible" : "Ocupada"}</small>
+                            </button>
+                          ))}
+                        </div>
+                        {!time && (
+                          <div className="time-selection-guide info">
+                            <span>👇 <b>Toca una hora disponible arriba</b> para habilitar el botón "Continuar con mis datos".</span>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="availability-empty-guide">
+                        <div className="empty-guide-header">
+                          <span className="empty-guide-icon">📅</span>
+                          <div>
+                            <h4>Sin horas disponibles para este día</h4>
+                            <p>
+                              No encontramos cupos con <b>{professional || "esta profesional"}</b> para el <b>{formatDisplayDateSpanish(date)}</b>.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="empty-guide-box">
+                          <p className="guide-title"><b>👉 ¿Cómo deseas continuar?</b></p>
+                          <div className="empty-guide-actions">
+                            <button
+                              type="button"
+                              className="btn-guide-next-date"
+                              onClick={() => {
+                                const nextDate = getNextBusinessDateStr(date);
+                                setDate(nextDate);
+                                setTime("");
+                              }}
+                            >
+                              📅 Probar siguiente día ({formatDisplayDateSpanish(getNextBusinessDateStr(date))}) →
+                            </button>
+                            <span className="guide-or-text">o bien</span>
+                            <Link
+                              className="btn-guide-waitlist"
+                              href={`/lista-espera?tratamiento=${recommended?.id ?? recommendedId}`}
+                            >
+                              📋 Solicitar prioridad en lista de espera →
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className={`step-action-bar ${time ? "ready" : "pending"}`}>
+                      {!availabilityLoading && !availability.some((slot) => slot.available) ? (
+                        <span>⚠️ <b>Toca otro día en el calendario ⬆️</b> o presiona "Probar siguiente día".</span>
+                      ) : !availabilityLoading && !time ? (
+                        <span>👇 <b>Selecciona una hora disponible</b> para continuar al último paso.</span>
+                      ) : time ? (
+                        <span>✓ Cita a las <b>{time} hrs</b> seleccionada. Presiona "Continuar con mis datos".</span>
+                      ) : null}
+                    </div>
+
+                    <small className="booking-assurance">✦ Tu hora se reserva exclusivamente para ti al confirmar.</small>
+                  </div>
+                )}
+                {step === 5 && (
                   <div className="booking-step details-step">
                     <p className="step-intro">Estás a un paso de tu experiencia BIOBELLE.</p>
                     <div className="booking-summary">
-                      <span>SELECCIÓN PERSONALIZADA</span>
+                      <span>RESUMEN DE TU CITA</span>
                       <b>{recommended?.eyebrow ?? "Evaluación personalizada"}</b>
-                      <small>{date.split("-").reverse().join("/")} · {time} · {professional || "Según disponibilidad equilibrada"}</small>
+                      <small>📅 {formatDisplayDateSpanish(date)} · ⏰ {time} hrs · 👩‍⚕️ {professional}</small>
                     </div>
 
                     <details className="booking-policy-notice" open>
@@ -593,7 +829,33 @@ export default function Home() {
                   </div>
                 )}
                 {bookingError && <p className="booking-error" role="alert">{bookingError}</p>}
-                <div className="modal-actions"><button className="back" onClick={() => step > 1 ? setStep(step - 1) : closeBooking()} disabled={bookingLoading}>{step > 1 ? "← Volver" : "← Volver al sitio"}</button><button className="continue" disabled={(step === 3 && (!time || availabilityLoading)) || (step === 4 && (!name.trim() || !phone.trim() || !privacyConsent || bookingLoading))} onClick={() => step < 4 ? setStep(step + 1) : void submitBooking()}>{step === 4 ? (bookingLoading ? "Reservando tu momento…" : "Reservar mi experiencia") : "Continuar con mi selección"} <span>→</span></button></div>
+                <div className="modal-actions">
+                  <button className="back" onClick={() => (step > 1 ? setStep(step - 1) : closeBooking())} disabled={bookingLoading}>
+                    {step > 1 ? "← Volver" : "← Volver al sitio"}
+                  </button>
+                  <button
+                    className="continue"
+                    disabled={
+                      (step === 1 && !concern) ||
+                      (step === 2 && !selectedTreatmentId) ||
+                      (step === 3 && !professional) ||
+                      (step === 4 && (!time || availabilityLoading)) ||
+                      (step === 5 && (!name.trim() || !phone.trim() || !privacyConsent || bookingLoading))
+                    }
+                    onClick={() => (step < 5 ? setStep(step + 1) : void submitBooking())}
+                  >
+                    {step === 5
+                      ? bookingLoading
+                        ? "Reservando tu momento…"
+                        : "Reservar mi experiencia"
+                      : step === 3
+                      ? "Continuar al calendario"
+                      : step === 4
+                      ? "Continuar con mis datos"
+                      : "Continuar con mi selección"}{" "}
+                    <span>→</span>
+                  </button>
+                </div>
               </>
             ) : (
               <div className="confirmation">

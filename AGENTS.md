@@ -34,14 +34,16 @@ como implementadas.
 
 ## Agenda implementada
 
-- Agenda online estilo premium, en modal, con flujo por pasos.
-- Seleccion de tratamiento, profesional, fecha, hora y datos de paciente.
-- Fecha minima de reserva: 10 de agosto de 2026.
+- Agenda online estilo premium, en modal, con flujo guiado de 5 pasos:
+  1. Procedimiento o motivo de consulta.
+  2. Recomendación y confirmación de tratamiento.
+  3. Selección de profesional con tarjetas dedicadas.
+  4. Calendario visual mensual interactivo (con selección táctil de días hábiles, navegación de meses, bloqueo de domingos) y grilla de horarios libres en tiempo real.
+  5. Datos de contacto, políticas de reserva transparentes y confirmación.
+- Fecha minima de reserva: apertura oficial desde el 18 de agosto de 2026.
 - Horarios de atención Lunes a Viernes (60 min cada cita): 08:30, 09:45, 11:00, 12:15, 13:30, 14:45, 16:00 y 17:15.
 - Horarios de atención Sábados (60 min cada cita): 08:30, 09:45, 11:00 y 12:15.
-- Profesionales visibles: Kiara Moscoso y Pia Orellana con la misma jerarquia
-  visual. La opcion sin preferencia existe solo como asignacion secundaria y
-  equilibrada, no como tarjeta principal.
+- Profesionales visibles: Kiara Moscoso, Pía Orellana y Dr. Luis Moscoso.
 - Validacion para evitar reservas duplicadas activas en el mismo horario.
 - Confirmacion de reserva con codigo.
 - Link de gestion de reserva para reprogramar o cancelar.

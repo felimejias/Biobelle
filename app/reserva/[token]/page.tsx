@@ -83,7 +83,7 @@ export default function ReservationPage() {
     return () => controller.abort();
   }, []);
 
-  const eligibleProfessionals = clinicTreatments.find((item) => item.id === booking?.treatmentId)?.professionals ?? ["Kiara Moscoso", "Pía Orellana"];
+  const eligibleProfessionals = clinicTreatments.find((item) => item.id === booking?.treatmentId)?.professionals ?? ["Kiara Moscoso", "Pía Orellana", "Dr. Luis Moscoso"];
 
   const changeBooking = async (action: "cancel" | "reschedule") => {
     if (action === "cancel" && !window.confirm("¿Confirmas que deseas cancelar esta hora?")) return;

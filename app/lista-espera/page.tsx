@@ -45,9 +45,9 @@ export default function WaitlistPage() {
     return () => controller.abort();
   }, []);
 
-  const treatmentOptions = clinicTreatments.length ? clinicTreatments : treatments.map(([id, label]) => ({ id, label, publicLabel: label, professionals: ["Kiara Moscoso", "Pía Orellana"] }));
+  const treatmentOptions = clinicTreatments.length ? clinicTreatments : treatments.map(([id, label]) => ({ id, label, publicLabel: label, professionals: ["Kiara Moscoso", "Pía Orellana", "Dr. Luis Moscoso"] }));
   const selectedTreatment = treatmentOptions.find((item) => item.id === treatmentId);
-  const eligibleProfessionals = selectedTreatment?.professionals ?? ["Kiara Moscoso", "Pía Orellana"];
+  const eligibleProfessionals = selectedTreatment?.professionals ?? ["Kiara Moscoso", "Pía Orellana", "Dr. Luis Moscoso"];
 
   useEffect(() => {
     if (eligibleProfessionals.length === 1) setProfessional(eligibleProfessionals[0]);

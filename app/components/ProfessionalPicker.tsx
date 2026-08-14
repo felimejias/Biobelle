@@ -21,6 +21,13 @@ const options = [
     note: "Armonización · Láser · Salud integral",
     image: "/images/pia-orellana-clean.png",
   },
+  {
+    value: "Dr. Luis Moscoso",
+    name: "Dr. Luis Moscoso",
+    role: "Médico Cirujano Estético · Director Médico",
+    note: "Medicina Estética · Armonización Facial",
+    image: "/images/dr-luis-moscoso.jpg",
+  },
 ];
 
 export function ProfessionalPicker({ value, onChange, compact = false, professionals }: ProfessionalPickerProps) {
