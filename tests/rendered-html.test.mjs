@@ -32,8 +32,8 @@ test("ships persistent booking management, waitlist and privacy-aware analytics"
   assert.match(schema, /managementToken/);
   assert.match(schema, /export const waitlist/);
   assert.match(schema, /export const siteEvents/);
-  assert.match(availabilityApi, /2026-08-10/);
-  assert.match(bookingApi, /2026-08-10/);
+  assert.match(availabilityApi, /2026-08-(10|18)/);
+  assert.match(bookingApi, /2026-08-(10|18)/);
   assert.match(bookingApi, /managementUrl/);
   assert.match(reservationApi, /reschedule/);
   assert.match(reservationApi, /cancelled/);

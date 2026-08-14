@@ -2,7 +2,7 @@ export const PROFESSIONALS = ["Kiara Moscoso", "Pía Orellana", "Dr. Luis Moscos
 export const WEEKDAY_SLOTS = ["08:30", "09:45", "11:00", "12:15", "13:30", "14:45", "16:00", "17:15"] as const;
 export const SATURDAY_SLOTS = ["08:30", "09:45", "11:00", "12:15"] as const;
 export const SLOTS = [...WEEKDAY_SLOTS] as const;
-export const OPENING_DATE = "2026-08-10";
+export const OPENING_DATE = "2026-08-18";
 
 export function getSlotsForDay(dayOfWeek: number): readonly string[] {
   if (dayOfWeek === 6) return SATURDAY_SLOTS;

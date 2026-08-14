@@ -113,7 +113,7 @@ export async function POST(request: Request) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || day === 0) {
       return Response.json({ error: "La fecha seleccionada no está disponible." }, { status: 400 });
     }
-    if (date < OPENING_DATE) return Response.json({ error: "La agenda BIOBELLE comienza el 10 de agosto de 2026." }, { status: 400 });
+    if (date < OPENING_DATE) return Response.json({ error: "La agenda BIOBELLE comienza el 18 de agosto de 2026." }, { status: 400 });
     const validSlots = getSlotsForDay(day);
     if (!validSlots.includes(time)) return Response.json({ error: "La hora seleccionada no está disponible." }, { status: 400 });
     if (patientName.length < 3 || patientName.length > 100) return Response.json({ error: "Ingresa tu nombre completo." }, { status: 400 });

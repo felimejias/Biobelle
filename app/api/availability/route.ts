@@ -20,7 +20,7 @@ export async function GET(request: Request) {
   }
 
   if (date < OPENING_DATE) {
-    return Response.json({ date, slots: [], closed: true, beforeOpening: true, message: "La agenda BIOBELLE comienza el 10 de agosto de 2026." });
+    return Response.json({ date, slots: [], closed: true, beforeOpening: true, message: "La agenda BIOBELLE comienza el 18 de agosto de 2026." });
   }
 
   const day = new Date(`${date}T12:00:00`).getDay();
