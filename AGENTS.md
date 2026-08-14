@@ -165,14 +165,14 @@ AgendaPro, pero propia de la marca. Nombre sugerido: `Bella IA`.
 
 Funciones esperadas:
 
-- Confirmar automaticamente reservas por WhatsApp.
-- Enviar recordatorios 24 o 48 horas antes.
+- Confirmar automaticamente reservas por WhatsApp (24h y 48h antes) con botones interactivos (Confirmar, Reagendar, Cancelar).
+- Enviar recordatorios con enlace de gestion rápida.
 - Preguntar si la paciente confirma, cancela o necesita reprogramar.
-- Liberar horas cuando alguien cancela.
-- Ofrecer horarios alternativos automaticamente.
-- Contactar lista de espera cuando se libera una hora.
-- Enviar instrucciones previas al tratamiento.
-- Enviar cuidados posteriores.
+- Liberar horas cuando alguien cancela y ofrecer horarios alternativos.
+- **Recuperación activa de lista de espera**: Al liberarse una hora, Bella IA contacta automáticamente por WhatsApp a la primera paciente de la lista de espera interesada en ese tratamiento/horario con confirmación en un clic.
+- **Protocolos clínicos pre y post-tratamiento**:
+  - Enviar instrucciones previas de preparación según el tratamiento agendado (ej. Láser Q-Switched / Hollywood Peel: evitar sol 48h antes; Bótox/Ácido Hialurónico: evitar anticoagulantes/alcohol).
+  - Enviar cuidados posteriores automáticamente cuando la profesional marca la cita como "Atendida" en el panel.
 - Detectar cuando una paciente no responde y escalar a recepcion.
 - Registrar historial de mensajes en la ficha del paciente.
 - Medir confirmaciones, cancelaciones, no-show y recuperacion de horas.
@@ -186,20 +186,56 @@ Requisitos antes de construir Bella IA:
 - Plantillas aprobadas para confirmaciones, recordatorios y reprogramaciones.
 - Politica de consentimiento clara para recibir mensajes.
 - Variables de entorno seguras para tokens/API, nunca en el codigo.
-- Decidir si se usara OpenAI para respuestas inteligentes o solo reglas
-  deterministicas al inicio.
 
-Primera fase recomendada:
+## Idea futura obligatoria: pagos online y validación de abonos
 
-- Recordatorios y confirmaciones deterministicas por WhatsApp.
-- Estados: enviado, entregado, respondido, confirmado, cancelar, reprogramar.
-- Escalamiento manual a recepcion si la respuesta no es clara.
+Objetivo: permitir el cobro automatizado de abonos ($20.000 para tratamientos / $10.000 para evaluación) para reducir el No-Show a 0%.
 
-Segunda fase recomendada:
+Opciones a integrar:
 
-- IA conversacional para entender respuestas naturales.
-- Recomendacion automatica de horarios.
-- Recuperacion de cancelaciones con lista de espera.
+- Pasarela de pago web (Flow, Mercado Pago o Transbank Webpay Plus).
+- Webhook de confirmación instantánea: la reserva pasa de `pending` a `confirmed` automáticamente al aprobarse la transacción.
+- Carga de comprobante de transferencia bancaria para validación rápida desde el panel administrativo.
+- Registro contable del abono y saldo pendiente a pagar el día de la cita.
+
+## Idea futura obligatoria: consentimientos informados y ficha clínica con firma digital
+
+Objetivo: eliminar papeles y cumplir normativas sanitarias con firma digital y registro fotográfico.
+
+Funciones:
+
+- **Firma digital de consentimiento informado**: La paciente firma con su dedo desde su teléfono o en tablet de recepción antes de la sesión para procedimientos como Bótox, Ácido Hialurónico, Láser Nd:YAG, PRP, Fibroblast, etc.
+- **Ficha clínica con galería Antes / Después**: Subida privada de fotografías clínicas para comparar la evolución estética sesión a sesión con comparador visual (*Before/After slider*).
+- Historial de procedimientos y dosis aplicadas (ej. unidades de toxina botulínica o ml de ácido hialurónico).
+
+## Idea futura obligatoria: sincronización bidireccional con Google Calendar
+
+Objetivo: mantener la agenda del teléfono de las profesionales y la web 100% sincronizadas en tiempo real.
+
+Funciones:
+
+- Creación automática del evento en el Google Calendar de Kiara (`kiaramoscoso77@gmail.com`), Pía (`piaorellana96@gmail.com`) y Dr. Luis Moscoso al agendarse en la web.
+- **Bloqueo bidireccional**: Si la profesional bloquea una hora en el Google Calendar de su teléfono, esa hora se bloquea automáticamente en la web de Biobelle.
+
+## Idea futura obligatoria: motor de reactivación y mantenciones periódicas
+
+Objetivo: fidelizar a las pacientes y asegurar la continuidad de sus tratamientos.
+
+Funciones:
+
+- **Recordatorio automático de mantención de Bótox**: A los 4–5 meses de la aplicación, el sistema envía un mensaje invitando a agendar la mantención de toxina botulínica.
+- **Seguimiento de sesiones de Láser / PRP**: Recordatorio a los 30 días para agendar la siguiente sesión del protocolo.
+- **Cross-selling estético**: Oferta de tratamientos complementarios (ej. Limpieza facial + Hollywood Peel) con descuentos exclusivos.
+
+## Idea futura obligatoria: dashboard financiero y reporte de comisiones
+
+Objetivo: reportería comercial y operativa para la administración del centro.
+
+Funciones:
+
+- Cálculo automático de ingresos y comisiones por profesional (Kiara, Pía, Dr. Luis).
+- Ocupación de boxes y porcentaje de horas utilizadas vs disponibles.
+- Reporte de tratamientos más demandados y rentabilidad por procedimiento.
 
 ## Idea futura obligatoria: modulo QuantusChile tipo AgendaPro
 
@@ -237,70 +273,6 @@ Inspiracion tomada del menu funcional de AgendaPro:
 - Fidelizacion de clientes.
 - Gift cards.
 - Asistente IA comercial/operativa tipo Charly, adaptada a BIOBELLE.
-
-### Enfoque recomendado para QuantusChile
-
-- Mantener BIOBELLE como experiencia publica y agenda premium.
-- Usar QuantusChile como capa operacional futura para ventas, caja, inventario,
-  pagos, reportes y automatizaciones.
-- Integrar por API cuando existan reglas reales, usuarios definidos y flujo de
-  caja/pagos validado.
-- Evitar duplicar datos sensibles: definir una fuente de verdad para pacientes,
-  reservas, pagos e historial clinico antes de sincronizar.
-
-## Idea futura obligatoria: pagos online
-
-Esto tambien va si o si, pero aun no esta implementado.
-
-Objetivo: permitir pagos o abonos asociados a la reserva, idealmente para reducir
-inasistencias y ordenar la operacion.
-
-Opciones a evaluar:
-
-- Abono para confirmar la hora.
-- Pago total anticipado.
-- Pago de reserva reembolsable o no reembolsable segun politica.
-- Cupones o descuentos de inauguracion.
-- Pago presencial registrado manualmente por administracion.
-
-Proveedores posibles en Chile:
-
-- Mercado Pago.
-- Flow.
-- Transbank Webpay.
-- Khipu.
-
-Requisitos antes de implementar pagos:
-
-- Razon social o datos tributarios definidos.
-- Cuenta bancaria o cuenta del proveedor creada.
-- Politica de reembolso/cancelacion.
-- Confirmar si el pago sera por tratamiento o solo reserva/abono.
-- Integracion de webhook para marcar pagos como aprobados o fallidos.
-- Registro en panel administrativo del estado de pago.
-
-Estados futuros sugeridos:
-
-- Sin pago requerido.
-- Pendiente de pago.
-- Abono pagado.
-- Pagado completo.
-- Fallido.
-- Reembolsado.
-
-## Ideas futuras premium
-
-- Portal de paciente para ver historial y recomendaciones.
-- Ficha clinica mas completa con antecedentes y consentimientos.
-- Firma digital de consentimiento informado por tratamiento.
-- Encuesta post-atencion.
-- Segmentacion de pacientes para campañas responsables.
-- Programas o packs de tratamientos.
-- Gift cards.
-- Landing especial de inauguracion.
-- Blog educativo con SEO local.
-- Integracion con Instagram para mostrar contenido aprobado.
-- Dashboard mensual de ventas, reservas, no-show y tratamientos mas solicitados.
 
 ## Reglas de trabajo para futuros agentes
 
