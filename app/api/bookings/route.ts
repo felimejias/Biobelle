@@ -176,7 +176,7 @@ export async function POST(request: Request) {
           phone,
           privacyConsent: true,
           reminderConsent: payload.reminderConsent !== false,
-          status: "pending",
+          status: "confirmed",
           createdAt: new Date(),
         });
 
