@@ -43,9 +43,10 @@ export async function GET(request: Request) {
     identity.role === "professional" ? getClinicTreatments(db, true) : getClinicTreatments(db, false),
   ]);
 
-  const clientMap = new Map<string, { name: string; phone: string; visits: number; lastDate: string; treatments: Set<string> }>();
+  const clientMap = new Map<string, { name: string; rut?: string | null; phone: string; visits: number; lastDate: string; treatments: Set<string> }>();
   for (const row of recentRows) {
-    const current = clientMap.get(row.phone) ?? { name: row.patientName, phone: row.phone, visits: 0, lastDate: row.appointmentDate, treatments: new Set<string>() };
+    const current = clientMap.get(row.phone) ?? { name: row.patientName, rut: row.patientRut, phone: row.phone, visits: 0, lastDate: row.appointmentDate, treatments: new Set<string>() };
+    if (row.patientRut && !current.rut) current.rut = row.patientRut;
     current.visits += row.status !== "cancelled" ? 1 : 0;
     if (row.appointmentDate > current.lastDate) current.lastDate = row.appointmentDate;
     current.treatments.add(row.treatmentName);

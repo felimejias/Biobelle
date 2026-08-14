@@ -4,10 +4,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { FiBarChart2, FiCalendar, FiChevronLeft, FiChevronRight, FiClock, FiLogOut, FiMenu, FiPlus, FiSearch, FiSettings, FiUsers, FiX } from "react-icons/fi";
 import type { AdminIdentity } from "../admin-auth";
 
-type Booking = { id: string; confirmationCode: string; treatmentId: string; treatmentName: string; professional: string; appointmentDate: string; appointmentTime: string; patientName: string; phone: string; reminderConsent: boolean; status: string };
+type Booking = { id: string; confirmationCode: string; treatmentId: string; treatmentName: string; professional: string; appointmentDate: string; appointmentTime: string; patientName: string; patientRut?: string | null; phone: string; reminderConsent: boolean; status: string };
 type Block = { id: string; professional: string; blockDate: string; startTime: string; endTime: string; reason: string };
-type WaitlistEntry = { id: string; name: string; phone: string; treatmentId: string; preferredDate: string | null; professional: string; status: string };
-type Client = { name: string; phone: string; visits: number; lastDate: string; treatments: string[] };
+type WaitlistEntry = { id: string; name: string; phone: string; patientRut?: string | null; treatmentId: string; preferredDate: string | null; professional: string; status: string };
+type Client = { name: string; rut?: string | null; phone: string; visits: number; lastDate: string; treatments: string[] };
 type User = { id: string; username: string; name: string; role: string; professional: string | null; active: boolean };
 type Note = { id: string; phone: string; note: string; authorEmail: string; createdAt: string };
 type AdminTreatment = { id: string; label: string; publicLabel: string; duration: string; price: string; active: boolean; sortOrder: number; professionals: string[] };
@@ -118,7 +118,7 @@ export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdenti
   const filteredClients = useMemo(() => {
     const query = search.trim().toLowerCase();
     if (!query) return data?.clients ?? [];
-    return (data?.clients ?? []).filter((item) => `${item.name} ${item.phone}`.toLowerCase().includes(query));
+    return (data?.clients ?? []).filter((item) => `${item.name} ${item.phone} ${item.rut ?? ""}`.toLowerCase().includes(query));
   }, [data?.clients, search]);
 
   const identity = data?.identity ?? initialIdentity;
@@ -273,7 +273,7 @@ function AgendaView({ date, setDate, data, canEdit, onBooking, onBlock, onDelete
 }
 
 function ClientsView({ clients, search, setSearch, onClient }: { clients: Client[]; search: string; setSearch: (value: string) => void; onClient: (client: Client) => void }) {
-  return <div className="admin-content"><div className="admin-section-head"><div><p>BASE DE PACIENTES</p><h2>Relaciones que continúan.</h2></div><label className="admin-search"><FiSearch /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar por nombre o WhatsApp" /></label></div><div className="admin-table clients-table"><div className="table-head"><span>Paciente</span><span>Contacto</span><span>Atenciones</span><span>Última fecha</span><span></span></div>{clients.map((item) => <button className="table-row" key={item.phone} onClick={() => onClient(item)}><span><b>{item.name}</b><small>{item.treatments.slice(0, 2).join(" · ")}</small></span><span>{item.phone}</span><span>{item.visits}</span><span>{item.lastDate.split("-").reverse().join("/")}</span><span>Ver ficha →</span></button>)}{!clients.length && <div className="admin-empty">No encontramos pacientes con esa búsqueda.</div>}</div></div>;
+  return <div className="admin-content"><div className="admin-section-head"><div><p>BASE DE PACIENTES</p><h2>Fichas y registros clínicos (Ley 20.584).</h2></div><label className="admin-search"><FiSearch /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar por nombre, RUT o WhatsApp" /></label></div><div className="admin-table clients-table"><div className="table-head"><span>Paciente</span><span>RUT / ID</span><span>Contacto</span><span>Atenciones</span><span>Última fecha</span><span></span></div>{clients.map((item) => <button className="table-row" key={item.phone} onClick={() => onClient(item)}><span><b>{item.name}</b><small>{item.treatments.slice(0, 2).join(" · ")}</small></span><span><b>{item.rut ?? "Sin RUT"}</b></span><span>{item.phone}</span><span>{item.visits}</span><span>{item.lastDate.split("-").reverse().join("/")}</span><span>Ver ficha →</span></button>)}{!clients.length && <div className="admin-empty">No encontramos pacientes con esa búsqueda.</div>}</div></div>;
 }
 
 function WaitlistView({ entries, onStatus }: { entries: WaitlistEntry[]; onStatus: (id: string, status: string) => void }) {

@@ -2,6 +2,7 @@ import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "../../../db";
 import { bookings, scheduleBlocks } from "../../../db/schema";
 import { OPENING_DATE, PROFESSIONAL_EMAILS, SLOTS, getSlotsForDay, generateCalendarLinks, isProfessional, type ProfessionalName } from "../../clinic-config";
+import { formatRut, validateRut } from "../../rut-validator";
 import { getTreatmentById } from "../../treatment-service";
 
 // Apertura operacional BIOBELLE: 2026-08-10.
@@ -12,6 +13,8 @@ type BookingPayload = {
   date?: string;
   time?: string;
   name?: string;
+  rut?: string;
+  isPassport?: boolean;
   phone?: string;
   privacyConsent?: boolean;
   reminderConsent?: boolean;
@@ -104,6 +107,8 @@ export async function POST(request: Request) {
     const date = payload.date?.trim() ?? "";
     const time = payload.time?.trim() ?? "";
     const patientName = payload.name?.trim() ?? "";
+    const rawRut = payload.rut?.trim() ?? "";
+    const isPassport = Boolean(payload.isPassport);
     const phone = normalizePhone(payload.phone?.trim() ?? "");
 
     const db = getDb();
@@ -117,6 +122,22 @@ export async function POST(request: Request) {
     const validSlots = getSlotsForDay(day);
     if (!validSlots.includes(time)) return Response.json({ error: "La hora seleccionada no está disponible." }, { status: 400 });
     if (patientName.length < 3 || patientName.length > 100) return Response.json({ error: "Ingresa tu nombre completo." }, { status: 400 });
+    
+    let patientRut: string | null = null;
+    if (rawRut) {
+      if (!isPassport) {
+        if (!validateRut(rawRut)) {
+          return Response.json({ error: "El RUT ingresado no es válido. Revisa los dígitos o marca la opción de Pasaporte/DNI extranjero." }, { status: 400 });
+        }
+        patientRut = formatRut(rawRut);
+      } else {
+        if (rawRut.length < 4 || rawRut.length > 25) {
+          return Response.json({ error: "Ingresa un número de pasaporte o DNI válido." }, { status: 400 });
+        }
+        patientRut = `EXT-${rawRut.toUpperCase()}`;
+      }
+    }
+    
     if (phone.length < 10 || phone.length > 16) return Response.json({ error: "Ingresa un WhatsApp válido." }, { status: 400 });
     if (payload.privacyConsent !== true) return Response.json({ error: "Debes aceptar el uso de tus datos para gestionar la reserva." }, { status: 400 });
 
@@ -173,6 +194,7 @@ export async function POST(request: Request) {
           appointmentDate: date,
           appointmentTime: time,
           patientName,
+          patientRut,
           phone,
           privacyConsent: true,
           reminderConsent: payload.reminderConsent !== false,

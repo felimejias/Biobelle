@@ -7,6 +7,7 @@ import { BrandSocial } from "./components/BrandSocial";
 import { ProfessionalPicker } from "./components/ProfessionalPicker";
 import { BookingCalendarPicker } from "./components/BookingCalendarPicker";
 import { generateCalendarLinks, OPENING_DATE, PROFESSIONAL_EMAILS, type ProfessionalName } from "./clinic-config";
+import { formatRut, validateRut } from "./rut-validator";
 
 function track(event: string, path = window.location.pathname) {
   void fetch("/api/events/", {
@@ -138,6 +139,8 @@ export default function Home() {
   const [date, setDate] = useState(nextBusinessDate);
   const [time, setTime] = useState("");
   const [name, setName] = useState("");
+  const [rut, setRut] = useState("");
+  const [isPassport, setIsPassport] = useState(false);
   const [phone, setPhone] = useState("");
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [reminderConsent, setReminderConsent] = useState(true);
@@ -277,6 +280,8 @@ export default function Home() {
           date,
           time,
           name,
+          rut,
+          isPassport,
           phone,
           privacyConsent,
           reminderConsent,
@@ -821,11 +826,60 @@ export default function Home() {
                     </details>
 
                     <div className="detail-fields">
-                      <label>Tu nombre completo<input value={name} onChange={(e) => setName(e.target.value)} placeholder="¿Cómo quieres que te recibamos?" autoComplete="name" /></label>
-                      <label>WhatsApp de contacto<input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+56 9 1234 5678" inputMode="tel" autoComplete="tel" /></label>
+                      <label>
+                        Tu nombre completo
+                        <input
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="¿Cómo quieres que te recibamos?"
+                          autoComplete="name"
+                          required
+                        />
+                      </label>
+                      <label>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span>{isPassport ? "Pasaporte / DNI Extranjero" : "RUT (Identificación paciente)"}</span>
+                          <button
+                            type="button"
+                            onClick={() => { setIsPassport(!isPassport); setRut(""); }}
+                            style={{ background: "none", border: "none", color: "var(--wine)", fontSize: "9.5px", cursor: "pointer", textDecoration: "underline" }}
+                          >
+                            {isPassport ? "Usar RUT chileno" : "Tengo Pasaporte / Extranjero"}
+                          </button>
+                        </div>
+                        <input
+                          value={rut}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (isPassport) {
+                              setRut(val.toUpperCase());
+                            } else {
+                              setRut(formatRut(val));
+                            }
+                          }}
+                          placeholder={isPassport ? "Ej. A12345678" : "12.345.678-5"}
+                          autoComplete="off"
+                        />
+                        {!isPassport && rut.length >= 8 && (
+                          <small style={{ fontSize: "10px", marginTop: "3px", display: "block", color: validateRut(rut) ? "#2e7d32" : "#c62828", fontWeight: 600 }}>
+                            {validateRut(rut) ? "✓ RUT válido (Ley 20.584)" : "⚠️ RUT inválido (revisa el dígito verificador)"}
+                          </small>
+                        )}
+                      </label>
+                      <label>
+                        WhatsApp de contacto
+                        <input
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="+56 9 1234 5678"
+                          inputMode="tel"
+                          autoComplete="tel"
+                          required
+                        />
+                      </label>
                     </div>
                     <label className="checkbox"><input type="checkbox" checked={reminderConsent} onChange={(e) => setReminderConsent(e.target.checked)} /> Deseo recibir recordatorios e indicaciones de preparación por WhatsApp.</label>
-                    <label className="checkbox required-consent"><input type="checkbox" checked={privacyConsent} onChange={(e) => setPrivacyConsent(e.target.checked)} /> Acepto las <Link href="/terminos" target="_blank">Políticas de Reserva</Link> y la <Link href="/privacidad" target="_blank">Política de Privacidad</Link>.</label>
+                    <label className="checkbox required-consent"><input type="checkbox" checked={privacyConsent} onChange={(e) => setPrivacyConsent(e.target.checked)} /> Acepto las <Link href="/terminos" target="_blank">Políticas de Reserva</Link> y la <Link href="/privacidad" target="_blank">Política de Privacidad</Link> (Ley 20.584 y 19.628).</label>
                   </div>
                 )}
                 {bookingError && <p className="booking-error" role="alert">{bookingError}</p>}
@@ -840,7 +894,7 @@ export default function Home() {
                       (step === 2 && !selectedTreatmentId) ||
                       (step === 3 && !professional) ||
                       (step === 4 && (!time || availabilityLoading)) ||
-                      (step === 5 && (!name.trim() || !phone.trim() || !privacyConsent || bookingLoading))
+                      (step === 5 && (!name.trim() || !phone.trim() || !privacyConsent || (rut.length > 0 && !isPassport && !validateRut(rut)) || bookingLoading))
                     }
                     onClick={() => (step < 5 ? setStep(step + 1) : void submitBooking())}
                   >

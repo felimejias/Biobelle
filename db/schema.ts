@@ -14,6 +14,7 @@ export const bookings = sqliteTable(
     appointmentDate: text("appointment_date").notNull(),
     appointmentTime: text("appointment_time").notNull(),
     patientName: text("patient_name").notNull(),
+    patientRut: text("patient_rut"),
     phone: text("phone").notNull(),
     privacyConsent: integer("privacy_consent", { mode: "boolean" }).notNull().default(false),
     reminderConsent: integer("reminder_consent", { mode: "boolean" }).notNull().default(true),
@@ -27,6 +28,7 @@ export const bookings = sqliteTable(
       table.appointmentTime,
     ).where(sql`${table.status} IN ('pending', 'confirmed')`),
     index("bookings_phone_idx").on(table.phone),
+    index("bookings_rut_idx").on(table.patientRut),
     index("bookings_date_idx").on(table.appointmentDate),
   ],
 );
@@ -37,6 +39,7 @@ export const waitlist = sqliteTable(
     id: text("id").primaryKey(),
     name: text("name").notNull(),
     phone: text("phone").notNull(),
+    patientRut: text("patient_rut"),
     treatmentId: text("treatment_id").notNull(),
     preferredDate: text("preferred_date"),
     professional: text("professional").notNull().default("Sin preferencia"),
@@ -44,7 +47,11 @@ export const waitlist = sqliteTable(
     status: text("status").notNull().default("waiting"),
     createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
   },
-  (table) => [index("waitlist_phone_idx").on(table.phone), index("waitlist_status_idx").on(table.status)],
+  (table) => [
+    index("waitlist_phone_idx").on(table.phone),
+    index("waitlist_rut_idx").on(table.patientRut),
+    index("waitlist_status_idx").on(table.status),
+  ],
 );
 
 export const siteEvents = sqliteTable(
