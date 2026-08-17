@@ -111,3 +111,17 @@ test("enforces exact shift matrix and isolates personal calendars from clinic ev
   assert.doesNotMatch(calendarApi, /felipe\.mejias/i);
   assert.doesNotMatch(bookingApi, /felipe\.mejias/i);
 });
+
+test("allows administrators to change professional photos across the platform", async () => {
+  const [schema, adminApi, dashboard] = await Promise.all([
+    source("db/schema.ts"),
+    source("app/api/admin/route.ts"),
+    source("app/administracion/AdminDashboard.tsx"),
+  ]);
+
+  assert.match(schema, /export const professionalProfiles/);
+  assert.match(adminApi, /update_professional_photo/);
+  assert.match(dashboard, /Cambiar foto/);
+  assert.match(dashboard, /PhotoEditorModal/);
+});
+

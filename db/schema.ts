@@ -165,3 +165,14 @@ export const professionalTreatments = sqliteTable(
     index("professional_treatments_treatment_idx").on(table.treatmentId),
   ],
 );
+
+export const professionalProfiles = sqliteTable(
+  "professional_profiles",
+  {
+    professional: text("professional").primaryKey(),
+    image: text("image").notNull(),
+    role: text("role").notNull(),
+    focus: text("focus").notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+  },
+);

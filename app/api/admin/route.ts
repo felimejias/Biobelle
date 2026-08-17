@@ -1,8 +1,8 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { getDb } from "../../../db";
-import { adminUsers, bookingHistory, bookings, clientNotes, scheduleBlocks, treatmentCatalog, waitlist } from "../../../db/schema";
+import { adminUsers, bookingHistory, bookings, clientNotes, professionalProfiles, scheduleBlocks, treatmentCatalog, waitlist } from "../../../db/schema";
 import { canEditAgenda, canManageUsers, getAdminIdentity, hashPassword, normalizeUsername } from "../../admin-auth";
-import { PROFESSIONALS, slugifyTreatment } from "../../clinic-config";
+import { DEFAULT_PROFESSIONAL_PROFILES, PROFESSIONALS, slugifyTreatment } from "../../clinic-config";
 import { ensureTreatmentAssignments, getClinicTreatments, getTreatmentById, nextTreatmentId } from "../../treatment-service";
 
 const STATUSES = ["pending", "confirmed", "completed", "no_show", "cancelled"];
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
   const dateConditions = [gte(bookings.appointmentDate, from), lte(bookings.appointmentDate, to)];
   if (identity.role === "professional" && identity.professional) dateConditions.push(eq(bookings.professional, identity.professional));
 
-  const [bookingRows, blockRows, waitlistRows, recentRows, noteRows, userRows, treatmentRows] = await Promise.all([
+  const [bookingRows, blockRows, waitlistRows, recentRows, noteRows, userRows, treatmentRows, profileRows] = await Promise.all([
     db.select().from(bookings).where(and(...dateConditions)).orderBy(bookings.appointmentDate, bookings.appointmentTime),
     db.select().from(scheduleBlocks).where(and(gte(scheduleBlocks.blockDate, from), lte(scheduleBlocks.blockDate, to))).orderBy(scheduleBlocks.blockDate, scheduleBlocks.startTime),
     identity.role === "professional" ? Promise.resolve([]) : db.select().from(waitlist).orderBy(desc(waitlist.createdAt)).limit(100),
@@ -41,6 +41,7 @@ export async function GET(request: Request) {
       ? db.select({ id: adminUsers.id, username: adminUsers.username, name: adminUsers.name, role: adminUsers.role, professional: adminUsers.professional, active: adminUsers.active }).from(adminUsers).orderBy(adminUsers.name)
       : Promise.resolve([]),
     identity.role === "professional" ? getClinicTreatments(db, true) : getClinicTreatments(db, false),
+    db.select().from(professionalProfiles).catch(() => []),
   ]);
 
   const clientMap = new Map<string, { name: string; rut?: string | null; phone: string; visits: number; lastDate: string; treatments: Set<string> }>();
@@ -62,6 +63,7 @@ export async function GET(request: Request) {
     waitlist: waitlistRows,
     users: userRows,
     treatments: treatmentRows,
+    profiles: profileRows,
     notes: noteRows,
     clients: [...clientMap.values()].map((client) => ({ ...client, treatments: [...client.treatments] })).slice(0, 250),
     metrics: {
@@ -241,9 +243,30 @@ export async function POST(request: Request) {
     return Response.json({ ok: true });
   }
 
-  if (action === "toggle_treatment") {
-    if (!canManageUsers(identity)) return unauthorized();
-    await db.update(treatmentCatalog).set({ active: Boolean(payload.active) }).where(eq(treatmentCatalog.id, String(payload.treatmentId ?? "")));
+  if (action === "update_professional_photo") {
+    if (!canEditAgenda(identity)) return unauthorized();
+    const professional = String(payload.professional ?? "");
+    const image = String(payload.image ?? "").trim();
+    if (!PROFESSIONALS.includes(professional as typeof PROFESSIONALS[number]) || !image) {
+      return Response.json({ error: "Foto o profesional no válido." }, { status: 400 });
+    }
+    const def = DEFAULT_PROFESSIONAL_PROFILES[professional as typeof PROFESSIONALS[number]] ?? {
+      role: "Profesional",
+      focus: "Atención estética",
+    };
+    await db.insert(professionalProfiles).values({
+      professional,
+      image,
+      role: def.role,
+      focus: def.focus,
+      updatedAt: new Date(),
+    }).onConflictDoUpdate({
+      target: professionalProfiles.professional,
+      set: {
+        image,
+        updatedAt: new Date(),
+      },
+    });
     return Response.json({ ok: true });
   }
 

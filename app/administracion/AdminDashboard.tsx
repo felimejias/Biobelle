@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FiBarChart2, FiCalendar, FiChevronLeft, FiChevronRight, FiClock, FiLogOut, FiMenu, FiPlus, FiSearch, FiSettings, FiUsers, FiX } from "react-icons/fi";
+import { FiBarChart2, FiCalendar, FiCamera, FiChevronLeft, FiChevronRight, FiClock, FiLogOut, FiMenu, FiPlus, FiSearch, FiSettings, FiUsers, FiX } from "react-icons/fi";
 import type { AdminIdentity } from "../admin-auth";
-import { PROFESSIONALS, SATURDAY_SLOTS, WEEKDAY_SLOTS, isProfessionalScheduledForSlot } from "../clinic-config";
+import { DEFAULT_PROFESSIONAL_PROFILES, PROFESSIONALS, SATURDAY_SLOTS, WEEKDAY_SLOTS, isProfessionalScheduledForSlot } from "../clinic-config";
 
 type Booking = { id: string; confirmationCode: string; treatmentId: string; treatmentName: string; professional: string; appointmentDate: string; appointmentTime: string; patientName: string; patientRut?: string | null; phone: string; reminderConsent: boolean; status: string };
 type Block = { id: string; professional: string; blockDate: string; startTime: string; endTime: string; reason: string };
@@ -12,15 +12,11 @@ type Client = { name: string; rut?: string | null; phone: string; visits: number
 type User = { id: string; username: string; name: string; role: string; professional: string | null; active: boolean };
 type Note = { id: string; phone: string; note: string; authorEmail: string; createdAt: string };
 type AdminTreatment = { id: string; label: string; publicLabel: string; duration: string; price: string; active: boolean; sortOrder: number; professionals: string[] };
+type ProfileData = { professional: string; image: string; role: string; focus: string };
 type Metrics = { total: number; confirmed: number; pending: number; completed: number; noShow: number; occupancy: number; waiting: number };
-type AdminData = { identity: AdminIdentity; bookings: Booking[]; blocks: Block[]; waitlist: WaitlistEntry[]; clients: Client[]; users: User[]; notes: Note[]; treatments: AdminTreatment[]; metrics: Metrics };
+type AdminData = { identity: AdminIdentity; bookings: Booking[]; blocks: Block[]; waitlist: WaitlistEntry[]; clients: Client[]; users: User[]; notes: Note[]; treatments: AdminTreatment[]; profiles?: ProfileData[]; metrics: Metrics };
 
 const professionals = [...PROFESSIONALS];
-const professionalProfiles: Record<string, { image: string; role: string; focus: string }> = {
-  "Kiara Moscoso": { image: "/images/kiara-moscoso-clean.png", role: "Enfermera dermoestética · Cosmetóloga", focus: "Armonización · Láser · Dermoestética" },
-  "Pía Orellana": { image: "/images/pia-orellana-clean.png", role: "Enfermera dermoestética · Cosmetóloga", focus: "Armonización · Láser · Salud integral" },
-  "Dr. Luis Moscoso": { image: "/images/dr-luis-moscoso.jpg", role: "Médico Cirujano Estético · Director Médico", focus: "Medicina Estética · Armonización Facial" },
-};
 const slots = [...WEEKDAY_SLOTS];
 const treatments = [["evaluacion", "Evaluación estética personalizada"], ["armonizacion", "Armonización facial"], ["piel", "Evaluación dermoestética"], ["laser", "Tecnología láser"], ["regenerativa", "Medicina regenerativa"], ["lesiones", "Cuidado clínico"], ["corporal", "Dermoestética corporal"]];
 const statusLabel: Record<string, string> = { pending: "Pendiente", confirmed: "Confirmada", completed: "Atendida", no_show: "No asistió", cancelled: "Cancelada" };
@@ -84,6 +80,7 @@ export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdenti
   const [menuOpen, setMenuOpen] = useState(false);
   const [bookingModal, setBookingModal] = useState<Booking | "new" | { action: "new"; professional?: string; time?: string } | null>(null);
   const [blockOpen, setBlockOpen] = useState(false);
+  const [photoModalPro, setPhotoModalPro] = useState<string | null>(null);
   const [client, setClient] = useState<Client | null>(null);
   const [search, setSearch] = useState("");
 
@@ -134,6 +131,22 @@ export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdenti
     ...(identity.isGeneralAdmin ? [["usuarios", "Usuarios", <FiSettings key="users" />]] : []),
   ] as [string, string, React.ReactNode][];
 
+  const profilesMap = useMemo(() => {
+    const map: Record<string, { image: string; role: string; focus: string }> = {
+      ...DEFAULT_PROFESSIONAL_PROFILES,
+    };
+    for (const item of (data?.profiles ?? [])) {
+      if (item.professional && item.image) {
+        map[item.professional] = {
+          image: item.image,
+          role: item.role || map[item.professional]?.role || "Profesional",
+          focus: item.focus || map[item.professional]?.focus || "Atención estética",
+        };
+      }
+    }
+    return map;
+  }, [data?.profiles]);
+
   return (
     <main className="admin-app">
       <aside className={menuOpen ? "admin-sidebar open" : "admin-sidebar"}>
@@ -148,23 +161,24 @@ export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdenti
         <header className="admin-topbar"><button className="admin-menu" onClick={() => setMenuOpen(true)} aria-label="Abrir menú"><FiMenu /></button><div><p>OPERACIÓN BIOBELLE</p><h1>{tabs.find(([id]) => id === tab)?.[1]}</h1></div><div className="admin-top-actions"><span>Atenciones desde 10 agosto</span>{canEdit && tab === "agenda" && <button onClick={() => setBookingModal("new")}><FiPlus /> Nueva reserva</button>}</div></header>
         {error && <div className="admin-error">{error}<button onClick={() => setError("")}>×</button></div>}
         {loading && !data ? <div className="admin-loading">Preparando la operación del centro…</div> : data && <>
-          {tab === "agenda" && <AgendaView date={date} setDate={setDate} data={data} canEdit={canEdit} onBooking={setBookingModal} onBlock={() => setBlockOpen(true)} onDeleteBlock={(id) => void act({ action: "delete_block", id })} />}
+          {tab === "agenda" && <AgendaView date={date} setDate={setDate} data={data} profiles={profilesMap} canEdit={canEdit} onBooking={setBookingModal} onBlock={() => setBlockOpen(true)} onEditPhoto={(pro) => setPhotoModalPro(pro)} onDeleteBlock={(id) => void act({ action: "delete_block", id })} />}
           {tab === "clientes" && <ClientsView clients={filteredClients} search={search} setSearch={setSearch} onClient={setClient} />}
           {tab === "espera" && <WaitlistView entries={data.waitlist} onStatus={(id, status) => void act({ action: "update_waitlist", id, status })} />}
           {tab === "reportes" && <ReportsView metrics={data.metrics} bookings={data.bookings} />}
-          {tab === "tratamientos" && <TreatmentsView treatments={data.treatments} onAction={act} />}
+          {tab === "tratamientos" && <TreatmentsView treatments={data.treatments} profiles={profilesMap} canEdit={canEdit} onEditPhoto={(pro) => setPhotoModalPro(pro)} onAction={act} />}
           {tab === "usuarios" && <UsersView users={data.users} onAction={act} />}
         </>}
       </section>
 
       {bookingModal && <BookingEditor booking={bookingModal} defaultDate={date} identity={identity} treatments={data?.treatments ?? []} onClose={() => setBookingModal(null)} onSave={async (payload) => { const ok = await act(payload); if (ok) setBookingModal(null); }} />}
       {blockOpen && <BlockEditor date={date} identity={identity} onClose={() => setBlockOpen(false)} onSave={async (payload) => { const ok = await act(payload); if (ok) setBlockOpen(false); }} />}
+      {photoModalPro && <PhotoEditorModal professional={photoModalPro} currentImage={profilesMap[photoModalPro]?.image || ""} onClose={() => setPhotoModalPro(null)} onSave={async (image) => { const ok = await act({ action: "update_professional_photo", professional: photoModalPro, image }); return ok; }} />}
       {client && <ClientPanel client={client} notes={(data?.notes ?? []).filter((note) => note.phone === client.phone)} onClose={() => setClient(null)} onAddNote={async (note) => { const ok = await act({ action: "add_note", phone: client.phone, note }); if (ok) setClient(null); }} />}
     </main>
   );
 }
 
-function AgendaView({ date, setDate, data, canEdit, onBooking, onBlock, onDeleteBlock }: { date: string; setDate: (value: string) => void; data: AdminData; canEdit: boolean; onBooking: (booking: Booking | { action: "new"; professional?: string; time?: string }) => void; onBlock: () => void; onDeleteBlock: (id: string) => void }) {
+function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock, onEditPhoto, onDeleteBlock }: { date: string; setDate: (value: string) => void; data: AdminData; profiles: Record<string, { image: string; role: string; focus: string }>; canEdit: boolean; onBooking: (booking: Booking | { action: "new"; professional?: string; time?: string }) => void; onBlock: () => void; onEditPhoto: (professional: string) => void; onDeleteBlock: (id: string) => void }) {
   const [selectedProfessional, setSelectedProfessional] = useState("Todas");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [agendaSearch, setAgendaSearch] = useState("");
@@ -186,55 +200,53 @@ function AgendaView({ date, setDate, data, canEdit, onBooking, onBlock, onDelete
     ["regenerativa", "PRP"],
     ["lesiones", "Clínico"],
   ];
-  const statusFilters = [
-    ["all", "Todas"],
-    ["pending", "Pendientes"],
-    ["confirmed", "Confirmadas"],
-    ["completed", "Atendidas"],
-    ["no_show", "No asistió"],
-  ];
 
-  return <div className="admin-content agenda-content">
-    <section className="agenda-productbar" aria-label="Módulos operativos BIOBELLE">
-      <button className="active"><FiCalendar /> Agenda</button>
-      <button className="future">Ventas <small>QuantusChile</small></button>
-      <button className="future">Recordatorios <small>Pronto</small></button>
-      <button>Pacientes</button>
-      <button>Reportes</button>
-      <button>Administración</button>
-      <span>Agenda médica · Rancagua</span>
-    </section>
+  return <div className="admin-content agenda-view">
+    <div className="agenda-filters-bar">
+      <div className="agenda-filter-card agenda-pro-filter">
+        <span>Profesional</span>
+        <div className="pro-filter-strip">
+          <button type="button" className={`pro-chip ${selectedProfessional === "Todas" ? "active" : ""}`} onClick={() => setSelectedProfessional("Todas")}>
+            <div className="pro-chip-avatar all">ALL</div>
+            <span className="pro-chip-name">Todas</span>
+          </button>
+          {professionals.map((professional) => {
+            const profile = profiles[professional] || DEFAULT_PROFESSIONAL_PROFILES[professional as keyof typeof DEFAULT_PROFESSIONAL_PROFILES];
+            const active = selectedProfessional === professional;
+            return (
+              <button key={professional} type="button" className={`pro-chip ${active ? "active" : ""}`} onClick={() => setSelectedProfessional(professional)}>
+                <img src={profile.image} alt={professional} className="pro-chip-avatar" />
+                <span className="pro-chip-name">{professional.split(" ")[0]}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-    <section className="admin-kpis agenda-kpis"><article><span>Reservas del día</span><b>{data.metrics.total}</b><small>{data.metrics.confirmed} confirmadas</small></article><article><span>Ocupación estimada</span><b>{data.metrics.occupancy}%</b><small>Sobre horarios disponibles</small></article><article><span>Pendientes</span><b>{data.metrics.pending}</b><small>Requieren confirmación</small></article><article><span>Lista de espera</span><b>{data.metrics.waiting}</b><small>Solicitudes activas</small></article></section>
+      <div className="agenda-filter-card agenda-status-filter">
+        <span>Estado de la reserva</span>
+        <div className="status-capsules">
+          <button type="button" className={`status-pill all ${selectedStatus === "all" ? "active" : ""}`} onClick={() => setSelectedStatus("all")}>Todas</button>
+          <button type="button" className={`status-pill pending ${selectedStatus === "pending" ? "active" : ""}`} onClick={() => setSelectedStatus("pending")}>Pendientes</button>
+          <button type="button" className={`status-pill confirmed ${selectedStatus === "confirmed" ? "active" : ""}`} onClick={() => setSelectedStatus("confirmed")}>Confirmadas</button>
+          <button type="button" className={`status-pill completed ${selectedStatus === "completed" ? "active" : ""}`} onClick={() => setSelectedStatus("completed")}>Atendidas</button>
+          <button type="button" className={`status-pill no_show ${selectedStatus === "no_show" ? "active" : ""}`} onClick={() => setSelectedStatus("no_show")}>No asistió</button>
+        </div>
+      </div>
 
-    <section className="agenda-workspace">
-      <aside className="agenda-filter-panel">
-        <div className="agenda-filter-card agenda-search-card">
-          <span>Gestión de agenda</span>
-          <h3>Reserva, filtra y coordina el día clínico.</h3>
-          <label className="agenda-quick-search"><FiSearch /><input value={agendaSearch} onChange={(event) => setAgendaSearch(event.target.value)} placeholder="Buscar paciente, teléfono o tratamiento" /></label>
+      <label className="agenda-filter-card agenda-search-box">
+        <span>Búsqueda rápida</span>
+        <div className="agenda-search-input">
+          <FiSearch />
+          <input value={agendaSearch} onChange={(event) => setAgendaSearch(event.target.value)} placeholder="Buscar paciente, teléfono o código…" />
         </div>
-        <div className="agenda-filter-stack" aria-label="Contexto de agenda">
-          <div className="agenda-filter-chip"><span>Sucursal</span><b>BIOBELLE Rancagua</b><small>Edificio Olavarría · Oficina 302</small></div>
-          <div className="agenda-filter-chip"><span>Agenda</span><b>Agenda médica</b><small>Atenciones desde el 10 de agosto</small></div>
-        </div>
-        <div className="agenda-filter-group">
-          <span>Profesional</span>
-          <div className="agenda-segmented professional-segmented" role="group" aria-label="Filtrar por profesional">
-            {["Todas", ...professionals].map((option) => <button key={option} className={selectedProfessional === option ? "active" : ""} onClick={() => setSelectedProfessional(option)}>
-              {option === "Todas" ? <i className="segment-all">ALL</i> : <img src={professionalProfiles[option].image} alt="" />}
-              <b>{option}</b>
-            </button>)}
-          </div>
-        </div>
-        <div className="agenda-filter-group">
-          <span>Estado de la reserva</span>
-          <div className="agenda-status-pills" role="group" aria-label="Filtrar por estado">
-            {statusFilters.map(([value, label]) => <button key={value} className={selectedStatus === value ? "active" : ""} onClick={() => setSelectedStatus(value)}>{label}</button>)}
-          </div>
-        </div>
-        <div className="agenda-mini-calendar">
-          <div className="mini-calendar-head">
+      </label>
+    </div>
+
+    <section className="agenda-split-layout">
+      <aside className="agenda-sidebar-panel">
+        <div className="mini-calendar">
+          <div className="mini-cal-head">
             <button onClick={() => setDate(addMonths(date, -1))} aria-label="Mes anterior"><FiChevronLeft /></button>
             <b>{formatMonth(date)}</b>
             <button onClick={() => setDate(addMonths(date, 1))} aria-label="Mes siguiente"><FiChevronRight /></button>
@@ -242,10 +254,6 @@ function AgendaView({ date, setDate, data, canEdit, onBooking, onBlock, onDelete
           </div>
           <div className="mini-weekdays"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
           <div className="mini-days">{miniDays.map((day) => <button key={day} className={`${day === date ? "active" : ""} ${new Date(`${day}T12:00:00`).getMonth() !== selectedMonth ? "muted" : ""}`} onClick={() => setDate(day)}>{dayNumber(day)}</button>)}</div>
-        </div>
-        <div className="agenda-legend">
-          <span>Colores por tipo de atención</span>
-          {legend.map(([id, label]) => <small key={id}><i className={treatmentClass(id)} />{label}</small>)}
         </div>
       </aside>
 
@@ -258,8 +266,24 @@ function AgendaView({ date, setDate, data, canEdit, onBooking, onBlock, onDelete
         <div className="agenda-grid-shell">
           <section className="agenda-grid agenda-grid-colorful" style={{ gridTemplateColumns: `76px repeat(${visibleProfessionals.length}, minmax(250px, 1fr))` }}>
             <div className="agenda-corner">Hora</div>{visibleProfessionals.map((professional) => {
-              const profile = professionalProfiles[professional];
-              return <div className="agenda-professional" key={professional}><img src={profile.image} alt={`Foto de ${professional}`} /><div><b>{professional}</b><small>{profile.role}</small><em>{profile.focus}</em></div></div>;
+              const profile = profiles[professional] || DEFAULT_PROFESSIONAL_PROFILES[professional as keyof typeof DEFAULT_PROFESSIONAL_PROFILES];
+              return (
+                <div className="agenda-professional" key={professional}>
+                  <div
+                    className="agenda-professional-avatar"
+                    onClick={() => canEdit && onEditPhoto(professional)}
+                    title={canEdit ? "Click para cambiar foto de perfil" : professional}
+                  >
+                    <img src={profile.image} alt={`Foto de ${professional}`} />
+                    {canEdit && <span className="change-photo-badge"><FiCamera /></span>}
+                  </div>
+                  <div>
+                    <b>{professional}</b>
+                    <small>{profile.role}</small>
+                    <em>{profile.focus}</em>
+                  </div>
+                </div>
+              );
             })}
             {slots.flatMap((time) => [<div className="agenda-time" key={`time-${time}`}>{time}</div>, ...visibleProfessionals.map((professional) => {
               const booking = filteredBookings.find((item) => item.appointmentTime === time && item.professional === professional);
@@ -350,7 +374,7 @@ function ReportsView({ metrics, bookings }: { metrics: Metrics; bookings: Bookin
   return <div className="admin-content"><div className="admin-section-head"><div><p>RESUMEN OPERATIVO</p><h2>Decisiones con contexto.</h2></div><span>Indicadores calculados desde las reservas reales de BIOBELLE.</span></div><section className="admin-kpis report-kpis"><article><span>Ocupación</span><b>{metrics.occupancy}%</b><small>Capacidad del período</small></article><article><span>Atendidas</span><b>{metrics.completed}</b><small>Procedimientos realizados</small></article><article><span>Inasistencias</span><b>{metrics.noShow}</b><small>Pacientes no presentados</small></article><article><span>Reservas activas</span><b>{metrics.total}</b><small>Sin cancelaciones</small></article></section><section className="report-panel"><h3>Ocupación por profesional</h3>{professionalCount.map((item) => <div className="report-bar" key={item.professional}><span>{item.professional}</span><div><i style={{ width: `${(item.count / max) * 100}%` }} /></div><b>{item.count}</b></div>)}</section></div>;
 }
 
-function TreatmentsView({ treatments: catalog, onAction }: { treatments: AdminTreatment[]; onAction: (payload: Record<string, unknown>) => Promise<boolean> }) {
+function TreatmentsView({ treatments: catalog, profiles, canEdit, onEditPhoto, onAction }: { treatments: AdminTreatment[]; profiles: Record<string, { image: string; role: string; focus: string }>; canEdit: boolean; onEditPhoto: (professional: string) => void; onAction: (payload: Record<string, unknown>) => Promise<boolean> }) {
   const [formOpen, setFormOpen] = useState(false);
   const [label, setLabel] = useState("");
   const [publicLabel, setPublicLabel] = useState("");
@@ -370,7 +394,150 @@ function TreatmentsView({ treatments: catalog, onAction }: { treatments: AdminTr
         return <label className="matrix-toggle" key={`${item.id}-${professional}`}><input type="checkbox" checked={checked} onChange={(event) => void onAction({ action: "update_treatment_assignment", treatmentId: item.id, professional, enabled: event.target.checked })} /><span>{checked ? "Lo realiza" : "No lo realiza"}</span></label>;
       })}<button className={item.active ? "matrix-status active" : "matrix-status"} onClick={() => void onAction({ action: "toggle_treatment", treatmentId: item.id, active: !item.active })}>{item.active ? "Activo" : "Oculto"}</button></div>)}
     </div>
+
+    <div className="admin-section-head" style={{ marginTop: 40 }}>
+      <div>
+        <p>EQUIPO CLÍNICO</p>
+        <h2>Fotos y Perfiles de Profesionales.</h2>
+      </div>
+      <span>Personaliza las imágenes de perfil visibles en el agendamiento y en el panel.</span>
+    </div>
+    <div className="team-admin-grid">
+      {professionals.map((professional) => {
+        const profile = profiles[professional] || DEFAULT_PROFESSIONAL_PROFILES[professional as keyof typeof DEFAULT_PROFESSIONAL_PROFILES];
+        return (
+          <div className="pro-card-admin" key={professional}>
+            <div className="pro-card-admin-info">
+              <img src={profile.image} alt={`Foto de ${professional}`} />
+              <div>
+                <b>{professional}</b>
+                <small>{profile.role}</small>
+                <em>{profile.focus}</em>
+              </div>
+            </div>
+            {canEdit && (
+              <button type="button" onClick={() => onEditPhoto(professional)}>
+                <FiCamera /> Cambiar foto
+              </button>
+            )}
+          </div>
+        );
+      })}
+    </div>
   </div>;
+}
+
+function PhotoEditorModal({
+  professional,
+  currentImage,
+  onClose,
+  onSave,
+}: {
+  professional: string;
+  currentImage: string;
+  onClose: () => void;
+  onSave: (image: string) => Promise<boolean>;
+}) {
+  const [image, setImage] = useState(currentImage);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("Por favor selecciona un archivo de imagen.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError("La imagen no debe superar los 10MB.");
+      return;
+    }
+    setError("");
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const src = event.target?.result as string;
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const maxDim = 600;
+        let width = img.width;
+        let height = img.height;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressed = canvas.toDataURL("image/jpeg", 0.9);
+          setImage(compressed);
+        } else {
+          setImage(src);
+        }
+      };
+      img.src = src;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleReset = () => {
+    const defaultImg = DEFAULT_PROFESSIONAL_PROFILES[professional as keyof typeof DEFAULT_PROFESSIONAL_PROFILES]?.image || "";
+    setImage(defaultImg);
+  };
+
+  return (
+    <div className="admin-modal-backdrop">
+      <section className="admin-modal photo-modal">
+        <button type="button" className="admin-modal-close" onClick={onClose}><FiX /></button>
+        <p>EQUIPO Y PROFESIONALES</p>
+        <h2>Cambiar foto de {professional}</h2>
+        <div className="photo-preview-box">
+          <img src={image} alt={`Foto de ${professional}`} />
+          <span>Vista previa</span>
+        </div>
+        <div className="photo-options">
+          <label className="photo-file-upload">
+            <FiCamera /> Subir nueva foto desde el dispositivo
+            <input type="file" accept="image/*" onChange={handleFileChange} />
+          </label>
+          <div className="photo-url-input">
+            <span>O ingresa URL directa de imagen:</span>
+            <input
+              type="url"
+              value={image.startsWith("data:") ? "" : image}
+              placeholder="https://ejemplo.com/foto.jpg"
+              onChange={(e) => setImage(e.target.value)}
+            />
+          </div>
+          {error && <small className="photo-error">{error}</small>}
+          <div className="photo-actions">
+            <button type="button" className="photo-reset-btn" onClick={handleReset}>Restablecer original</button>
+            <button
+              type="button"
+              className="admin-primary"
+              disabled={uploading || !image}
+              onClick={async () => {
+                setUploading(true);
+                const ok = await onSave(image);
+                setUploading(false);
+                if (ok) onClose();
+              }}
+            >
+              {uploading ? "Guardando…" : "Guardar foto"}
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }
 
 function UsersView({ users, onAction }: { users: User[]; onAction: (payload: Record<string, unknown>) => Promise<boolean> }) {

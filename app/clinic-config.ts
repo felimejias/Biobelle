@@ -97,6 +97,31 @@ export const PROFESSIONAL_EMAILS: Record<ProfessionalName, string> = {
   "Dr. Luis Moscoso": "consulta@biobelle.cl",
 };
 
+export type ProfessionalProfile = {
+  professional: ProfessionalName;
+  image: string;
+  role: string;
+  focus: string;
+};
+
+export const DEFAULT_PROFESSIONAL_PROFILES: Record<ProfessionalName, { image: string; role: string; focus: string }> = {
+  "Kiara Moscoso": {
+    image: "/images/kiara-moscoso-clean.png",
+    role: "Enfermera dermoestética · Cosmetóloga",
+    focus: "Armonización · Láser · Dermoestética",
+  },
+  "Pía Orellana": {
+    image: "/images/pia-orellana-clean.png",
+    role: "Enfermera dermoestética · Cosmetóloga",
+    focus: "Armonización · Láser · Salud integral",
+  },
+  "Dr. Luis Moscoso": {
+    image: "/images/dr-luis-moscoso.jpg",
+    role: "Médico Cirujano Estético · Director Médico",
+    focus: "Medicina Estética · Armonización Facial",
+  },
+};
+
 export type ClinicTreatment = {
   id: string;
   label: string;
