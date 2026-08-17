@@ -158,7 +158,15 @@ export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdenti
       </aside>
 
       <section className="admin-main">
-        <header className="admin-topbar"><button className="admin-menu" onClick={() => setMenuOpen(true)} aria-label="Abrir menú"><FiMenu /></button><div><p>OPERACIÓN BIOBELLE</p><h1>{tabs.find(([id]) => id === tab)?.[1]}</h1></div><div className="admin-top-actions"><span>Atenciones desde 10 agosto</span>{canEdit && tab === "agenda" && <button onClick={() => setBookingModal("new")}><FiPlus /> Nueva reserva</button>}</div></header>
+        <header className="admin-topbar">
+          <button className="admin-menu" onClick={() => setMenuOpen(true)} aria-label="Abrir menú"><FiMenu /></button>
+          <div><p>OPERACIÓN BIOBELLE</p><h1>{tabs.find(([id]) => id === tab)?.[1]}</h1></div>
+          <div className="admin-top-actions">
+            {canEdit && <button type="button" className="admin-photo-trigger-btn" onClick={() => setPhotoModalPro(professionals[0])}><FiCamera /> Cambiar fotos de equipo</button>}
+            <span>Atenciones desde 10 agosto</span>
+            {canEdit && tab === "agenda" && <button onClick={() => setBookingModal("new")}><FiPlus /> Nueva reserva</button>}
+          </div>
+        </header>
         {error && <div className="admin-error">{error}<button onClick={() => setError("")}>×</button></div>}
         {loading && !data ? <div className="admin-loading">Preparando la operación del centro…</div> : data && <>
           {tab === "agenda" && <AgendaView date={date} setDate={setDate} data={data} profiles={profilesMap} canEdit={canEdit} onBooking={setBookingModal} onBlock={() => setBlockOpen(true)} onEditPhoto={(pro) => setPhotoModalPro(pro)} onDeleteBlock={(id) => void act({ action: "delete_block", id })} />}
@@ -172,13 +180,13 @@ export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdenti
 
       {bookingModal && <BookingEditor booking={bookingModal} defaultDate={date} identity={identity} treatments={data?.treatments ?? []} onClose={() => setBookingModal(null)} onSave={async (payload) => { const ok = await act(payload); if (ok) setBookingModal(null); }} />}
       {blockOpen && <BlockEditor date={date} identity={identity} onClose={() => setBlockOpen(false)} onSave={async (payload) => { const ok = await act(payload); if (ok) setBlockOpen(false); }} />}
-      {photoModalPro && <PhotoEditorModal professional={photoModalPro} currentImage={profilesMap[photoModalPro]?.image || ""} onClose={() => setPhotoModalPro(null)} onSave={async (image) => { const ok = await act({ action: "update_professional_photo", professional: photoModalPro, image }); return ok; }} />}
+      {photoModalPro && <PhotoEditorModal initialProfessional={photoModalPro} profiles={profilesMap} onClose={() => setPhotoModalPro(null)} onSave={async (pro, image) => { const ok = await act({ action: "update_professional_photo", professional: pro, image }); return ok; }} />}
       {client && <ClientPanel client={client} notes={(data?.notes ?? []).filter((note) => note.phone === client.phone)} onClose={() => setClient(null)} onAddNote={async (note) => { const ok = await act({ action: "add_note", phone: client.phone, note }); if (ok) setClient(null); }} />}
     </main>
   );
 }
 
-function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock, onDeleteBlock }: { date: string; setDate: (value: string) => void; data: AdminData; profiles: Record<string, { image: string; role: string; focus: string }>; canEdit: boolean; onBooking: (booking: Booking | { action: "new"; professional?: string; time?: string }) => void; onBlock: () => void; onDeleteBlock: (id: string) => void }) {
+function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock, onEditPhoto, onDeleteBlock }: { date: string; setDate: (value: string) => void; data: AdminData; profiles: Record<string, { image: string; role: string; focus: string }>; canEdit: boolean; onBooking: (booking: Booking | { action: "new"; professional?: string; time?: string }) => void; onBlock: () => void; onEditPhoto: (professional: string) => void; onDeleteBlock: (id: string) => void }) {
   const [selectedProfessional, setSelectedProfessional] = useState("Todas");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [agendaSearch, setAgendaSearch] = useState("");
@@ -273,7 +281,31 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
           <section className="agenda-grid agenda-grid-colorful" style={{ gridTemplateColumns: `76px repeat(${visibleProfessionals.length}, minmax(250px, 1fr))` }}>
             <div className="agenda-corner">Hora</div>{visibleProfessionals.map((professional) => {
               const profile = profiles[professional] || DEFAULT_PROFESSIONAL_PROFILES[professional as keyof typeof DEFAULT_PROFESSIONAL_PROFILES];
-              return <div className="agenda-professional" key={professional}><img src={profile.image} alt={`Foto de ${professional}`} /><div><b>{professional}</b><small>{profile.role}</small><em>{profile.focus}</em></div></div>;
+              return (
+                <div className="agenda-professional" key={professional}>
+                  <img
+                    src={profile.image}
+                    alt={`Foto de ${professional}`}
+                    style={{ cursor: canEdit ? "pointer" : "default" }}
+                    onClick={() => canEdit && onEditPhoto(professional)}
+                    title={canEdit ? "Click para cambiar foto" : professional}
+                  />
+                  <div>
+                    <b>{professional}</b>
+                    <small>{profile.role}</small>
+                    <em>{profile.focus}</em>
+                    {canEdit && (
+                      <button
+                        type="button"
+                        className="agenda-change-photo-btn"
+                        onClick={() => onEditPhoto(professional)}
+                      >
+                        <FiCamera /> Cambiar foto
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
             })}
             {slots.flatMap((time) => [<div className="agenda-time" key={`time-${time}`}>{time}</div>, ...visibleProfessionals.map((professional) => {
               const booking = filteredBookings.find((item) => item.appointmentTime === time && item.professional === professional);
@@ -418,32 +450,42 @@ function TreatmentsView({ treatments: catalog, profiles, canEdit, onEditPhoto, o
 }
 
 function PhotoEditorModal({
-  professional,
-  currentImage,
+  initialProfessional,
+  profiles,
   onClose,
   onSave,
 }: {
-  professional: string;
-  currentImage: string;
+  initialProfessional: string;
+  profiles: Record<string, { image: string; role: string; focus: string }>;
   onClose: () => void;
-  onSave: (image: string) => Promise<boolean>;
+  onSave: (professional: string, image: string) => Promise<boolean>;
 }) {
-  const [image, setImage] = useState(currentImage);
+  const [selectedPro, setSelectedPro] = useState(initialProfessional);
+  const currentProImage = profiles[selectedPro]?.image || DEFAULT_PROFESSIONAL_PROFILES[selectedPro as keyof typeof DEFAULT_PROFESSIONAL_PROFILES]?.image || "";
+  const [image, setImage] = useState(currentProImage);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const [savedSuccess, setSavedSuccess] = useState(false);
+
+  useEffect(() => {
+    setImage(profiles[selectedPro]?.image || DEFAULT_PROFESSIONAL_PROFILES[selectedPro as keyof typeof DEFAULT_PROFESSIONAL_PROFILES]?.image || "");
+    setError("");
+    setSavedSuccess(false);
+  }, [selectedPro, profiles]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      setError("Por favor selecciona un archivo de imagen.");
+      setError("Por favor selecciona un archivo de imagen (JPG, PNG, WebP).");
       return;
     }
-    if (file.size > 10 * 1024 * 1024) {
-      setError("La imagen no debe superar los 10MB.");
+    if (file.size > 12 * 1024 * 1024) {
+      setError("La imagen no debe superar los 12MB.");
       return;
     }
     setError("");
+    setSavedSuccess(false);
     const reader = new FileReader();
     reader.onload = (event) => {
       const src = event.target?.result as string;
@@ -479,8 +521,9 @@ function PhotoEditorModal({
   };
 
   const handleReset = () => {
-    const defaultImg = DEFAULT_PROFESSIONAL_PROFILES[professional as keyof typeof DEFAULT_PROFESSIONAL_PROFILES]?.image || "";
+    const defaultImg = DEFAULT_PROFESSIONAL_PROFILES[selectedPro as keyof typeof DEFAULT_PROFESSIONAL_PROFILES]?.image || "";
     setImage(defaultImg);
+    setSavedSuccess(false);
   };
 
   return (
@@ -488,26 +531,43 @@ function PhotoEditorModal({
       <section className="admin-modal photo-modal">
         <button type="button" className="admin-modal-close" onClick={onClose}><FiX /></button>
         <p>EQUIPO Y PROFESIONALES</p>
-        <h2>Cambiar foto de {professional}</h2>
-        <div className="photo-preview-box">
-          <img src={image} alt={`Foto de ${professional}`} />
-          <span>Vista previa</span>
+        <h2>Cambiar fotos de profesionales</h2>
+        
+        <div className="photo-pro-tabs">
+          {professionals.map((pro) => (
+            <button
+              key={pro}
+              type="button"
+              className={selectedPro === pro ? "photo-pro-tab active" : "photo-pro-tab"}
+              onClick={() => setSelectedPro(pro)}
+            >
+              <img src={profiles[pro]?.image || DEFAULT_PROFESSIONAL_PROFILES[pro as keyof typeof DEFAULT_PROFESSIONAL_PROFILES]?.image} alt="" />
+              <span>{pro.split(" ")[0]}</span>
+            </button>
+          ))}
         </div>
+
+        <div className="photo-preview-box">
+          <img src={image} alt={`Foto de ${selectedPro}`} />
+          <span>Foto actual de {selectedPro}</span>
+        </div>
+
         <div className="photo-options">
           <label className="photo-file-upload">
-            <FiCamera /> Subir nueva foto desde el dispositivo
+            <FiCamera /> Subir nueva foto para {selectedPro.split(" ")[0]}
             <input type="file" accept="image/*" onChange={handleFileChange} />
           </label>
           <div className="photo-url-input">
-            <span>O ingresa URL directa de imagen:</span>
+            <span>O ingresa enlace / URL directo:</span>
             <input
               type="url"
               value={image.startsWith("data:") ? "" : image}
               placeholder="https://ejemplo.com/foto.jpg"
-              onChange={(e) => setImage(e.target.value)}
+              onChange={(e) => { setImage(e.target.value); setSavedSuccess(false); }}
             />
           </div>
           {error && <small className="photo-error">{error}</small>}
+          {savedSuccess && <small className="photo-success">✓ Foto actualizada correctamente en el sistema</small>}
           <div className="photo-actions">
             <button type="button" className="photo-reset-btn" onClick={handleReset}>Restablecer original</button>
             <button
@@ -516,12 +576,14 @@ function PhotoEditorModal({
               disabled={uploading || !image}
               onClick={async () => {
                 setUploading(true);
-                const ok = await onSave(image);
+                const ok = await onSave(selectedPro, image);
                 setUploading(false);
-                if (ok) onClose();
+                if (ok) {
+                  setSavedSuccess(true);
+                }
               }}
             >
-              {uploading ? "Guardando…" : "Guardar foto"}
+              {uploading ? "Guardando…" : `Guardar foto de ${selectedPro.split(" ")[0]}`}
             </button>
           </div>
         </div>
