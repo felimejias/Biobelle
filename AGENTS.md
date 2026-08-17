@@ -41,8 +41,18 @@ como implementadas.
   4. Calendario visual mensual interactivo (con selección táctil de días hábiles, navegación de meses, bloqueo de domingos) y grilla de horarios libres en tiempo real.
   5. Datos de contacto, políticas de reserva transparentes y confirmación.
 - Fecha minima de reserva: apertura oficial desde el 18 de agosto de 2026.
-- Horarios de atención Lunes a Viernes (60 min cada cita): 08:30, 09:45, 11:00, 12:15, 13:30, 14:45, 16:00 y 17:15.
-- Horarios de atención Sábados (60 min cada cita): 08:30, 09:45, 11:00 y 12:15.
+- Horarios de atención base (bloques de 50 min): 09:00, 10:00, 11:00, 12:00, 13:00, 14:00, 15:00, 16:00, 17:00 y 18:00.
+- Matriz de turnos y disponibilidad por profesional:
+  - **Lunes a Jueves**:
+    - 09:00 a 14:50 (AM): Atiende exclusivamente Kiara Moscoso (Pía Orellana bloqueada).
+    - 15:00 a 18:50 (PM): Atiende exclusivamente Pía Orellana (Kiara Moscoso bloqueada).
+  - **Viernes**:
+    - 09:00 a 13:50 (AM): Atiende exclusivamente Pía Orellana (Kiara Moscoso bloqueada).
+    - 14:00 a 18:50 (PM): Atienden ambas (Kiara Moscoso y Pía Orellana disponibles).
+  - **Sábados**:
+    - 09:00 a 12:50 (AM): Atienden ambas (Kiara Moscoso y Pía Orellana disponibles).
+  - **Domingos**: Centro cerrado.
+  - *Dinámica flexible*: Bloqueado por defecto en la agenda pública pero desbloqueable/gestionable desde el panel administrativo para registrar excepciones o turnos especiales.
 - Profesionales visibles: Kiara Moscoso, Pía Orellana y Dr. Luis Moscoso.
 - Validacion para evitar reservas duplicadas activas en el mismo horario.
 - Confirmacion de reserva con codigo.

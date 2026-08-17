@@ -1,7 +1,7 @@
 import { and, eq, inArray, ne } from "drizzle-orm";
 import { getDb } from "../../../../db";
 import { bookings } from "../../../../db/schema";
-import { OPENING_DATE, SLOTS, isProfessional } from "../../../clinic-config";
+import { OPENING_DATE, SLOTS, getSlotsForDay, isProfessional, isProfessionalScheduledForSlot } from "../../../clinic-config";
 import { getEligibleProfessionals } from "../../../treatment-service";
 
 type RouteContext = { params: Promise<{ token: string }> };
@@ -50,11 +50,13 @@ export async function PATCH(request: Request, { params }: RouteContext) {
   const date = payload.date?.trim() ?? "";
   const time = payload.time?.trim() ?? "";
   const requestedProfessional = payload.professional?.trim() ?? "";
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || new Date(`${date}T12:00:00`).getDay() === 0) {
+  const day = new Date(`${date}T12:00:00`).getDay();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || day === 0) {
     return Response.json({ error: "La fecha seleccionada no está disponible." }, { status: 400 });
   }
-  if (date < OPENING_DATE) return Response.json({ error: "La agenda BIOBELLE comienza el 10 de agosto de 2026." }, { status: 400 });
-  if (!SLOTS.includes(time as typeof SLOTS[number])) return Response.json({ error: "La hora seleccionada no está disponible." }, { status: 400 });
+  if (date < OPENING_DATE) return Response.json({ error: "La agenda BIOBELLE comienza el 18 de agosto de 2026." }, { status: 400 });
+  const validSlots = getSlotsForDay(day);
+  if (!validSlots.includes(time)) return Response.json({ error: "La hora seleccionada no está disponible." }, { status: 400 });
 
   const eligible = await getEligibleProfessionals(db, current.treatmentId);
   const candidates = isProfessional(requestedProfessional) && eligible.includes(requestedProfessional)
@@ -72,7 +74,10 @@ export async function PATCH(request: Request, { params }: RouteContext) {
       inArray(bookings.status, ["pending", "confirmed"]),
     ));
   const occupiedProfessionals = new Set(occupied.map((row) => row.professional));
-  const available = candidates.filter((candidate) => !occupiedProfessionals.has(candidate));
+  const available = candidates.filter((candidate) => {
+    const isScheduled = isProfessionalScheduledForSlot(candidate, day, time);
+    return isScheduled && !occupiedProfessionals.has(candidate);
+  });
 
   for (const professional of available) {
     try {

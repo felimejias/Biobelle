@@ -738,6 +738,14 @@ footer>small { grid-column:1/-1; text-align:center; border-top:1px solid #ded4d1
 .booking-pill small { font-size:7px; }
 .blocked-pill { position:relative; background:repeating-linear-gradient(135deg,#eee7e4,#eee7e4 7px,#e8dfdc 7px,#e8dfdc 14px); color:#726668; }
 .blocked-pill>button { position:absolute; right:6px; bottom:6px; border:0; background:#fbf8f3; color:var(--wine); font-size:6px; text-transform:uppercase; }
+.slot-free-btn { width:100%; height:100%; min-height:76px; background:transparent; border:0; padding:0; cursor:pointer; text-align:inherit; display:block; }
+.slot-free-btn:hover .slot-free { border-color:var(--wine); background:#fbf0ee; color:var(--wine); }
+.shift-blocked-pill { width:100%; min-height:76px; padding:11px 13px; border:1px dashed #d5c8c5; background:#f7f1ee; color:#8e7f82; display:flex; flex-direction:column; align-items:flex-start; text-align:left; cursor:pointer; transition:all .18s ease; }
+.shift-blocked-pill:hover { border-color:var(--wine); background:#fdf5f3; }
+.shift-blocked-pill span { font-size:6px; text-transform:uppercase; letter-spacing:.08em; color:#a49699; }
+.shift-blocked-pill b { margin:4px 0 2px; font-family:var(--font-serif); font-size:14px; font-weight:500; color:#726265; }
+.shift-blocked-pill small { font-size:7px; color:var(--wine); font-weight:600; text-transform:uppercase; }
+.slot-closed { height:100%; min-height:76px; display:grid; place-items:center; background:#f3ece8; color:#b0a4a6; font-size:7px; text-transform:uppercase; letter-spacing:.08em; border:1px dashed #e2dad6; }
 .admin-section-head { margin-bottom:24px; display:flex; align-items:flex-end; justify-content:space-between; gap:30px; }
 .admin-section-head h2 { color:var(--deep); font-size:43px; line-height:.95; }
 .admin-section-head>span { max-width:330px; color:var(--muted); font-size:10px; line-height:1.6; }

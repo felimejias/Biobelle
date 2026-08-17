@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FiBarChart2, FiCalendar, FiChevronLeft, FiChevronRight, FiClock, FiLogOut, FiMenu, FiPlus, FiSearch, FiSettings, FiUsers, FiX } from "react-icons/fi";
 import type { AdminIdentity } from "../admin-auth";
+import { PROFESSIONALS, SATURDAY_SLOTS, WEEKDAY_SLOTS, isProfessionalScheduledForSlot } from "../clinic-config";
 
 type Booking = { id: string; confirmationCode: string; treatmentId: string; treatmentName: string; professional: string; appointmentDate: string; appointmentTime: string; patientName: string; patientRut?: string | null; phone: string; reminderConsent: boolean; status: string };
 type Block = { id: string; professional: string; blockDate: string; startTime: string; endTime: string; reason: string };
@@ -14,13 +15,13 @@ type AdminTreatment = { id: string; label: string; publicLabel: string; duration
 type Metrics = { total: number; confirmed: number; pending: number; completed: number; noShow: number; occupancy: number; waiting: number };
 type AdminData = { identity: AdminIdentity; bookings: Booking[]; blocks: Block[]; waitlist: WaitlistEntry[]; clients: Client[]; users: User[]; notes: Note[]; treatments: AdminTreatment[]; metrics: Metrics };
 
-const professionals = ["Kiara Moscoso", "Pía Orellana", "Dr. Luis Moscoso"];
+const professionals = [...PROFESSIONALS];
 const professionalProfiles: Record<string, { image: string; role: string; focus: string }> = {
   "Kiara Moscoso": { image: "/images/kiara-moscoso-clean.png", role: "Enfermera dermoestética · Cosmetóloga", focus: "Armonización · Láser · Dermoestética" },
   "Pía Orellana": { image: "/images/pia-orellana-clean.png", role: "Enfermera dermoestética · Cosmetóloga", focus: "Armonización · Láser · Salud integral" },
   "Dr. Luis Moscoso": { image: "/images/dr-luis-moscoso.jpg", role: "Médico Cirujano Estético · Director Médico", focus: "Medicina Estética · Armonización Facial" },
 };
-const slots = ["08:30", "09:45", "11:00", "12:15", "13:30", "14:45", "16:00", "17:15"];
+const slots = [...WEEKDAY_SLOTS];
 const treatments = [["evaluacion", "Evaluación estética personalizada"], ["armonizacion", "Armonización facial"], ["piel", "Evaluación dermoestética"], ["laser", "Tecnología láser"], ["regenerativa", "Medicina regenerativa"], ["lesiones", "Cuidado clínico"], ["corporal", "Dermoestética corporal"]];
 const statusLabel: Record<string, string> = { pending: "Pendiente", confirmed: "Confirmada", completed: "Atendida", no_show: "No asistió", cancelled: "Cancelada" };
 const roleLabel: Record<string, string> = { general_admin: "Administradora general", location_admin: "Administradora del centro", receptionist: "Recepción", professional: "Profesional", readonly: "Solo lectura" };
@@ -81,7 +82,7 @@ export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdenti
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [bookingModal, setBookingModal] = useState<Booking | "new" | null>(null);
+  const [bookingModal, setBookingModal] = useState<Booking | "new" | { action: "new"; professional?: string; time?: string } | null>(null);
   const [blockOpen, setBlockOpen] = useState(false);
   const [client, setClient] = useState<Client | null>(null);
   const [search, setSearch] = useState("");
@@ -163,7 +164,7 @@ export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdenti
   );
 }
 
-function AgendaView({ date, setDate, data, canEdit, onBooking, onBlock, onDeleteBlock }: { date: string; setDate: (value: string) => void; data: AdminData; canEdit: boolean; onBooking: (booking: Booking) => void; onBlock: () => void; onDeleteBlock: (id: string) => void }) {
+function AgendaView({ date, setDate, data, canEdit, onBooking, onBlock, onDeleteBlock }: { date: string; setDate: (value: string) => void; data: AdminData; canEdit: boolean; onBooking: (booking: Booking | { action: "new"; professional?: string; time?: string }) => void; onBlock: () => void; onDeleteBlock: (id: string) => void }) {
   const [selectedProfessional, setSelectedProfessional] = useState("Todas");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [agendaSearch, setAgendaSearch] = useState("");
@@ -263,7 +264,70 @@ function AgendaView({ date, setDate, data, canEdit, onBooking, onBlock, onDelete
             {slots.flatMap((time) => [<div className="agenda-time" key={`time-${time}`}>{time}</div>, ...visibleProfessionals.map((professional) => {
               const booking = filteredBookings.find((item) => item.appointmentTime === time && item.professional === professional);
               const block = filteredBlocks.find((item) => item.professional === professional && time >= item.startTime && time < item.endTime);
-              return <div className="agenda-slot" key={`${professional}-${time}`}>{booking ? <button className={`booking-pill ${booking.status} ${treatmentClass(booking.treatmentId)}`} onClick={() => onBooking(booking)}><span>{booking.treatmentName}</span><b>{booking.patientName}</b><small>{time} · {statusLabel[booking.status]} · {booking.phone}</small></button> : block ? <div className="blocked-pill"><span>Horario bloqueado</span><b>{block.reason}</b>{canEdit && <button onClick={() => onDeleteBlock(block.id)}>Liberar</button>}</div> : <span className="slot-free"><i />Disponible</span>}</div>;
+              const dayOfWeek = new Date(`${date}T12:00:00`).getDay();
+              const isSunday = dayOfWeek === 0;
+              const isSaturdayClosed = dayOfWeek === 6 && !SATURDAY_SLOTS.includes(time as typeof SATURDAY_SLOTS[number]);
+              const isScheduled = isProfessionalScheduledForSlot(professional, dayOfWeek, time);
+
+              if (booking) {
+                return (
+                  <div className="agenda-slot" key={`${professional}-${time}`}>
+                    <button className={`booking-pill ${booking.status} ${treatmentClass(booking.treatmentId)}`} onClick={() => onBooking(booking)}>
+                      <span>{booking.treatmentName}</span>
+                      <b>{booking.patientName}</b>
+                      <small>{time} · {statusLabel[booking.status]} · {booking.phone}</small>
+                    </button>
+                  </div>
+                );
+              }
+
+              if (block) {
+                return (
+                  <div className="agenda-slot" key={`${professional}-${time}`}>
+                    <div className="blocked-pill">
+                      <span>Horario bloqueado</span>
+                      <b>{block.reason}</b>
+                      {canEdit && <button onClick={() => onDeleteBlock(block.id)}>Liberar</button>}
+                    </div>
+                  </div>
+                );
+              }
+
+              if (isSunday || isSaturdayClosed) {
+                return (
+                  <div className="agenda-slot out-of-hours" key={`${professional}-${time}`}>
+                    <span className="slot-closed">Cerrado</span>
+                  </div>
+                );
+              }
+
+              if (!isScheduled) {
+                return (
+                  <div className="agenda-slot shift-blocked" key={`${professional}-${time}`}>
+                    <div
+                      className="shift-blocked-pill"
+                      onClick={() => canEdit && onBooking({ action: "new", professional, time })}
+                      title="Turno no asignado por horario (Click para agendar excepción)"
+                    >
+                      <span>Turno no asignado</span>
+                      <b>Bloqueado</b>
+                      {canEdit && <small>+ Agendar excepción</small>}
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="agenda-slot" key={`${professional}-${time}`}>
+                  <button
+                    className="slot-free-btn"
+                    onClick={() => canEdit && onBooking({ action: "new", professional, time })}
+                    title="Click para agendar reserva"
+                  >
+                    <span className="slot-free"><i />Disponible</span>
+                  </button>
+                </div>
+              );
             })])}
           </section>
         </div>
@@ -315,9 +379,22 @@ function UsersView({ users, onAction }: { users: User[]; onAction: (payload: Rec
   return <div className="admin-content"><div className="admin-section-head"><div><p>CONTROL DE ACCESO</p><h2>Usuarios y permisos.</h2></div><button className="admin-primary" onClick={() => setFormOpen(!formOpen)}><FiPlus /> Nuevo usuario</button></div>{formOpen && <form className="admin-inline-form" onSubmit={async (event) => { event.preventDefault(); if (await onAction({ action: "add_user", name, username, password, role, professional })) { setFormOpen(false); setName(""); setUsername(""); setPassword(""); } }}><label>Nombre<input value={name} onChange={(event) => setName(event.target.value)} required /></label><label>Usuario<input value={username} onChange={(event) => setUsername(event.target.value)} autoComplete="username" required /></label><label>Clave inicial<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="new-password" required /></label><label>Rol<select value={role} onChange={(event) => setRole(event.target.value)}><option value="location_admin">Administradora del centro</option><option value="receptionist">Recepción</option><option value="professional">Profesional</option><option value="readonly">Solo lectura</option></select></label>{role === "professional" && <label>Agenda asignada<select value={professional} onChange={(event) => setProfessional(event.target.value)}>{professionals.map((item) => <option key={item}>{item}</option>)}</select></label>}<button>Crear acceso</button></form>}<div className="admin-table users-table"><div className="table-head"><span>Usuario</span><span>Rol</span><span>Agenda</span><span>Estado</span><span></span></div>{users.map((user) => <div className="table-row" key={user.id}><span><b>{user.name}</b><small>{user.username}</small></span><span>{roleLabel[user.role] ?? user.role}</span><span>{user.professional ?? "Todas"}</span><span>{user.active ? "Activo" : "Suspendido"}</span><button onClick={() => void onAction({ action: "toggle_user", id: user.id, active: !user.active })}>{user.active ? "Suspender" : "Activar"}</button></div>)}</div></div>;
 }
 
-function BookingEditor({ booking, defaultDate, identity, treatments: catalog, onClose, onSave }: { booking: Booking | "new"; defaultDate: string; identity: AdminIdentity; treatments: AdminTreatment[]; onClose: () => void; onSave: (payload: Record<string, unknown>) => Promise<void> }) {
-  const current = booking === "new" ? null : booking;
-  const [patientName, setPatientName] = useState(current?.patientName ?? ""); const [phone, setPhone] = useState(current?.phone ?? ""); const [treatmentId, setTreatmentId] = useState(current?.treatmentId ?? "evaluacion"); const [professional, setProfessional] = useState(current?.professional ?? identity.professional ?? professionals[0]); const [date, setDate] = useState(current?.appointmentDate ?? defaultDate); const [time, setTime] = useState(current?.appointmentTime ?? slots[0]); const [status, setStatus] = useState(current?.status ?? "confirmed");
+function BookingEditor({ booking, defaultDate, identity, treatments: catalog, onClose, onSave }: { booking: Booking | "new" | { action: "new"; professional?: string; time?: string }; defaultDate: string; identity: AdminIdentity; treatments: AdminTreatment[]; onClose: () => void; onSave: (payload: Record<string, unknown>) => Promise<void> }) {
+  const current = (typeof booking === "object" && "id" in booking) ? booking : null;
+  const initialProfessional = (typeof booking === "object" && "professional" in booking && booking.professional)
+    ? booking.professional
+    : (current?.professional ?? identity.professional ?? professionals[0]);
+  const initialTime = (typeof booking === "object" && "time" in booking && booking.time)
+    ? booking.time
+    : (current?.appointmentTime ?? slots[0]);
+
+  const [patientName, setPatientName] = useState(current?.patientName ?? "");
+  const [phone, setPhone] = useState(current?.phone ?? "");
+  const [treatmentId, setTreatmentId] = useState(current?.treatmentId ?? "evaluacion");
+  const [professional, setProfessional] = useState(initialProfessional);
+  const [date, setDate] = useState(current?.appointmentDate ?? defaultDate);
+  const [time, setTime] = useState(initialTime);
+  const [status, setStatus] = useState(current?.status ?? "confirmed");
   const treatmentOptions = catalog.length ? catalog.filter((item) => item.active || item.id === treatmentId) : treatments.map(([id, label]) => ({ id, label, publicLabel: label, professionals }));
   const selectedTreatment = treatmentOptions.find((item) => item.id === treatmentId);
   const eligible = selectedTreatment?.professionals?.length ? selectedTreatment.professionals : professionals;

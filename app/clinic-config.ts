@@ -1,6 +1,24 @@
 export const PROFESSIONALS = ["Kiara Moscoso", "Pía Orellana", "Dr. Luis Moscoso"] as const;
-export const WEEKDAY_SLOTS = ["08:30", "09:45", "11:00", "12:15", "13:30", "14:45", "16:00", "17:15"] as const;
-export const SATURDAY_SLOTS = ["08:30", "09:45", "11:00", "12:15"] as const;
+export const WEEKDAY_SLOTS = [
+  "09:00",
+  "10:00",
+  "11:00",
+  "12:00",
+  "13:00",
+  "14:00",
+  "15:00",
+  "16:00",
+  "17:00",
+  "18:00",
+] as const;
+
+export const SATURDAY_SLOTS = [
+  "09:00",
+  "10:00",
+  "11:00",
+  "12:00",
+] as const;
+
 export const SLOTS = [...WEEKDAY_SLOTS] as const;
 export const OPENING_DATE = "2026-08-18";
 
@@ -8,6 +26,67 @@ export function getSlotsForDay(dayOfWeek: number): readonly string[] {
   if (dayOfWeek === 6) return SATURDAY_SLOTS;
   if (dayOfWeek >= 1 && dayOfWeek <= 5) return WEEKDAY_SLOTS;
   return [];
+}
+
+/**
+ * Matriz de turnos y disponibilidad base por profesional:
+ * - Lunes a Jueves: AM (09:00 a 14:50) solo Kiara | PM (15:00 a 18:50) solo Pía
+ * - Viernes: AM (09:00 a 13:50) solo Pía | PM (14:00 a 18:50) Kiara y Pía
+ * - Sábado: 09:00 a 12:50 Kiara y Pía
+ * - Domingo: cerrado
+ *
+ * * Dr. Luis Moscoso mantiene disponibilidad para sus consultas clínicas/médicas.
+ */
+export function isProfessionalScheduledForSlot(
+  professional: string,
+  dayOfWeek: number,
+  time: string,
+): boolean {
+  // Lunes a Jueves (1, 2, 3, 4)
+  if (dayOfWeek >= 1 && dayOfWeek <= 4) {
+    const amSlots = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"];
+    const pmSlots = ["15:00", "16:00", "17:00", "18:00"];
+
+    if (amSlots.includes(time)) {
+      if (professional === "Kiara Moscoso") return true;
+      if (professional === "Pía Orellana") return false;
+      return true; // Dr. Luis Moscoso
+    }
+    if (pmSlots.includes(time)) {
+      if (professional === "Kiara Moscoso") return false;
+      if (professional === "Pía Orellana") return true;
+      return true; // Dr. Luis Moscoso
+    }
+    return false;
+  }
+
+  // Viernes (5)
+  if (dayOfWeek === 5) {
+    const fridayAmSlots = ["09:00", "10:00", "11:00", "12:00", "13:00"];
+    const fridayPmSlots = ["14:00", "15:00", "16:00", "17:00", "18:00"];
+
+    if (fridayAmSlots.includes(time)) {
+      if (professional === "Kiara Moscoso") return false;
+      if (professional === "Pía Orellana") return true;
+      return true; // Dr. Luis Moscoso
+    }
+    if (fridayPmSlots.includes(time)) {
+      return true; // Ambas Kiara y Pía
+    }
+    return false;
+  }
+
+  // Sábado (6)
+  if (dayOfWeek === 6) {
+    const saturdaySlots = ["09:00", "10:00", "11:00", "12:00"];
+    if (saturdaySlots.includes(time)) {
+      return true; // Ambas Kiara y Pía
+    }
+    return false;
+  }
+
+  // Domingo o fuera de horario
+  return false;
 }
 
 export type ProfessionalName = typeof PROFESSIONALS[number];

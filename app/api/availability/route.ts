@@ -1,7 +1,7 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "../../../db";
 import { bookings, scheduleBlocks } from "../../../db/schema";
-import { OPENING_DATE, SLOTS, getSlotsForDay, isProfessional } from "../../clinic-config";
+import { OPENING_DATE, SLOTS, getSlotsForDay, isProfessional, isProfessionalScheduledForSlot } from "../../clinic-config";
 import { getEligibleProfessionals } from "../../treatment-service";
 
 // Apertura operacional BIOBELLE: 2026-08-10.
@@ -60,6 +60,8 @@ export async function GET(request: Request) {
   const occupied = new Set(reserved.map((row) => `${row.professional}|${row.time}`));
   const slots = daySlots.map((time) => {
     const availableProfessionals = professionals.filter((professional) => {
+      const isScheduled = isProfessionalScheduledForSlot(professional, day, time);
+      if (!isScheduled) return false;
       const blocked = blocks.some((block) => block.professional === professional && time >= block.startTime && time < block.endTime);
       return !blocked && !occupied.has(`${professional}|${time}`);
     });

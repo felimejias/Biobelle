@@ -1,7 +1,7 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "../../../db";
 import { bookings, scheduleBlocks } from "../../../db/schema";
-import { OPENING_DATE, PROFESSIONAL_EMAILS, SLOTS, getSlotsForDay, generateCalendarLinks, isProfessional, type ProfessionalName } from "../../clinic-config";
+import { OPENING_DATE, PROFESSIONAL_EMAILS, SLOTS, getSlotsForDay, generateCalendarLinks, isProfessional, isProfessionalScheduledForSlot, type ProfessionalName } from "../../clinic-config";
 import { formatRut, validateRut } from "../../rut-validator";
 import { getTreatmentById } from "../../treatment-service";
 
@@ -160,6 +160,8 @@ export async function POST(request: Request) {
       .from(scheduleBlocks)
       .where(and(eq(scheduleBlocks.blockDate, date), inArray(scheduleBlocks.professional, candidates)));
     const availableCandidates = candidates.filter((candidate) => {
+      const isScheduled = isProfessionalScheduledForSlot(candidate, day, time);
+      if (!isScheduled) return false;
       const blocked = blocks.some((block) => block.professional === candidate && time >= block.startTime && time < block.endTime);
       return !blocked && !occupiedProfessionals.has(candidate);
     });

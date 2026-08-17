@@ -92,3 +92,22 @@ test("protects and ships the BIOBELLE operations console", async () => {
   assert.match(schema, /export const clientNotes/);
   assert.match(availability, /scheduleBlocks/);
 });
+
+test("enforces exact shift matrix and isolates personal calendars from clinic events", async () => {
+  const [clinicConfig, bookingApi, availabilityApi, calendarApi] = await Promise.all([
+    source("app/clinic-config.ts"),
+    source("app/api/bookings/route.ts"),
+    source("app/api/availability/route.ts"),
+    source("app/api/calendar/[slug]/route.ts"),
+  ]);
+
+  assert.match(clinicConfig, /isProfessionalScheduledForSlot/);
+  assert.match(clinicConfig, /"09:00",\s*"10:00"/);
+  assert.match(availabilityApi, /isProfessionalScheduledForSlot/);
+  assert.match(bookingApi, /isProfessionalScheduledForSlot/);
+  assert.match(clinicConfig, /kiaramoscoso77@gmail\.com/);
+  assert.match(clinicConfig, /piaorellana96@gmail\.com/);
+  assert.doesNotMatch(clinicConfig, /felipe\.mejias/i);
+  assert.doesNotMatch(calendarApi, /felipe\.mejias/i);
+  assert.doesNotMatch(bookingApi, /felipe\.mejias/i);
+});
