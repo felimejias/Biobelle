@@ -178,7 +178,7 @@ export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdenti
   );
 }
 
-function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock, onEditPhoto, onDeleteBlock }: { date: string; setDate: (value: string) => void; data: AdminData; profiles: Record<string, { image: string; role: string; focus: string }>; canEdit: boolean; onBooking: (booking: Booking | { action: "new"; professional?: string; time?: string }) => void; onBlock: () => void; onEditPhoto: (professional: string) => void; onDeleteBlock: (id: string) => void }) {
+function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock, onDeleteBlock }: { date: string; setDate: (value: string) => void; data: AdminData; profiles: Record<string, { image: string; role: string; focus: string }>; canEdit: boolean; onBooking: (booking: Booking | { action: "new"; professional?: string; time?: string }) => void; onBlock: () => void; onDeleteBlock: (id: string) => void }) {
   const [selectedProfessional, setSelectedProfessional] = useState("Todas");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [agendaSearch, setAgendaSearch] = useState("");
@@ -200,53 +200,55 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
     ["regenerativa", "PRP"],
     ["lesiones", "Clínico"],
   ];
+  const statusFilters = [
+    ["all", "Todas"],
+    ["pending", "Pendientes"],
+    ["confirmed", "Confirmadas"],
+    ["completed", "Atendidas"],
+    ["no_show", "No asistió"],
+  ];
 
-  return <div className="admin-content agenda-view">
-    <div className="agenda-filters-bar">
-      <div className="agenda-filter-card agenda-pro-filter">
-        <span>Profesional</span>
-        <div className="pro-filter-strip">
-          <button type="button" className={`pro-chip ${selectedProfessional === "Todas" ? "active" : ""}`} onClick={() => setSelectedProfessional("Todas")}>
-            <div className="pro-chip-avatar all">ALL</div>
-            <span className="pro-chip-name">Todas</span>
-          </button>
-          {professionals.map((professional) => {
-            const profile = profiles[professional] || DEFAULT_PROFESSIONAL_PROFILES[professional as keyof typeof DEFAULT_PROFESSIONAL_PROFILES];
-            const active = selectedProfessional === professional;
-            return (
-              <button key={professional} type="button" className={`pro-chip ${active ? "active" : ""}`} onClick={() => setSelectedProfessional(professional)}>
-                <img src={profile.image} alt={professional} className="pro-chip-avatar" />
-                <span className="pro-chip-name">{professional.split(" ")[0]}</span>
-              </button>
-            );
-          })}
+  return <div className="admin-content agenda-content">
+    <section className="agenda-productbar" aria-label="Módulos operativos BIOBELLE">
+      <button className="active"><FiCalendar /> Agenda</button>
+      <button className="future">Ventas <small>QuantusChile</small></button>
+      <button className="future">Recordatorios <small>Pronto</small></button>
+      <button>Pacientes</button>
+      <button>Reportes</button>
+      <button>Administración</button>
+      <span>Agenda médica · Rancagua</span>
+    </section>
+
+    <section className="admin-kpis agenda-kpis"><article><span>Reservas del día</span><b>{data.metrics.total}</b><small>{data.metrics.confirmed} confirmadas</small></article><article><span>Ocupación estimada</span><b>{data.metrics.occupancy}%</b><small>Sobre horarios disponibles</small></article><article><span>Pendientes</span><b>{data.metrics.pending}</b><small>Requieren confirmación</small></article><article><span>Lista de espera</span><b>{data.metrics.waiting}</b><small>Solicitudes activas</small></article></section>
+
+    <section className="agenda-workspace">
+      <aside className="agenda-filter-panel">
+        <div className="agenda-filter-card agenda-search-card">
+          <span>Gestión de agenda</span>
+          <h3>Reserva, filtra y coordina el día clínico.</h3>
+          <label className="agenda-quick-search"><FiSearch /><input value={agendaSearch} onChange={(event) => setAgendaSearch(event.target.value)} placeholder="Buscar paciente, teléfono o tratamiento" /></label>
         </div>
-      </div>
-
-      <div className="agenda-filter-card agenda-status-filter">
-        <span>Estado de la reserva</span>
-        <div className="status-capsules">
-          <button type="button" className={`status-pill all ${selectedStatus === "all" ? "active" : ""}`} onClick={() => setSelectedStatus("all")}>Todas</button>
-          <button type="button" className={`status-pill pending ${selectedStatus === "pending" ? "active" : ""}`} onClick={() => setSelectedStatus("pending")}>Pendientes</button>
-          <button type="button" className={`status-pill confirmed ${selectedStatus === "confirmed" ? "active" : ""}`} onClick={() => setSelectedStatus("confirmed")}>Confirmadas</button>
-          <button type="button" className={`status-pill completed ${selectedStatus === "completed" ? "active" : ""}`} onClick={() => setSelectedStatus("completed")}>Atendidas</button>
-          <button type="button" className={`status-pill no_show ${selectedStatus === "no_show" ? "active" : ""}`} onClick={() => setSelectedStatus("no_show")}>No asistió</button>
+        <div className="agenda-filter-stack" aria-label="Contexto de agenda">
+          <div className="agenda-filter-chip"><span>Sucursal</span><b>BIOBELLE Rancagua</b><small>Edificio Olavarría · Oficina 302</small></div>
+          <div className="agenda-filter-chip"><span>Agenda</span><b>Agenda médica</b><small>Atenciones desde el 10 de agosto</small></div>
         </div>
-      </div>
-
-      <label className="agenda-filter-card agenda-search-box">
-        <span>Búsqueda rápida</span>
-        <div className="agenda-search-input">
-          <FiSearch />
-          <input value={agendaSearch} onChange={(event) => setAgendaSearch(event.target.value)} placeholder="Buscar paciente, teléfono o código…" />
+        <div className="agenda-filter-group">
+          <span>Profesional</span>
+          <div className="agenda-segmented professional-segmented" role="group" aria-label="Filtrar por profesional">
+            {["Todas", ...professionals].map((option) => <button key={option} className={selectedProfessional === option ? "active" : ""} onClick={() => setSelectedProfessional(option)}>
+              {option === "Todas" ? <i className="segment-all">ALL</i> : <img src={profiles[option]?.image || DEFAULT_PROFESSIONAL_PROFILES[option as keyof typeof DEFAULT_PROFESSIONAL_PROFILES]?.image} alt="" />}
+              <b>{option}</b>
+            </button>)}
+          </div>
         </div>
-      </label>
-    </div>
-
-    <section className="agenda-split-layout">
-      <aside className="agenda-sidebar-panel">
-        <div className="mini-calendar">
-          <div className="mini-cal-head">
+        <div className="agenda-filter-group">
+          <span>Estado de la reserva</span>
+          <div className="agenda-status-pills" role="group" aria-label="Filtrar por estado">
+            {statusFilters.map(([value, label]) => <button key={value} className={selectedStatus === value ? "active" : ""} onClick={() => setSelectedStatus(value)}>{label}</button>)}
+          </div>
+        </div>
+        <div className="agenda-mini-calendar">
+          <div className="mini-calendar-head">
             <button onClick={() => setDate(addMonths(date, -1))} aria-label="Mes anterior"><FiChevronLeft /></button>
             <b>{formatMonth(date)}</b>
             <button onClick={() => setDate(addMonths(date, 1))} aria-label="Mes siguiente"><FiChevronRight /></button>
@@ -254,6 +256,10 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
           </div>
           <div className="mini-weekdays"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
           <div className="mini-days">{miniDays.map((day) => <button key={day} className={`${day === date ? "active" : ""} ${new Date(`${day}T12:00:00`).getMonth() !== selectedMonth ? "muted" : ""}`} onClick={() => setDate(day)}>{dayNumber(day)}</button>)}</div>
+        </div>
+        <div className="agenda-legend">
+          <span>Colores por tipo de atención</span>
+          {legend.map(([id, label]) => <small key={id}><i className={treatmentClass(id)} />{label}</small>)}
         </div>
       </aside>
 
@@ -267,23 +273,7 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
           <section className="agenda-grid agenda-grid-colorful" style={{ gridTemplateColumns: `76px repeat(${visibleProfessionals.length}, minmax(250px, 1fr))` }}>
             <div className="agenda-corner">Hora</div>{visibleProfessionals.map((professional) => {
               const profile = profiles[professional] || DEFAULT_PROFESSIONAL_PROFILES[professional as keyof typeof DEFAULT_PROFESSIONAL_PROFILES];
-              return (
-                <div className="agenda-professional" key={professional}>
-                  <div
-                    className="agenda-professional-avatar"
-                    onClick={() => canEdit && onEditPhoto(professional)}
-                    title={canEdit ? "Click para cambiar foto de perfil" : professional}
-                  >
-                    <img src={profile.image} alt={`Foto de ${professional}`} />
-                    {canEdit && <span className="change-photo-badge"><FiCamera /></span>}
-                  </div>
-                  <div>
-                    <b>{professional}</b>
-                    <small>{profile.role}</small>
-                    <em>{profile.focus}</em>
-                  </div>
-                </div>
-              );
+              return <div className="agenda-professional" key={professional}><img src={profile.image} alt={`Foto de ${professional}`} /><div><b>{professional}</b><small>{profile.role}</small><em>{profile.focus}</em></div></div>;
             })}
             {slots.flatMap((time) => [<div className="agenda-time" key={`time-${time}`}>{time}</div>, ...visibleProfessionals.map((professional) => {
               const booking = filteredBookings.find((item) => item.appointmentTime === time && item.professional === professional);
