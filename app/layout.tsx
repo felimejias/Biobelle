@@ -8,24 +8,24 @@ const sans = Manrope({ variable: "--font-sans", subsets: ["latin"], weight: ["40
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.biobelle.cl"),
-  title: "BIOBELLE | Centro Médico Estético en Rancagua",
-  description: "Medicina estética consciente, tecnología láser y dermoestética. Agenda tu evaluación personalizada en BIOBELLE Rancagua.",
+  title: "Bellabel | Centro Médico Estético en Rancagua",
+  description: "Medicina estética consciente, tecnología láser y dermoestética. Agenda tu evaluación personalizada en Bellabel Rancagua.",
   icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
   openGraph: {
-    title: "BIOBELLE | Tu belleza, en equilibrio.",
+    title: "Bellabel | Tu belleza, en equilibrio.",
     description: "Medicina estética consciente y personalizada en Rancagua.",
     url: "/",
-    siteName: "BIOBELLE",
+    siteName: "Bellabel",
     locale: "es_CL",
     type: "website",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "BIOBELLE — Tu belleza, en equilibrio." }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Bellabel — Tu belleza, en equilibrio." }],
   },
-  twitter: { card: "summary_large_image", title: "BIOBELLE | Tu belleza, en equilibrio.", description: "Centro médico estético en Rancagua.", images: ["/og.png"] },
+  twitter: { card: "summary_large_image", title: "Bellabel | Tu belleza, en equilibrio.", description: "Centro médico estético en Rancagua.", images: ["/og.png"] },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const structuredData = {
-    "@context": "https://schema.org", "@type": "MedicalBusiness", name: "BIOBELLE Centro Médico Estético",
+    "@context": "https://schema.org", "@type": "MedicalBusiness", name: "Bellabel Centro Médico Estético",
     url: "https://www.biobelle.cl", logo: "https://www.biobelle.cl/images/biobelle-lockup.png", image: "https://www.biobelle.cl/images/identidad-biobelle.jpg",
     telephone: "+56979655129", priceRange: "$$",
     address: { "@type": "PostalAddress", streetAddress: "Bueras 218, Edificio Olavarría, Oficina 302", addressLocality: "Rancagua", addressRegion: "Región de O’Higgins", addressCountry: "CL" },

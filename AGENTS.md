@@ -24,6 +24,7 @@ como implementadas.
 - Correccion del logo para evitar el cuadro blanco gigante en la cabecera.
 - Uso de versiones limpias de las imagenes de Kiara y Pia sin el fondo con letras.
 - Hero principal, secciones de tratamientos, equipo, experiencia y contacto.
+- Galería clínica y showcase de protocolos con tarjetas visuales del equipo profesional (`equipo-duo-clinico.jpg` y `profesional-clinica-biobelle.jpg`) destacando vocación, cercanía y atención personalizada.
 - Datos visibles de Instagram y WhatsApp junto al logo/marca, no solo como botones.
 - Boton flotante de WhatsApp con icono real/identificable.
 - Catalogo de tratamientos con rutas publicas por tratamiento.
@@ -62,6 +63,8 @@ como implementadas.
 - API de disponibilidad que considera reservas y bloqueos administrativos.
 - API de disponibilidad que considera tratamiento elegido, profesionales
   habilitadas, reservas y bloqueos administrativos.
+- Sincronización de calendario con estándar internacional RFC 5545 (con marcas `DTSTAMP`, definición `VTIMEZONE:America/Santiago`, `CALSCALE:GREGORIAN` y soporte `webcal://`) en `/api/calendar/[slug].ics` para Google Calendar, Apple Calendar y Outlook sin errores de apertura en móviles.
+- Asistente de sincronización en el panel administrativo con copiado rápido de URL de suscripción y guía paso a paso para Android y iPhone.
 
 ## Panel administrativo implementado
 

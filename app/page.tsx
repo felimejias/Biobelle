@@ -122,8 +122,8 @@ function formatDisplayDateSpanish(dateStr: string) {
 function BrandLockup({ className = "", compact = false }: { className?: string; compact?: boolean }) {
   return (
     <span className={`brand-lockup${compact ? " compact" : ""}${className ? ` ${className}` : ""}`}>
-      <img src="/images/biobelle-lockup.png" alt="BIOBELLE Centro Médico Estético" />
-      <span className="sr-only">BIOBELLE Centro Médico Estético</span>
+      <img src="/images/biobelle-lockup.png" alt="Bellabel Centro Médico Estético" />
+      <span className="sr-only">Bellabel Centro Médico Estético</span>
     </span>
   );
 }
@@ -164,7 +164,7 @@ export default function Home() {
       id: clinicTreatment.id,
       eyebrow: clinicTreatment.publicLabel,
       title: clinicTreatment.publicLabel,
-      copy: "Procedimiento agregado por BIOBELLE. La indicación definitiva se confirma durante la evaluación profesional.",
+      copy: "Procedimiento agregado por Bellabel. La indicación definitiva se confirma durante la evaluación profesional.",
       duration: clinicTreatment.duration,
       price: clinicTreatment.price,
       tone: "pearl",
@@ -250,7 +250,7 @@ export default function Home() {
   }, []);
 
   const bookingWhatsAppUrl = `https://wa.me/56979655129?text=${encodeURIComponent(
-    `Hola BIOBELLE, acabo de reservar ${recommended?.eyebrow ?? "una evaluación"} para el ${date.split("-").reverse().join("/")} a las ${time}. Código: ${confirmationCode}. Profesional: ${professional}. Mi nombre es ${name}.${managementUrl ? ` Gestionar reserva: ${managementUrl}` : ""}`,
+    `Hola Bellabel, acabo de reservar ${recommended?.eyebrow ?? "una evaluación"} para el ${date.split("-").reverse().join("/")} a las ${time}. Código: ${confirmationCode}. Profesional: ${professional}. Mi nombre es ${name}.${managementUrl ? ` Gestionar reserva: ${managementUrl}` : ""}`,
   )}`;
 
   const calendarInfo = useMemo(() => {
@@ -308,7 +308,7 @@ export default function Home() {
   return (
     <main>
       <div className="announcement">
-        Agenda online abierta · Descuentos de Agosto - Septiembre: 15% extracción acrocordones, 15% Hollywood Peel y 20% cumpleaños · Inauguración oficial 18 de agosto
+        Agenda online abierta · Descuentos de Agosto - Septiembre: 15% extracción acrocordones, 15% Hollywood Peel y 20% cumpleaños
       </div>
       <header className="site-header">
         <BrandSocial />
@@ -339,17 +339,12 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-visual">
-          <img src="/images/identidad-biobelle.jpg" alt="Identidad visual de BIOBELLE Centro Médico Estético" />
+          <img src="/images/identidad-biobelle.jpg" alt="Identidad visual de Bellabel Centro Médico Estético" />
           <div className="floating-card"><span>✦</span><p><small>Nuestra filosofía</small><b>Resultados naturales,<br />siempre.</b></p></div>
-          <button className="inauguration-badge-btn" onClick={() => setFlyerOpen(true)} title="Ver flyer oficial de inauguración">
-            <span className="badge-sparkle">✦</span>
-            <span>Inauguración <b>18 de Agosto</b></span>
-            <small>Ver flyer oficial →</small>
-          </button>
         </div>
       </section>
 
-      <section className="trust-strip" aria-label="Atributos BIOBELLE">
+      <section className="trust-strip" aria-label="Atributos Bellabel">
         <span>✦ Atención profesional</span><span>✦ Tecnología certificada</span><span>✦ Planes personalizados</span><span>✦ Acompañamiento post tratamiento</span>
       </section>
 
@@ -357,7 +352,7 @@ export default function Home() {
         <div className="discounts-header">
           <span className="discounts-tag">✦ BENEFICIOS DE TEMPORADA</span>
           <h2>Descuentos Mes de Agosto - Septiembre</h2>
-          <p>Disfruta de nuestros descuentos especiales diseñados para renovar y cuidar tu piel en BIOBELLE.</p>
+          <p>Disfruta de nuestros descuentos especiales diseñados para renovar y cuidar tu piel en Bellabel.</p>
         </div>
         <div className="discounts-grid">
           <div className="discount-card">
@@ -394,7 +389,7 @@ export default function Home() {
           <small>dcto Hollywood Peel</small>
         </div>
         <div className="laser-copy">
-          <p className="section-number">Tecnología láser BIOBELLE</p>
+          <p className="section-number">Tecnología láser Bellabel</p>
           <h2 id="laser-title">Nd:YAG Q‑Switched,<br /><em>Hollywood Peel</em> y eliminación de tatuajes.</h2>
           <p>Protocolos láser indicados por profesionales para tratar manchas, textura, luminosidad y remoción de pigmentos con evaluación previa.</p>
         </div>
@@ -407,13 +402,13 @@ export default function Home() {
       </section>
 
       <section className="intro" id="experiencia">
-        <p className="section-number">01 / EXPERIENCIA BIOBELLE</p>
+        <p className="section-number">01 / EXPERIENCIA BELLABEL</p>
         <div>
           <h2>Menos excesos.<br /><em>Más tú.</em></h2>
           <p>Creemos en una estética consciente: escuchar primero, indicar solo lo necesario y acompañarte en cada etapa. Porque un resultado realmente bello comienza con confianza.</p>
           <a href="#equipo" className="line-link">Conoce nuestra forma de cuidar <span>→</span></a>
         </div>
-        <figure className="intro-image"><img src="/images/biobelle-recepcion.jpg" alt="Recepción y logotipo BIOBELLE" /><figcaption>Rancagua · Atención con cita previa</figcaption></figure>
+        <figure className="intro-image"><img src="/images/biobelle-recepcion.jpg" alt="Recepción y logotipo Bellabel" /><figcaption>Rancagua · Atención con cita previa</figcaption></figure>
       </section>
 
       <section className="treatments" id="tratamientos">
@@ -525,11 +520,38 @@ export default function Home() {
           </figure>
 
           <figure className="clinical-card">
-            <img src="/images/equipo-box-atencion.jpg" alt="Equipo BIOBELLE en box clínico acondicionado en Rancagua" />
+            <img src="/images/equipo-box-atencion.jpg" alt="Equipo Bellabel en box clínico acondicionado en Rancagua" />
             <figcaption>
               <span className="clinical-badge">Box Clínico Rancagua</span>
               <h3>Instalaciones privadas & confort</h3>
               <p>Espacio clínico acondicionado en Edificio Olavarría, Oficina 302, pensado exclusivamente para tu privacidad.</p>
+            </figcaption>
+          </figure>
+
+          <figure className="clinical-card">
+            <img src="/images/equipo-duo-clinico.jpg" alt="EU. Kiara Moscoso y EU. Pía Orellana - Equipo profesional Bellabel" />
+            <figcaption>
+              <span className="clinical-badge">Vocación & Cercanía</span>
+              <h3>Equipo profesional de salud</h3>
+              <p>Acompañamiento clínico integral y trato humano para potenciar tu belleza y bienestar en cada visita.</p>
+            </figcaption>
+          </figure>
+
+          <figure className="clinical-card">
+            <img src="/images/profesional-kiara-moscoso.jpg" alt="EU. Kiara Moscoso Villegas - Enfermera Universitaria Bellabel" />
+            <figcaption>
+              <span className="clinical-badge">Enfermera Universitaria</span>
+              <h3>Evaluación & armonización avanzada</h3>
+              <p>Especialista en procedimientos inyectables, bioestimuladores y tecnologías de rejuvenecimiento facial.</p>
+            </figcaption>
+          </figure>
+
+          <figure className="clinical-card">
+            <img src="/images/profesional-pia-orellana.jpg" alt="EU. Pía Orellana G. - Enfermera Universitaria Bellabel" />
+            <figcaption>
+              <span className="clinical-badge">Enfermera Universitaria</span>
+              <h3>Dermoestética & cuidado integral</h3>
+              <p>Atención personalizada, tratamientos dermoestéticos de precisión y protocolos de máxima seguridad.</p>
             </figcaption>
           </figure>
         </div>
@@ -547,9 +569,9 @@ export default function Home() {
       </section>
 
       <section className="gallery">
-        <div className="gallery-copy"><p className="section-number light">CONOCE BIOBELLE</p><h2>Una marca creada<br />para <em>cuidarte.</em></h2><p>Consulta nuestro catálogo y descubre un espacio donde salud, estética y trato cercano se encuentran.</p></div>
-        <img src="/images/catalogo-tratamientos.jpg" alt="Catálogo de tratamientos dermoestéticos BIOBELLE" />
-        <img src="/images/servicios-biobelle.jpg" alt="Afiche oficial de inauguración BIOBELLE 18 de Agosto" />
+        <div className="gallery-copy"><p className="section-number light">CONOCE BELLABEL</p><h2>Una marca creada<br />para <em>cuidarte.</em></h2><p>Consulta nuestro catálogo y descubre un espacio donde salud, estética y trato cercano se encuentran.</p></div>
+        <img src="/images/catalogo-tratamientos.jpg" alt="Catálogo de tratamientos dermoestéticos Bellabel" />
+        <img src="/images/servicios-biobelle.jpg" alt="Afiche oficial de servicios Bellabel" />
       </section>
 
       <section className="faq">
@@ -573,17 +595,17 @@ export default function Home() {
       </section>
 
       <footer>
-        <a className="brand footer-brand" href="#inicio" aria-label="BIOBELLE inicio"><BrandLockup /></a>
+        <a className="brand footer-brand" href="#inicio" aria-label="Bellabel inicio"><BrandLockup /></a>
         <p>Belleza natural. Cuidado profesional.</p>
         <div><a href="#tratamientos">Tratamientos</a><a href="#promociones">Descuentos</a><a href="#equipo">Equipo</a><a href="https://instagram.com/biobelle_center">Instagram</a><Link href="/privacidad">Privacidad</Link><Link href="/terminos">Términos</Link></div>
-        <small>© 2026 BIOBELLE · Información referencial. Todo procedimiento requiere evaluación profesional.</small>
+        <small>© 2026 Bellabel · Información referencial. Todo procedimiento requiere evaluación profesional.</small>
       </footer>
 
-      <a className="whatsapp" href={`https://wa.me/56979655129?text=${encodeURIComponent("Hola BIOBELLE, quisiera recibir orientación sobre sus tratamientos y disponibilidad.")}`} target="_blank" rel="noreferrer" aria-label="Contactar BIOBELLE por WhatsApp" onClick={() => track("whatsapp_clicked")}><FaWhatsapp aria-hidden="true" /></a>
+      <a className="whatsapp" href={`https://wa.me/56979655129?text=${encodeURIComponent("Hola Bellabel, quisiera recibir orientación sobre sus tratamientos y disponibilidad.")}`} target="_blank" rel="noreferrer" aria-label="Contactar Bellabel por WhatsApp" onClick={() => track("whatsapp_clicked")}><FaWhatsapp aria-hidden="true" /></a>
 
       {bookingOpen && (
         <div className="modal-backdrop" role="presentation" onMouseDown={(e) => { if (e.currentTarget === e.target) closeBooking(); }}>
-          <section className="booking-modal" role="dialog" aria-modal="true" aria-label="Agenda inteligente BIOBELLE">
+          <section className="booking-modal" role="dialog" aria-modal="true" aria-label="Agenda inteligente Bellabel">
             <button className="modal-close" onClick={closeBooking} aria-label="Cerrar agenda">×</button>
             {!confirmed ? (
               <>
@@ -604,7 +626,7 @@ export default function Home() {
                     </h2>
                   </div>
                 </div>
-                <div className="opening-note"><span>APERTURA DE AGENDA</span><b>Desde el 18 de agosto</b><small>Atención privada · Rancagua</small></div>
+                <div className="opening-note"><span>AGENDA DISPONIBLE</span><b>Atención personalizada</b><small>Atención privada · Rancagua</small></div>
                 <div className="progress" aria-label={`Paso ${step} de 5`}><span style={{ width: `${step * 20}%` }} /></div>
                 {step === 1 && (
                   <div className="booking-step">
@@ -629,7 +651,7 @@ export default function Home() {
                     <p className="step-intro">Tu objetivo merece una indicación honesta.</p>
                     <h3 className="step-question">Este es el mejor lugar para comenzar.</h3>
                     <div className="result-card">
-                      <span>CURADURÍA BIOBELLE · RECOMENDACIÓN PERSONALIZADA</span>
+                      <span>CURADURÍA BELLABEL · RECOMENDACIÓN PERSONALIZADA</span>
                       <h3>{recommended ? recommended.eyebrow : "Evaluación estética personalizada"}</h3>
                       <p>{recommended ? recommended.copy : "Una conversación clínica para entender tu piel, tus expectativas y recomendarte opciones seguras."}</p>
                       <div>
@@ -808,7 +830,7 @@ export default function Home() {
                 )}
                 {step === 5 && (
                   <div className="booking-step details-step">
-                    <p className="step-intro">Estás a un paso de tu experiencia BIOBELLE.</p>
+                    <p className="step-intro">Estás a un paso de tu experiencia Bellabel.</p>
                     <div className="booking-summary">
                       <span>RESUMEN DE TU CITA</span>
                       <b>{recommended?.eyebrow ?? "Evaluación personalizada"}</b>
@@ -816,7 +838,7 @@ export default function Home() {
                     </div>
 
                     <details className="booking-policy-notice" open>
-                      <summary>✦ POLÍTICAS DE RESERVA BIOBELLE</summary>
+                      <summary>✦ POLÍTICAS DE RESERVA BELLABEL</summary>
                       <ul>
                         <li><b>Abono de Reserva:</b> Se requiere un abono de <b>$20.000</b> (descontable del valor total del tratamiento).</li>
                         <li><b>Evaluación:</b> Si buscas solo consulta de evaluación, el valor es de <b>$10.000</b> (monto no descontable).</li>
@@ -915,7 +937,7 @@ export default function Home() {
               <div className="confirmation">
                 <div className="checkmark">✓</div>
                 <p>HORA RESERVADA · {confirmationCode}</p>
-                <h2>Tu momento BIOBELLE comienza aquí.</h2>
+                <h2>Tu momento Bellabel comienza aquí.</h2>
                 <p>La hora del <b>{date.split("-").reverse().join("/")} a las {time}</b> quedó bloqueada a tu nombre. Conserva tu código de reserva.</p>
                 <div className="confirmation-card">
                   <span>{recommended?.eyebrow ?? "Evaluación personalizada"}</span>
@@ -927,7 +949,7 @@ export default function Home() {
                   <a className="calendar-btn" href={calendarInfo.googleUrl} target="_blank" rel="noreferrer">
                     📅 Añadir a Google Calendar
                   </a>
-                  <a className="calendar-btn" href={calendarInfo.icsUrl} download={`cita-biobelle-${confirmationCode}.ics`}>
+                  <a className="calendar-btn" href={calendarInfo.icsUrl} download={`cita-bellabel-${confirmationCode}.ics`}>
                     📥 Descargar Evento (.ics)
                   </a>
                 </div>
@@ -946,13 +968,13 @@ export default function Home() {
 
       {flyerOpen && (
         <div className="modal-backdrop" role="presentation" onMouseDown={(e) => { if (e.currentTarget === e.target) setFlyerOpen(false); }}>
-          <section className="flyer-modal" role="dialog" aria-modal="true" aria-label="Flyer oficial de inauguración BIOBELLE">
+          <section className="flyer-modal" role="dialog" aria-modal="true" aria-label="Flyer oficial de servicios Bellabel">
             <button className="modal-close" onClick={() => setFlyerOpen(false)} aria-label="Cerrar flyer">×</button>
             <div className="flyer-modal-content">
-              <img src="/images/servicios-biobelle.jpg" alt="Flyer oficial de inauguración BIOBELLE - 18 de Agosto" />
+              <img src="/images/servicios-biobelle.jpg" alt="Flyer oficial de servicios Bellabel" />
               <div className="flyer-modal-actions">
                 <button className="primary" onClick={() => { setFlyerOpen(false); openBooking(); }}>
-                  Agendar hora de inauguración <span>↗</span>
+                  Agendar hora <span>↗</span>
                 </button>
               </div>
             </div>

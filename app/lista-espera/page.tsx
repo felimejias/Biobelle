@@ -72,11 +72,11 @@ export default function WaitlistPage() {
     setLoading(false);
   };
 
-  const whatsappText = encodeURIComponent(`Hola BIOBELLE, me uní a la lista de espera para ${selectedTreatment?.publicLabel ?? selectedTreatment?.label}. Mi nombre es ${name}.`);
+  const whatsappText = encodeURIComponent(`Hola Bellabel, me uní a la lista de espera para ${selectedTreatment?.publicLabel ?? selectedTreatment?.label}. Mi nombre es ${name}.`);
 
   return (
     <main className="waitlist-page">
-      <div className="announcement">Lista de espera BIOBELLE · Te avisamos cuando se libera una hora</div>
+      <div className="announcement">Lista de espera Bellabel · Te avisamos cuando se libera una hora</div>
       <header className="site-header treatment-header"><BrandSocial /><Link className="back-home" href="/">← Volver al inicio</Link></header>
       <section className="waitlist-shell">
         <div className="waitlist-copy"><p className="kicker">Disponibilidad inteligente</p><h1>Tu hora ideal puede aparecer antes.</h1><p>Indícanos qué buscas y te contactaremos si se libera un horario compatible. Estar en la lista no confirma una cita ni genera cobros.</p></div>

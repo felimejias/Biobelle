@@ -125,3 +125,26 @@ test("allows administrators to change professional photos across the platform", 
   assert.match(dashboard, /PhotoEditorModal/);
 });
 
+test("guarantees RFC 5545 compliance and automated Google Calendar sync", async () => {
+  const [calendarApi, clinicConfig, calendarService, dashboard] = await Promise.all([
+    source("app/api/calendar/[slug]/route.ts"),
+    source("app/clinic-config.ts"),
+    source("app/google-calendar-service.ts"),
+    source("app/administracion/AdminDashboard.tsx"),
+  ]);
+
+  assert.match(calendarApi, /DTSTAMP/);
+  assert.match(calendarApi, /BEGIN:VTIMEZONE/);
+  assert.match(calendarApi, /TZID:America\/Santiago/);
+  assert.match(calendarApi, /CALSCALE:GREGORIAN/);
+  assert.match(calendarApi, /METHOD:PUBLISH/);
+
+  assert.match(clinicConfig, /DTSTAMP/);
+  assert.match(clinicConfig, /METHOD:REQUEST/);
+
+  assert.match(calendarService, /syncBookingToGoogleCalendar/);
+  assert.match(calendarService, /buildIcsInvitation/);
+  assert.match(dashboard, /SyncGuideModal/);
+  assert.match(dashboard, /webcal:\/\//);
+});
+

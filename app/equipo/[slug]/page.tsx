@@ -14,8 +14,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const professional = getProfessional((await params).slug);
   if (!professional) return {};
   return {
-    title: `${professional.name} | Equipo BIOBELLE`,
-    description: `${professional.role} en BIOBELLE Rancagua. Conoce su enfoque y áreas de atención.`,
+    title: `${professional.name} | Equipo Bellabel`,
+    description: `${professional.role} en Bellabel Rancagua. Conoce su enfoque y áreas de atención.`,
   };
 }
 
@@ -24,7 +24,7 @@ export default async function ProfessionalPage({ params }: PageProps) {
   if (!professional) notFound();
 
   return <main className="professional-page">
-    <div className="announcement">Equipo BIOBELLE · Atención profesional y cercana</div>
+    <div className="announcement">Equipo Bellabel · Atención profesional y cercana</div>
     <header className="site-header treatment-header"><BrandSocial /><Link className="back-home" href="/#equipo">← Volver al equipo</Link></header>
     <section className="professional-hero">
       <figure><img src={professional.image} alt={professional.name} /></figure>
@@ -34,6 +34,6 @@ export default async function ProfessionalPage({ params }: PageProps) {
       <div className="professional-philosophy"><p className="section-number">FORMACIÓN Y COMPETENCIAS</p><h2>Cuidado con ciencia<br /><em>y propósito.</em></h2><blockquote>“{professional.philosophy}”</blockquote></div>
       <div className="professional-area-grid">{professional.areas.map((area, index) => <article key={area.title}><span>0{index + 1}</span><h3>{area.title}</h3><ul>{area.items.map((item) => <li key={item}>{item}</li>)}</ul></article>)}</div>
     </section>
-    <section className="profile-disclaimer"><p>La información describe áreas comunicadas por BIOBELLE. Cada procedimiento requiere evaluación profesional previa; la indicación, contraindicaciones y derivación se determinan individualmente.</p></section>
+    <section className="profile-disclaimer"><p>La información describe áreas comunicadas por Bellabel. Cada procedimiento requiere evaluación profesional previa; la indicación, contraindicaciones y derivación se determinan individualmente.</p></section>
   </main>;
 }

@@ -50,7 +50,7 @@ export const professionals: Professional[] = [
     role: "Médico General · Atención Clínica Integral",
     email: "consulta@biobelle.cl",
     image: "/images/dr-luis-moscoso.jpg",
-    introduction: "Le damos una calurosa bienvenida al Dr. Luis Moscoso a BIOBELLE Centro Médico - Estético. Médico cirujano enfocado en la atención médica integral, evaluación diagnóstica y supervisión clínica de nuestros pacientes.",
+    introduction: "Le damos una calurosa bienvenida al Dr. Luis Moscoso a Bellabel Centro Médico - Estético. Médico cirujano enfocado en la atención médica integral, evaluación diagnóstica y supervisión clínica de nuestros pacientes.",
     philosophy: "La medicina con visión humana y rigor técnico es el pilar para garantizar un diagnóstico oportuno y la máxima seguridad en cada tratamiento.",
     areas: [
       { title: "Consulta médica general", items: ["Evaluación clínica integral", "Diagnóstico preventivo", "Orientación en medicina dermoestética"] },

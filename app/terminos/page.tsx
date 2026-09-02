@@ -3,27 +3,27 @@ import Link from "next/link";
 import { BrandSocial } from "../components/BrandSocial";
 
 export const metadata: Metadata = {
-  title: "Políticas de Reserva | BIOBELLE Centro Médico - Estético",
-  description: "Políticas de reserva, abonos, puntualidad y condiciones de atención en BIOBELLE.",
+  title: "Políticas de Reserva | Bellabel Centro Médico - Estético",
+  description: "Políticas de reserva, abonos, puntualidad y condiciones de atención en Bellabel.",
 };
 
 export default function TermsPage() {
   return (
     <main className="legal-page">
-      <div className="announcement">BIOBELLE · Políticas de reserva y atención clínica transparente</div>
+      <div className="announcement">Bellabel · Políticas de reserva y atención clínica transparente</div>
       <header className="site-header legal-header">
         <BrandSocial />
         <Link className="back-home" href="/">← Volver al inicio</Link>
       </header>
       <article className="legal-document">
-        <p>BIOBELLE CENTRO MÉDICO - ESTÉTICO</p>
+        <p>BELLABEL CENTRO MÉDICO - ESTÉTICO</p>
         <h1>✦ POLÍTICAS DE RESERVA ✦</h1>
         <p className="legal-updated">Atención en Bueras 218, Edificio Olavarría, Oficina 302, Rancagua</p>
 
         <div className="policy-banner">
           <div className="policy-banner-head">
             <h2>Transparencia y Respeto por tu Tiempo</h2>
-            <p>En <b>Biobelle Centro Médico & Estético</b> valoramos tu tiempo y el de cada uno de nuestros pacientes. Cumplir estas políticas nos permite brindar una atención puntual, personalizada y de excelencia. 💖</p>
+            <p>En <b>Bellabel Centro Médico & Estético</b> valoramos tu tiempo y el de cada uno de nuestros pacientes. Cumplir estas políticas nos permite brindar una atención puntual, personalizada y de excelencia. 💖</p>
           </div>
 
           <div className="policy-grid">

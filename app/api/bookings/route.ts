@@ -1,9 +1,10 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "../../../db";
 import { bookings, scheduleBlocks } from "../../../db/schema";
-import { OPENING_DATE, PROFESSIONAL_EMAILS, SLOTS, getSlotsForDay, generateCalendarLinks, isProfessional, isProfessionalScheduledForSlot, type ProfessionalName } from "../../clinic-config";
+import { OPENING_DATE, getSlotsForDay, isProfessional, isProfessionalScheduledForSlot } from "../../clinic-config";
 import { formatRut, validateRut } from "../../rut-validator";
 import { getTreatmentById } from "../../treatment-service";
+import { syncBookingToGoogleCalendar } from "../../google-calendar-service";
 
 // Apertura operacional BIOBELLE: 2026-08-10.
 type BookingPayload = {
@@ -42,58 +43,7 @@ async function notifyProfessionalByEmail(booking: {
   patientName: string;
   phone: string;
 }) {
-  const proEmail = PROFESSIONAL_EMAILS[booking.professional as ProfessionalName] || "consulta@biobelle.cl";
-  const cal = generateCalendarLinks({
-    confirmationCode: booking.confirmationCode,
-    treatmentName: booking.treatmentName,
-    professional: booking.professional,
-    date: booking.date,
-    time: booking.time,
-    patientName: booking.patientName,
-    phone: booking.phone,
-  });
-
-  const resendApiKey = process.env.RESEND_API_KEY;
-  if (!resendApiKey) {
-    return { sent: false, proEmail, googleUrl: cal.googleUrl };
-  }
-
-  try {
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${resendApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "BIOBELLE Agenda <agenda@biobelle.cl>",
-        to: [proEmail],
-        subject: `Nueva cita agendada: ${booking.patientName} (${booking.date} ${booking.time})`,
-        html: `
-          <div style="font-family: sans-serif; padding: 20px; color: #271018;">
-            <h2 style="color: #7e2341;">Nueva Cita en BIOBELLE</h2>
-            <p>Hola <b>${booking.professional}</b>, se ha agendado una nueva atención:</p>
-            <ul>
-              <li><b>Paciente:</b> ${booking.patientName}</li>
-              <li><b>Tratamiento:</b> ${booking.treatmentName}</li>
-              <li><b>Fecha:</b> ${booking.date.split("-").reverse().join("/")}</li>
-              <li><b>Hora:</b> ${booking.time} hrs</li>
-              <li><b>WhatsApp Paciente:</b> ${booking.phone}</li>
-              <li><b>Código Reserva:</b> ${booking.confirmationCode}</li>
-            </ul>
-            <p style="margin-top: 20px;">
-              <a href="${cal.googleUrl}" style="background: #7e2341; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; display: inline-block;">
-                Añadir a Google Calendar 📅
-              </a>
-            </p>
-          </div>
-        `,
-      }),
-    });
-    return { sent: true, proEmail, googleUrl: cal.googleUrl };
-  } catch {
-    return { sent: false, proEmail, googleUrl: cal.googleUrl };
-  }
+  return syncBookingToGoogleCalendar(booking);
 }
 
 export async function POST(request: Request) {
@@ -118,7 +68,7 @@ export async function POST(request: Request) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || day === 0) {
       return Response.json({ error: "La fecha seleccionada no está disponible." }, { status: 400 });
     }
-    if (date < OPENING_DATE) return Response.json({ error: "La agenda BIOBELLE comienza el 18 de agosto de 2026." }, { status: 400 });
+    if (date < OPENING_DATE) return Response.json({ error: "La fecha seleccionada no está disponible." }, { status: 400 });
     const validSlots = getSlotsForDay(day);
     if (!validSlots.includes(time)) return Response.json({ error: "La hora seleccionada no está disponible." }, { status: 400 });
     if (patientName.length < 3 || patientName.length > 100) return Response.json({ error: "Ingresa tu nombre completo." }, { status: 400 });

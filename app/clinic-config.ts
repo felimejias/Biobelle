@@ -194,6 +194,9 @@ export function generateCalendarLinks(booking: {
   const endM = String(totalMinutes % 60).padStart(2, "0");
   const endIso = `${dateFormatted}T${endH}${endM}00`;
 
+  const nowUtc = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  const uid = `${booking.confirmationCode.toLowerCase()}@biobelle.cl`;
+
   const title = encodeURIComponent(`Cita BIOBELLE: ${booking.treatmentName} - ${booking.professional}`);
   const details = encodeURIComponent(
     `Reserva BIOBELLE (${booking.confirmationCode}).\nTratamiento: ${booking.treatmentName} (Duración estim.: ${durationMin} min)\nProfesional: ${booking.professional} (${proEmail})\nPaciente: ${booking.patientName || "Paciente"}\nContacto: ${booking.phone || ""}\nDirección: Bueras 218, Edificio Olavarría, Oficina 302, Rancagua.`
@@ -206,13 +209,19 @@ export function generateCalendarLinks(booking: {
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "PRODID:-//BIOBELLE Centro Medico Estetico//Agenda//ES",
+    "CALSCALE:GREGORIAN",
+    "METHOD:REQUEST",
     "BEGIN:VEVENT",
-    `SUMMARY:Cita BIOBELLE - ${booking.treatmentName}`,
-    `DESCRIPTION:Cita con ${booking.professional} (${proEmail}). Duración: ${durationMin} min. Codigo: ${booking.confirmationCode}.`,
-    "LOCATION:Bueras 218, Edificio Olavarría, Oficina 302, Rancagua",
-    `DTSTART:${startIso}`,
-    `DTEND:${endIso}`,
-    `ORGANIZER;CN=BIOBELLE:mailto:${proEmail}`,
+    `UID:${uid}`,
+    `DTSTAMP:${nowUtc}`,
+    `SUMMARY:Cita BIOBELLE: ${booking.treatmentName} - ${booking.patientName || "Paciente"}`,
+    `DESCRIPTION:Cita con ${booking.professional} (${proEmail}). Paciente: ${booking.patientName || "Paciente"}. Contacto: ${booking.phone || ""}. Código: ${booking.confirmationCode}.`,
+    "LOCATION:Bueras 218\\, Edificio Olavarría\\, Oficina 302\\, Rancagua",
+    `DTSTART;TZID=America/Santiago:${startIso}`,
+    `DTEND;TZID=America/Santiago:${endIso}`,
+    "STATUS:CONFIRMED",
+    "SEQUENCE:0",
+    `ORGANIZER;CN=BIOBELLE Centro Medico:mailto:${proEmail}`,
     `ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=${booking.professional}:mailto:${proEmail}`,
     "END:VEVENT",
     "END:VCALENDAR",

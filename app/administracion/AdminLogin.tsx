@@ -33,9 +33,9 @@ export function AdminLogin() {
   return (
     <main className="admin-access-page">
       <form className="admin-access-card admin-login-card" onSubmit={submit}>
-        <img src="/images/biobelle-lockup.png" alt="BIOBELLE Centro Médico Estético" />
+        <img src="/images/biobelle-lockup.png" alt="Bellabel Centro Médico Estético" />
         <p>ACCESO PRIVADO</p>
-        <h1>Panel BIOBELLE.</h1>
+        <h1>Panel Bellabel.</h1>
         <span>Ingresa con el usuario administrativo del centro para gestionar agenda, pacientes y permisos.</span>
         <label>
           Usuario

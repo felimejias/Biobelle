@@ -160,7 +160,7 @@ export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdenti
       <section className="admin-main">
         <header className="admin-topbar">
           <button className="admin-menu" onClick={() => setMenuOpen(true)} aria-label="Abrir menú"><FiMenu /></button>
-          <div><p>OPERACIÓN BIOBELLE</p><h1>{tabs.find(([id]) => id === tab)?.[1]}</h1></div>
+          <div><p>OPERACIÓN BELLABEL</p><h1>{tabs.find(([id]) => id === tab)?.[1]}</h1></div>
           <div className="admin-top-actions">
             {canEdit && <button type="button" className="admin-photo-trigger-btn" onClick={() => setPhotoModalPro(professionals[0])}><FiCamera /> Cambiar fotos de equipo</button>}
             <span>Atenciones desde 10 agosto</span>
@@ -190,6 +190,17 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
   const [selectedProfessional, setSelectedProfessional] = useState("Todas");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [agendaSearch, setAgendaSearch] = useState("");
+  const [copiedFeed, setCopiedFeed] = useState<string | null>(null);
+  const [showSyncGuide, setShowSyncGuide] = useState(false);
+
+  const copyFeedUrl = (proSlug: string) => {
+    const url = `https://biobelle.cl/api/calendar/${proSlug}.ics`;
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      void navigator.clipboard.writeText(url);
+      setCopiedFeed(proSlug);
+      window.setTimeout(() => setCopiedFeed(null), 3000);
+    }
+  };
   const visibleProfessionals = selectedProfessional === "Todas" ? professionals : professionals.filter((professional) => professional === selectedProfessional);
   const query = agendaSearch.trim().toLowerCase();
   const filteredBookings = data.bookings.filter((item) => item.status !== "cancelled")
@@ -217,7 +228,7 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
   ];
 
   return <div className="admin-content agenda-content">
-    <section className="agenda-productbar" aria-label="Módulos operativos BIOBELLE">
+    <section className="agenda-productbar" aria-label="Módulos operativos Bellabel">
       <button className="active"><FiCalendar /> Agenda</button>
       <button className="future">Ventas <small>QuantusChile</small></button>
       <button className="future">Recordatorios <small>Pronto</small></button>
@@ -237,7 +248,7 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
           <label className="agenda-quick-search"><FiSearch /><input value={agendaSearch} onChange={(event) => setAgendaSearch(event.target.value)} placeholder="Buscar paciente, teléfono o tratamiento" /></label>
         </div>
         <div className="agenda-filter-stack" aria-label="Contexto de agenda">
-          <div className="agenda-filter-chip"><span>Sucursal</span><b>BIOBELLE Rancagua</b><small>Edificio Olavarría · Oficina 302</small></div>
+          <div className="agenda-filter-chip"><span>Sucursal</span><b>Bellabel Rancagua</b><small>Edificio Olavarría · Oficina 302</small></div>
           <div className="agenda-filter-chip"><span>Agenda</span><b>Agenda médica</b><small>Atenciones desde el 10 de agosto</small></div>
         </div>
         <div className="agenda-filter-group">
@@ -268,6 +279,87 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
         <div className="agenda-legend">
           <span>Colores por tipo de atención</span>
           {legend.map(([id, label]) => <small key={id}><i className={treatmentClass(id)} />{label}</small>)}
+        </div>
+
+        <div className="agenda-sync-card" style={{ marginTop: "16px", padding: "14px", background: "rgba(126, 35, 65, 0.04)", borderRadius: "12px", border: "1px solid rgba(184, 145, 101, 0.25)" }}>
+          <span style={{ fontSize: "11.5px", fontWeight: 800, color: "var(--wine)", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "6px" }}>
+            📲 Sincronizar Google Calendar
+          </span>
+          <p style={{ fontSize: "11px", color: "var(--ink)", margin: "0 0 10px", lineHeight: 1.4 }}>
+            Sincroniza todas las citas y bloqueos en vivo con tu celular:
+          </p>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            {/* Kiara Moscoso */}
+            <div style={{ background: "#fff", padding: "8px 10px", borderRadius: "8px", border: "1px solid #e8deda" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+                <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--wine)" }}>Kiara Moscoso</span>
+                <button
+                  type="button"
+                  onClick={() => copyFeedUrl("kiara")}
+                  style={{ fontSize: "10px", padding: "3px 7px", background: copiedFeed === "kiara" ? "#1b7340" : "#f5edea", color: copiedFeed === "kiara" ? "#fff" : "var(--wine)", border: "1px solid #d4c2bc", borderRadius: "4px", cursor: "pointer", fontWeight: 600 }}
+                >
+                  {copiedFeed === "kiara" ? "✓ ¡URL copiada!" : "📋 Copiar URL"}
+                </button>
+              </div>
+              <div style={{ display: "flex", gap: "4px" }}>
+                <a
+                  href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=https%3A%2F%2Fbiobelle.cl%2Fapi%2Fcalendar%2Fkiara.ics"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ flex: 1, padding: "5px 6px", background: "var(--wine)", color: "#fff", borderRadius: "5px", fontSize: "10px", fontWeight: 700, textDecoration: "none", textAlign: "center" }}
+                >
+                  📅 Google Cal
+                </a>
+                <a
+                  href="webcal://biobelle.cl/api/calendar/kiara.ics"
+                  style={{ padding: "5px 8px", background: "#f0e3e0", color: "#542131", borderRadius: "5px", fontSize: "10px", fontWeight: 700, textDecoration: "none", textAlign: "center" }}
+                  title="Suscripción 1-clic para iPhone / Apple Calendar"
+                >
+                  🍏 iPhone
+                </a>
+              </div>
+            </div>
+
+            {/* Pía Orellana */}
+            <div style={{ background: "#fff", padding: "8px 10px", borderRadius: "8px", border: "1px solid #e8deda" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+                <span style={{ fontSize: "11px", fontWeight: 700, color: "#271018" }}>Pía Orellana</span>
+                <button
+                  type="button"
+                  onClick={() => copyFeedUrl("pia")}
+                  style={{ fontSize: "10px", padding: "3px 7px", background: copiedFeed === "pia" ? "#1b7340" : "#f5edea", color: copiedFeed === "pia" ? "#fff" : "#271018", border: "1px solid #d4c2bc", borderRadius: "4px", cursor: "pointer", fontWeight: 600 }}
+                >
+                  {copiedFeed === "pia" ? "✓ ¡URL copiada!" : "📋 Copiar URL"}
+                </button>
+              </div>
+              <div style={{ display: "flex", gap: "4px" }}>
+                <a
+                  href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=https%3A%2F%2Fbiobelle.cl%2Fapi%2Fcalendar%2Fpia.ics"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ flex: 1, padding: "5px 6px", background: "#271018", color: "#fff", borderRadius: "5px", fontSize: "10px", fontWeight: 700, textDecoration: "none", textAlign: "center" }}
+                >
+                  📅 Google Cal
+                </a>
+                <a
+                  href="webcal://biobelle.cl/api/calendar/pia.ics"
+                  style={{ padding: "5px 8px", background: "#f0e3e0", color: "#271018", borderRadius: "5px", fontSize: "10px", fontWeight: 700, textDecoration: "none", textAlign: "center" }}
+                  title="Suscripción 1-clic para iPhone / Apple Calendar"
+                >
+                  🍏 iPhone
+                </a>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowSyncGuide(true)}
+              style={{ padding: "6px 8px", background: "transparent", border: "none", color: "var(--wine)", fontSize: "10.5px", fontWeight: 700, cursor: "pointer", textAlign: "center", textDecoration: "underline" }}
+            >
+              ❓ ¿Cómo sincronizar en el celular?
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -379,6 +471,7 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
         </div>
       </section>
     </section>
+    {showSyncGuide && <SyncGuideModal onClose={() => setShowSyncGuide(false)} />}
   </div>;
 }
 
@@ -393,7 +486,7 @@ function WaitlistView({ entries, onStatus }: { entries: WaitlistEntry[]; onStatu
 function ReportsView({ metrics, bookings }: { metrics: Metrics; bookings: Booking[] }) {
   const professionalCount = professionals.map((professional) => ({ professional, count: bookings.filter((item) => item.professional === professional && item.status !== "cancelled").length }));
   const max = Math.max(1, ...professionalCount.map((item) => item.count));
-  return <div className="admin-content"><div className="admin-section-head"><div><p>RESUMEN OPERATIVO</p><h2>Decisiones con contexto.</h2></div><span>Indicadores calculados desde las reservas reales de BIOBELLE.</span></div><section className="admin-kpis report-kpis"><article><span>Ocupación</span><b>{metrics.occupancy}%</b><small>Capacidad del período</small></article><article><span>Atendidas</span><b>{metrics.completed}</b><small>Procedimientos realizados</small></article><article><span>Inasistencias</span><b>{metrics.noShow}</b><small>Pacientes no presentados</small></article><article><span>Reservas activas</span><b>{metrics.total}</b><small>Sin cancelaciones</small></article></section><section className="report-panel"><h3>Ocupación por profesional</h3>{professionalCount.map((item) => <div className="report-bar" key={item.professional}><span>{item.professional}</span><div><i style={{ width: `${(item.count / max) * 100}%` }} /></div><b>{item.count}</b></div>)}</section></div>;
+  return <div className="admin-content"><div className="admin-section-head"><div><p>RESUMEN OPERATIVO</p><h2>Decisiones con contexto.</h2></div><span>Indicadores calculados desde las reservas reales de Bellabel.</span></div><section className="admin-kpis report-kpis"><article><span>Ocupación</span><b>{metrics.occupancy}%</b><small>Capacidad del período</small></article><article><span>Atendidas</span><b>{metrics.completed}</b><small>Procedimientos realizados</small></article><article><span>Inasistencias</span><b>{metrics.noShow}</b><small>Pacientes no presentados</small></article><article><span>Reservas activas</span><b>{metrics.total}</b><small>Sin cancelaciones</small></article></section><section className="report-panel"><h3>Ocupación por profesional</h3>{professionalCount.map((item) => <div className="report-bar" key={item.professional}><span>{item.professional}</span><div><i style={{ width: `${(item.count / max) * 100}%` }} /></div><b>{item.count}</b></div>)}</section></div>;
 }
 
 function TreatmentsView({ treatments: catalog, profiles, canEdit, onEditPhoto, onAction }: { treatments: AdminTreatment[]; profiles: Record<string, { image: string; role: string; focus: string }>; canEdit: boolean; onEditPhoto: (professional: string) => void; onAction: (payload: Record<string, unknown>) => Promise<boolean> }) {
@@ -407,7 +500,7 @@ function TreatmentsView({ treatments: catalog, profiles, canEdit, onEditPhoto, o
   const toggleEnabled = (professional: string) => setEnabled((current) => current.includes(professional) ? current.filter((item) => item !== professional) : [...current, professional]);
 
   return <div className="admin-content"><div className="admin-section-head"><div><p>MATRIZ INTELIGENTE</p><h2>Tratamientos y profesionales.</h2></div><button className="admin-primary" onClick={() => setFormOpen(!formOpen)}><FiPlus /> Nuevo tratamiento</button></div>
-    <div className="treatment-admin-note"><b>Regla BIOBELLE:</b> cada procedimiento debe tener al menos una profesional habilitada. Si solo una lo realiza, la paciente verá obligatoriamente solo a esa persona en el agendamiento.</div>
+    <div className="treatment-admin-note"><b>Regla Bellabel:</b> cada procedimiento debe tener al menos una profesional habilitada. Si solo una lo realiza, la paciente verá obligatoriamente solo a esa persona en el agendamiento.</div>
     {formOpen && <form className="admin-inline-form treatment-inline-form" onSubmit={async (event) => { event.preventDefault(); if (enabled.length && await onAction({ action: "add_treatment", label, publicLabel: publicLabel || label, duration, price, professionals: enabled })) { setFormOpen(false); setLabel(""); setPublicLabel(""); setDuration("Según evaluación"); setPrice("Según evaluación"); setEnabled([...professionals]); } }}><label>Nombre interno<input value={label} onChange={(event) => setLabel(event.target.value)} placeholder="Ej: Rinomodelación" required /></label><label>Nombre público<input value={publicLabel} onChange={(event) => setPublicLabel(event.target.value)} placeholder="Si quieres otro nombre visible" /></label><label>Duración<input value={duration} onChange={(event) => setDuration(event.target.value)} /></label><label>Precio/nota<input value={price} onChange={(event) => setPrice(event.target.value)} /></label><div className="treatment-pro-checkboxes">{professionals.map((professional) => <label key={professional}><input type="checkbox" checked={enabled.includes(professional)} onChange={() => toggleEnabled(professional)} />{professional}</label>)}</div><button disabled={!enabled.length}>Crear tratamiento</button></form>}
     <div className="treatment-matrix">
       <div className="treatment-matrix-head"><span>Tratamiento</span>{professionals.map((professional) => <span key={professional}>{professional}</span>)}<span>Estado</span></div>
@@ -632,4 +725,42 @@ function BlockEditor({ date, identity, onClose, onSave }: { date: string; identi
 function ClientPanel({ client, notes, onClose, onAddNote }: { client: Client; notes: Note[]; onClose: () => void; onAddNote: (note: string) => Promise<void> }) {
   const [note, setNote] = useState("");
   return <div className="admin-modal-backdrop"><section className="admin-modal client-panel"><button className="admin-modal-close" onClick={onClose}><FiX /></button><p>FICHA DE PACIENTE</p><h2>{client.name}</h2><div className="client-contact"><span>{client.phone}</span><b>{client.visits} atenciones registradas</b><small>Última cita: {client.lastDate.split("-").reverse().join("/")}</small></div><h3>Tratamientos</h3><div className="client-tags">{client.treatments.map((item) => <span key={item}>{item}</span>)}</div><h3>Notas internas</h3><div className="client-notes">{notes.map((item) => <article key={item.id}><p>{item.note}</p><small>{item.authorEmail}</small></article>)}{!notes.length && <span>Sin notas registradas.</span>}</div><form onSubmit={(event) => { event.preventDefault(); void onAddNote(note); }}><textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Agregar observación interna…" required /><button className="admin-primary">Guardar nota</button></form></section></div>;
+}
+
+function SyncGuideModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="admin-modal-backdrop">
+      <div className="admin-modal" style={{ maxWidth: "560px" }}>
+        <button type="button" className="admin-modal-close" onClick={onClose}><FiX /></button>
+        <p>SINCRONIZACIÓN EN VIVO</p>
+        <h2>¿Cómo conectar Google Calendar en tu celular?</h2>
+        <div style={{ fontSize: "13px", color: "var(--ink)", lineHeight: 1.6, display: "flex", flexDirection: "column", gap: "16px", marginTop: "12px" }}>
+          
+          <div style={{ background: "#fcf8f7", padding: "14px", borderRadius: "10px", border: "1px solid #ebd8d4" }}>
+            <b style={{ color: "var(--wine)", display: "block", marginBottom: "6px", fontSize: "14px" }}>📱 En Android / Google Calendar (Paso a paso):</b>
+            <ol style={{ paddingLeft: "20px", margin: 0 }}>
+              <li style={{ marginBottom: "6px" }}>Toca <b>"Copiar URL"</b> en tu profesional (Kiara o Pía).</li>
+              <li style={{ marginBottom: "6px" }}>Toca <b>"Google Cal"</b> (o abre <code>calendar.google.com</code> en tu navegador).</li>
+              <li style={{ marginBottom: "6px" }}>Pega la URL copiada en el campo <b>"URL del calendario"</b> y pulsa <b>"Añadir calendario"</b>.</li>
+              <li><b>¡Paso clave en tu celular!</b> Abre la app <b>Google Calendar</b> en tu teléfono ➔ Menú (☰) ➔ Ajustes ➔ Toca el calendario de Bellabel ➔ Activa el botón <b>"Sincronizar"</b>.</li>
+            </ol>
+          </div>
+
+          <div style={{ background: "#f5f7fa", padding: "14px", borderRadius: "10px", border: "1px solid #dce2eb" }}>
+            <b style={{ color: "#1d3557", display: "block", marginBottom: "6px", fontSize: "14px" }}>🍏 En iPhone / iPad (1-clic):</b>
+            <ol style={{ paddingLeft: "20px", margin: 0 }}>
+              <li style={{ marginBottom: "6px" }}>Toca el botón <b>"iPhone"</b> en tu profesional.</li>
+              <li style={{ marginBottom: "6px" }}>Tu iPhone abrirá la app Calendario y preguntará <i>"¿Deseas suscribirte al calendario de Bellabel?"</i>.</li>
+              <li>Pulsa <b>"Suscribirse"</b> y <b>"Aceptar"</b>. ¡Listo!</li>
+            </ol>
+          </div>
+
+          <p style={{ fontSize: "11.5px", color: "#8a7578", margin: 0, background: "#fffdfa", padding: "10px", borderRadius: "8px", border: "1px dashed #d4c2bc" }}>
+            💡 <b>Nota:</b> No abras el archivo como una descarga suelta en el celular. Al suscribirte como calendario vivo, cada nueva reserva aparecerá sola en tu teléfono.
+          </p>
+        </div>
+        <button type="button" className="admin-primary" style={{ marginTop: "16px", width: "100%" }} onClick={onClose}>Entendido</button>
+      </div>
+    </div>
+  );
 }

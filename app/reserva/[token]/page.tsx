@@ -106,7 +106,7 @@ export default function ReservationPage() {
 
   return (
     <main className="reservation-page">
-      <div className="announcement">Gestión segura de tu reserva BIOBELLE</div>
+      <div className="announcement">Gestión segura de tu reserva Bellabel</div>
       <header className="site-header treatment-header"><BrandSocial /><Link className="back-home" href="/">← Volver al inicio</Link></header>
       <section className="reservation-shell">
         {loading ? <div className="reservation-loading">Consultando tu reserva…</div> : error && !booking ? <div className="reservation-empty"><h1>No encontramos esta reserva.</h1><p>{error}</p><a href="https://wa.me/56979655129">Solicitar ayuda por WhatsApp</a></div> : booking && <>

@@ -15,10 +15,10 @@ export async function generateMetadata({ params }: TreatmentPageProps): Promise<
   const treatment = getTreatment(slug);
   if (!treatment) return {};
   return {
-    title: `${treatment.eyebrow} en Rancagua | BIOBELLE`,
+    title: `${treatment.eyebrow} en Rancagua | Bellabel`,
     description: treatment.summary,
     alternates: { canonical: `/tratamientos/${slug}` },
-    openGraph: { title: `${treatment.eyebrow} | BIOBELLE`, description: treatment.summary, images: [treatment.image] },
+    openGraph: { title: `${treatment.eyebrow} | Bellabel`, description: treatment.summary, images: [treatment.image] },
   };
 }
 
@@ -27,7 +27,7 @@ export default async function TreatmentPage({ params }: TreatmentPageProps) {
   const treatment = getTreatment(slug);
   if (!treatment) notFound();
 
-  const whatsappText = encodeURIComponent(`Hola BIOBELLE, quisiera orientación y disponibilidad para ${treatment.eyebrow}.`);
+  const whatsappText = encodeURIComponent(`Hola Bellabel, quisiera orientación y disponibilidad para ${treatment.eyebrow}.`);
 
   return (
     <main className="treatment-page">
@@ -45,7 +45,7 @@ export default async function TreatmentPage({ params }: TreatmentPageProps) {
           <div className="detail-meta"><span><small>Duración estimada</small>{treatment.duration}</span><span><small>Valor</small>{treatment.price}</span></div>
           <div className="detail-actions"><Link className="primary" href={`/?agendar=${treatment.slug}`}>Agendar evaluación <span>↗</span></Link><a className="detail-whatsapp" href={`https://wa.me/56979655129?text=${whatsappText}`} target="_blank" rel="noreferrer">Consultar por WhatsApp</a></div>
         </div>
-        <figure><img src={treatment.image} alt={`${treatment.eyebrow} en BIOBELLE Rancagua`} /></figure>
+        <figure><img src={treatment.image} alt={`${treatment.eyebrow} en Bellabel Rancagua`} /></figure>
       </section>
 
       <section className="treatment-information">
