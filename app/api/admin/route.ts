@@ -186,7 +186,7 @@ export async function POST(request: Request) {
     await db.insert(adminUsers).values({
       id: crypto.randomUUID(),
       username,
-      email: `${username}@biobelle.local`,
+      email: `${username}@bellabel.local`,
       passwordHash: await hashPassword(password, salt),
       passwordSalt: salt,
       name: String(payload.name ?? username).slice(0, 100),

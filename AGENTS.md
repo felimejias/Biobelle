@@ -1,13 +1,13 @@
-# BIOBELLE - Estado del proyecto y hoja de ruta
+# BELLABEL - Estado del proyecto y hoja de ruta
 
-Este archivo resume lo que ya se construyo para BIOBELLE, lo que esta pendiente
+Este archivo resume lo que ya se construyo para BELLABEL (anteriormente Biobelle), lo que esta pendiente
 de cerrar y las ideas futuras que van si o si, pero que aun no deben tratarse
 como implementadas.
 
 ## Contexto general
 
-- Marca: BIOBELLE Centro Medico - Estetico.
-- Dominio objetivo: `biobelle.cl`.
+- Marca: BELLABEL Centro Medico - Estetico.
+- Dominio objetivo: `bellabel.cl`.
 - Ubicacion comunicada: Bueras 218, Edificio Olavarria, Oficina 302, Rancagua.
 - Apertura de agenda y atenciones: desde el 10 de agosto de 2026.
 - Estilo visual buscado: premium, minimalista, femenino, clinico y elegante.
@@ -19,6 +19,10 @@ como implementadas.
 
 ## Ya implementado
 
+- Base de Datos Canónica de Pacientes por RUT (`patients`), con validación estricta Módulo 11 (P11 Carta Magna / Regla 1).
+- Ficha e Historial Clínico de Procedimientos (`clinical_records`) con trazabilidad de sesiones, zonas anatómicas tratadas, parámetros técnicos clínicos (Joules láser, UI Bótox, ml AH) y profesional actuante.
+- Motor Automatizado de Acompañamiento Post-Tratamiento (`post_treatment_followups`) con cronogramas clínicos inteligentes por WhatsApp (Día 0 al Día 42) y escalamiento ante molestias.
+- Servicio y Endpoints Clínicos REST en `/api/clinical` (consulta integral de historia por RUT y alta de procedimientos con activación de alertas).
 - Sitio publico BIOBELLE con direccion visual premium y responsive.
 - Logo e imagenes de marca integradas en el sitio.
 - Correccion del logo para evitar el cuadro blanco gigante en la cabecera.
@@ -131,7 +135,7 @@ como implementadas.
 - Tests de validacion del sitio y del panel administrativo.
 - Build verificado localmente con `npm run build`.
 - Test suite verificada con `npm test`.
-- Sitio publicado en produccion por Sites y apuntado al dominio `biobelle.cl`.
+- Sitio publicado en produccion por Sites / Cloudflare y migrado al dominio canonico `bellabel.cl` (con redireccion 301 desde `biobelle.cl`).
 
 ## Pendiente urgente por implementar
 
@@ -152,7 +156,7 @@ como implementadas.
 
 ## Pendiente importante
 
-- Correo profesional, idealmente `consulta@biobelle.cl`.
+- Correo profesional, idealmente `consulta@bellabel.cl`.
 - Definir proveedor de correo: Cloudflare Email Routing, Google Workspace,
   Zoho, Outlook u otro.
 - Crear textos finales de contacto, politicas y terminos con revision legal.
@@ -300,4 +304,4 @@ Inspiracion tomada del menu funcional de AgendaPro:
 - Ejecutar `npm test` antes de publicar cambios importantes.
 - Para publicar, usar el proyecto existente de Sites definido en
   `.openai/hosting.json`; no crear otro sitio.
-- El dominio publico debe seguir siendo `biobelle.cl`.
+- El dominio publico canonico es `bellabel.cl` (manteniendo redireccion desde `biobelle.cl`).

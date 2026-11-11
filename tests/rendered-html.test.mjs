@@ -8,16 +8,16 @@ async function source(path) {
   return readFile(new URL(path, root), "utf8");
 }
 
-test("keeps the BIOBELLE brand, contact channels and booking journey visible", async () => {
+test("keeps the Bellabel brand, contact channels and booking journey visible", async () => {
   const [page, brand] = await Promise.all([source("app/page.tsx"), source("app/components/BrandSocial.tsx")]);
   assert.match(page, /Tu belleza,/);
   assert.match(page, /AGENDA INTELIGENTE/);
   assert.match(page, /api\/bookings\//);
   assert.match(page, /Reprogramar o cancelar mi hora/);
   assert.match(page, /lista-espera/);
-  assert.match(brand, /biobelle-lockup\.png/);
-  assert.match(brand, /@biobelle_center/);
-  assert.match(brand, /\+56 9 7965 5129/);
+  assert.match(brand, /bellabel-lockup\.png/);
+  assert.match(brand, /@bellabel_center/);
+  assert.match(brand, /\+56 9 4498 6391/);
 });
 
 test("ships persistent booking management, waitlist and privacy-aware analytics", async () => {
@@ -61,7 +61,7 @@ test("publishes local SEO metadata and indexable public routes", async () => {
   ]);
 });
 
-test("protects and ships the BIOBELLE operations console", async () => {
+test("protects and ships the Bellabel operations console", async () => {
   const [adminPage, login, dashboard, adminApi, auth, sessionApi, schema, availability] = await Promise.all([
     source("app/administracion/page.tsx"),
     source("app/administracion/AdminLogin.tsx"),
@@ -75,7 +75,7 @@ test("protects and ships the BIOBELLE operations console", async () => {
   assert.match(adminPage, /AdminLogin/);
   assert.match(login, /Usuario/);
   assert.match(login, /Clave/);
-  assert.match(auth, /biobelle_admin_session/);
+  assert.match(auth, /bellabel_admin_session/);
   assert.match(sessionApi, /INITIAL_ADMIN/);
   assert.match(sessionApi, /username: "admin"/);
   assert.match(dashboard, /Usuarios y permisos/);
@@ -91,6 +91,29 @@ test("protects and ships the BIOBELLE operations console", async () => {
   assert.match(schema, /export const bookingHistory/);
   assert.match(schema, /export const clientNotes/);
   assert.match(availability, /scheduleBlocks/);
+});
+
+test("ships every referenced public image asset and Bellabel domain config", async () => {
+  const [layout, robots, sitemap, wrangler] = await Promise.all([
+    source("app/layout.tsx"),
+    source("app/robots.ts"),
+    source("app/sitemap.ts"),
+    source("wrangler.json"),
+  ]);
+  assert.match(layout, /https:\/\/www\.bellabel\.cl/);
+  assert.match(robots, /https:\/\/www\.bellabel\.cl\/sitemap\.xml/);
+  assert.match(sitemap, /https:\/\/www\.bellabel\.cl/);
+  assert.match(wrangler, /"bellabel\.cl\/\*"/);
+  assert.match(wrangler, /"www\.bellabel\.cl\/\*"/);
+
+  await Promise.all([
+    access(new URL("public/og.png", root)),
+    access(new URL("public/images/bellabel-lockup.png", root)),
+    access(new URL("public/images/bellabel-recepcion.jpg", root)),
+    access(new URL("public/images/identidad-bellabel.jpg", root)),
+    access(new URL("public/images/equipo-clinico-bellabel.jpg", root)),
+    access(new URL("public/images/servicios-bellabel.jpg", root)),
+  ]);
 });
 
 test("enforces exact shift matrix and isolates personal calendars from clinic events", async () => {

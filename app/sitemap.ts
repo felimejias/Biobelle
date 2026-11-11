@@ -3,7 +3,7 @@ import { professionals } from "./equipo/data";
 import { treatmentDetails } from "./tratamientos/data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://www.biobelle.cl";
+  const base = "https://www.bellabel.cl";
   const now = new Date();
   return [
     { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },

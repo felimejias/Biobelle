@@ -29,6 +29,10 @@ const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
+    if (url.hostname === "biobelle.cl" || url.hostname === "www.biobelle.cl") {
+      return Response.redirect(`https://www.bellabel.cl${url.pathname}${url.search}`, 301);
+    }
+
     if (url.pathname === "/_vinext/image") {
       const allowedWidths = [...DEFAULT_DEVICE_SIZES, ...DEFAULT_IMAGE_SIZES];
       return handleImageOptimization(request, {

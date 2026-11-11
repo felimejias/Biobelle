@@ -80,7 +80,7 @@ export default function WaitlistPage() {
       <header className="site-header treatment-header"><BrandSocial /><Link className="back-home" href="/">← Volver al inicio</Link></header>
       <section className="waitlist-shell">
         <div className="waitlist-copy"><p className="kicker">Disponibilidad inteligente</p><h1>Tu hora ideal puede aparecer antes.</h1><p>Indícanos qué buscas y te contactaremos si se libera un horario compatible. Estar en la lista no confirma una cita ni genera cobros.</p></div>
-        {message ? <div className="waitlist-success"><span>✓</span><h2>Ya estás en la lista.</h2><p>{message}</p><a className="whatsapp-confirm" href={`https://wa.me/56979655129?text=${whatsappText}`} target="_blank" rel="noreferrer">Avisar también por WhatsApp</a></div> : <form className="waitlist-form" onSubmit={submit}>
+        {message ? <div className="waitlist-success"><span>✓</span><h2>Ya estás en la lista.</h2><p>{message}</p><a className="whatsapp-confirm" href={`https://wa.me/56944986391?text=${whatsappText}`} target="_blank" rel="noreferrer">Avisar también por WhatsApp</a></div> : <form className="waitlist-form" onSubmit={submit}>
           <label>Nombre completo<input value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" required /></label>
           <label>WhatsApp<input value={phone} onChange={(event) => setPhone(event.target.value)} autoComplete="tel" inputMode="tel" placeholder="+56 9 1234 5678" required /></label>
           <label>Tratamiento<select value={treatmentId} onChange={(event) => setTreatmentId(event.target.value)}>{treatmentOptions.map((item) => <option value={item.id} key={item.id}>{item.publicLabel || item.label}</option>)}</select></label>

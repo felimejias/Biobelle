@@ -12,7 +12,7 @@ export type AdminIdentity = {
   isGeneralAdmin: boolean;
 };
 
-export const ADMIN_SESSION_COOKIE = "biobelle_admin_session";
+export const ADMIN_SESSION_COOKIE = "bellabel_admin_session";
 export const ADMIN_SESSION_MAX_AGE_SECONDS = 60 * 60 * 12;
 
 export async function getAdminIdentity(): Promise<AdminIdentity | null> {

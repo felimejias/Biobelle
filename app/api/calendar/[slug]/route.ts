@@ -58,7 +58,7 @@ function getShiftRecurringEvents(professional: string, dtstamp: string): string[
     // Lunes a Jueves PM bloqueado (15:00 a 19:00)
     events.push([
       "BEGIN:VEVENT",
-      `UID:kiara-shift-mon-thu-pm@biobelle.cl`,
+      `UID:kiara-shift-mon-thu-pm@bellabel.cl`,
       `DTSTAMP:${dtstamp}`,
       `SUMMARY:Bloqueado (Turno Pía / Fuera de Horario)`,
       `DESCRIPTION:Horario no disponible para atención de Kiara Moscoso.`,
@@ -75,7 +75,7 @@ function getShiftRecurringEvents(professional: string, dtstamp: string): string[
     // Viernes AM bloqueado (09:00 a 14:00)
     events.push([
       "BEGIN:VEVENT",
-      `UID:kiara-shift-fri-am@biobelle.cl`,
+      `UID:kiara-shift-fri-am@bellabel.cl`,
       `DTSTAMP:${dtstamp}`,
       `SUMMARY:Bloqueado (Turno Pía / Fuera de Horario)`,
       `DESCRIPTION:Horario no disponible para atención de Kiara Moscoso.`,
@@ -94,7 +94,7 @@ function getShiftRecurringEvents(professional: string, dtstamp: string): string[
     // Lunes a Jueves AM bloqueado (09:00 a 15:00)
     events.push([
       "BEGIN:VEVENT",
-      `UID:pia-shift-mon-thu-am@biobelle.cl`,
+      `UID:pia-shift-mon-thu-am@bellabel.cl`,
       `DTSTAMP:${dtstamp}`,
       `SUMMARY:Bloqueado (Turno Kiara / Fuera de Horario)`,
       `DESCRIPTION:Horario no disponible para atención de Pía Orellana.`,
@@ -112,10 +112,10 @@ function getShiftRecurringEvents(professional: string, dtstamp: string): string[
   // Sábado tarde cerrado para ambas (13:00 a 19:00)
   events.push([
     "BEGIN:VEVENT",
-    `UID:${professional.toLowerCase().replace(/[^a-z]/g, "")}-sat-pm@biobelle.cl`,
+    `UID:${professional.toLowerCase().replace(/[^a-z]/g, "")}-sat-pm@bellabel.cl`,
     `DTSTAMP:${dtstamp}`,
     `SUMMARY:Bloqueado (Centro Cerrado)`,
-    `DESCRIPTION:BIOBELLE Centro Médico - Estético cerrado.`,
+    `DESCRIPTION:Bellabel Centro Médico Estético cerrado.`,
     `LOCATION:Bueras 218\\, Edificio Olavarría\\, Oficina 302\\, Rancagua`,
     `DTSTART;TZID=America/Santiago:20260815T130000`,
     `DTEND;TZID=America/Santiago:20260815T190000`,
@@ -129,10 +129,10 @@ function getShiftRecurringEvents(professional: string, dtstamp: string): string[
   // Domingo cerrado todo el día
   events.push([
     "BEGIN:VEVENT",
-    `UID:${professional.toLowerCase().replace(/[^a-z]/g, "")}-sun@biobelle.cl`,
+    `UID:${professional.toLowerCase().replace(/[^a-z]/g, "")}-sun@bellabel.cl`,
     `DTSTAMP:${dtstamp}`,
     `SUMMARY:Bloqueado (Domingo Cerrado)`,
-    `DESCRIPTION:BIOBELLE Centro Médico - Estético cerrado.`,
+    `DESCRIPTION:Bellabel Centro Médico Estético cerrado.`,
     `LOCATION:Bueras 218\\, Edificio Olavarría\\, Oficina 302\\, Rancagua`,
     `DTSTART;TZID=America/Santiago:20260816T090000`,
     `DTEND;TZID=America/Santiago:20260816T190000`,
@@ -179,11 +179,11 @@ export async function GET(_request: Request, { params }: CalendarRouteProps) {
 
     const bookingEvents = rows.map((row) => {
       const { start, end } = formatIcsDate(row.appointmentDate, row.appointmentTime);
-      const summary = escapeIcsText(`Cita BIOBELLE: ${row.treatmentName} - ${row.patientName}`);
+      const summary = escapeIcsText(`Cita Bellabel: ${row.treatmentName} - ${row.patientName}`);
       const description = escapeIcsText(`Paciente: ${row.patientName}\nWhatsApp: ${row.phone}\nTratamiento: ${row.treatmentName}\nCódigo: ${row.confirmationCode}`);
       return [
         "BEGIN:VEVENT",
-        `UID:${row.id}@biobelle.cl`,
+        `UID:${row.id}@bellabel.cl`,
         `DTSTAMP:${dtstamp}`,
         `SUMMARY:${summary}`,
         `DESCRIPTION:${description}`,
@@ -202,10 +202,10 @@ export async function GET(_request: Request, { params }: CalendarRouteProps) {
       const startFormatted = block.startTime.replaceAll(":", "");
       const endFormatted = block.endTime.replaceAll(":", "");
       const summary = escapeIcsText(`Horario Bloqueado: ${block.reason}`);
-      const description = escapeIcsText(`Bloqueo de agenda en BIOBELLE\nMotivo: ${block.reason}`);
+      const description = escapeIcsText(`Bloqueo de agenda en Bellabel\nMotivo: ${block.reason}`);
       return [
         "BEGIN:VEVENT",
-        `UID:block-${block.id}@biobelle.cl`,
+        `UID:block-${block.id}@bellabel.cl`,
         `DTSTAMP:${dtstamp}`,
         `SUMMARY:${summary}`,
         `DESCRIPTION:${description}`,
@@ -228,10 +228,10 @@ export async function GET(_request: Request, { params }: CalendarRouteProps) {
     const icsContent = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
-      "PRODID:-//BIOBELLE Centro Medico Estetico//Agenda Sync v2//ES",
+      "PRODID:-//Bellabel Centro Medico Estetico//Agenda Sync v2//ES",
       "CALSCALE:GREGORIAN",
       "METHOD:PUBLISH",
-      `X-WR-CALNAME:BIOBELLE - Agenda ${matchedProfessional}`,
+      `X-WR-CALNAME:Bellabel - Agenda ${matchedProfessional}`,
       "X-WR-TIMEZONE:America/Santiago",
       vtimezone,
       allEvents.join("\r\n"),

@@ -5,6 +5,8 @@
     "nodejs_compat"
   ],
   "routes": [
+    "bellabel.cl/*",
+    "www.bellabel.cl/*",
     "biobelle.cl/*",
     "www.biobelle.cl/*"
   ],

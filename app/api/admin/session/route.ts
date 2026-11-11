@@ -10,12 +10,12 @@ import {
 } from "../../../admin-auth";
 
 const INITIAL_ADMIN = {
-  id: "biobelle-initial-general-admin",
+  id: "bellabel-initial-general-admin",
   username: "admin",
-  email: "admin@biobelle.local",
+  email: "admin@bellabel.local",
   name: "Administrador general",
   role: "general_admin",
-  passwordSalt: "biobelle-initial-admin-2026-07-19",
+  passwordSalt: "bellabel-initial-admin-2026-07-19",
   passwordHash: "bce5c69c5258c5915c414e9a81b8b55fd26ccbc4bfb02ebf1fc87da4baf60fd9",
 };
 
@@ -65,8 +65,12 @@ export async function GET(request: Request) {
     await getDb().delete(adminSessions).where(eq(adminSessions.tokenHash, await hashSessionToken(token)));
   }
 
-  return Response.redirect(new URL("/", request.url), {
-    headers: { "Set-Cookie": sessionCookie(request, "", 0) },
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: new URL("/", request.url).toString(),
+      "Set-Cookie": sessionCookie(request, "", 0),
+    },
   });
 }
 

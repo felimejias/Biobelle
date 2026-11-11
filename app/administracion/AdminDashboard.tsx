@@ -151,7 +151,7 @@ export function AdminDashboard({ initialIdentity, signOutPath }: { initialIdenti
     <main className="admin-app">
       <aside className={menuOpen ? "admin-sidebar open" : "admin-sidebar"}>
         <button className="admin-sidebar-close" onClick={() => setMenuOpen(false)} aria-label="Cerrar menú"><FiX /></button>
-        <img src="/images/biobelle-lockup.png" alt="BIOBELLE" />
+        <img src="/images/bellabel-lockup.png" alt="Bellabel" />
         <div className="admin-location"><span>Centro activo</span><b>Rancagua · Bueras 218</b></div>
         <nav>{tabs.map(([id, label, icon]) => <button key={id} className={tab === id ? "active" : ""} onClick={() => { setTab(id); setMenuOpen(false); }}>{icon}<span>{label}</span>{id === "espera" && data?.metrics.waiting ? <small>{data.metrics.waiting}</small> : null}</button>)}</nav>
         <div className="admin-user"><span>{identity.name.slice(0, 1).toUpperCase()}</span><div><b>{identity.name}</b><small>{roleLabel[identity.role] ?? identity.role}</small></div><a href={signOutPath} aria-label="Cerrar sesión"><FiLogOut /></a></div>
@@ -194,7 +194,7 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
   const [showSyncGuide, setShowSyncGuide] = useState(false);
 
   const copyFeedUrl = (proSlug: string) => {
-    const url = `https://biobelle.cl/api/calendar/${proSlug}.ics`;
+    const url = `https://bellabel.cl/api/calendar/${proSlug}.ics`;
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       void navigator.clipboard.writeText(url);
       setCopiedFeed(proSlug);
@@ -304,7 +304,7 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
               </div>
               <div style={{ display: "flex", gap: "4px" }}>
                 <a
-                  href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=https%3A%2F%2Fbiobelle.cl%2Fapi%2Fcalendar%2Fkiara.ics"
+                  href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=https%3A%2F%2Fbellabel.cl%2Fapi%2Fcalendar%2Fkiara.ics"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ flex: 1, padding: "5px 6px", background: "var(--wine)", color: "#fff", borderRadius: "5px", fontSize: "10px", fontWeight: 700, textDecoration: "none", textAlign: "center" }}
@@ -312,7 +312,7 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
                   📅 Google Cal
                 </a>
                 <a
-                  href="webcal://biobelle.cl/api/calendar/kiara.ics"
+                  href="webcal://bellabel.cl/api/calendar/kiara.ics"
                   style={{ padding: "5px 8px", background: "#f0e3e0", color: "#542131", borderRadius: "5px", fontSize: "10px", fontWeight: 700, textDecoration: "none", textAlign: "center" }}
                   title="Suscripción 1-clic para iPhone / Apple Calendar"
                 >
@@ -335,7 +335,7 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
               </div>
               <div style={{ display: "flex", gap: "4px" }}>
                 <a
-                  href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=https%3A%2F%2Fbiobelle.cl%2Fapi%2Fcalendar%2Fpia.ics"
+                  href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl?cid=https%3A%2F%2Fbellabel.cl%2Fapi%2Fcalendar%2Fpia.ics"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ flex: 1, padding: "5px 6px", background: "#271018", color: "#fff", borderRadius: "5px", fontSize: "10px", fontWeight: 700, textDecoration: "none", textAlign: "center" }}
@@ -343,7 +343,7 @@ function AgendaView({ date, setDate, data, profiles, canEdit, onBooking, onBlock
                   📅 Google Cal
                 </a>
                 <a
-                  href="webcal://biobelle.cl/api/calendar/pia.ics"
+                  href="webcal://bellabel.cl/api/calendar/pia.ics"
                   style={{ padding: "5px 8px", background: "#f0e3e0", color: "#271018", borderRadius: "5px", fontSize: "10px", fontWeight: 700, textDecoration: "none", textAlign: "center" }}
                   title="Suscripción 1-clic para iPhone / Apple Calendar"
                 >

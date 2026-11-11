@@ -90,9 +90,9 @@ export default function TermsPage() {
         </div>
 
         <section>
-          <h2>Compromiso BIOBELLE</h2>
+          <h2>Compromiso Bellabel</h2>
           <p>
-            En <b>Biobelle Centro Médico & Estético</b> nos esforzamos por brindar una experiencia cercana, clínica y segura. Agradecemos tu comprensión y colaboración para mantener la excelencia en la atención de cada paciente.
+            En <b>Bellabel Centro Médico & Estético</b> nos esforzamos por brindar una experiencia cercana, clínica y segura. Agradecemos tu comprensión y colaboración para mantener la excelencia en la atención de cada paciente.
           </p>
           <div style={{ marginTop: 25 }}>
             <Link className="primary" href="/?agendar=evaluacion">Agendar mi atención ↗</Link>

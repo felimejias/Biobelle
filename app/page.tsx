@@ -122,7 +122,7 @@ function formatDisplayDateSpanish(dateStr: string) {
 function BrandLockup({ className = "", compact = false }: { className?: string; compact?: boolean }) {
   return (
     <span className={`brand-lockup${compact ? " compact" : ""}${className ? ` ${className}` : ""}`}>
-      <img src="/images/biobelle-lockup.png" alt="Bellabel Centro Médico Estético" />
+      <img src="/images/bellabel-lockup.png" alt="Bellabel Centro Médico Estético" />
       <span className="sr-only">Bellabel Centro Médico Estético</span>
     </span>
   );
@@ -249,7 +249,7 @@ export default function Home() {
     }
   }, []);
 
-  const bookingWhatsAppUrl = `https://wa.me/56979655129?text=${encodeURIComponent(
+  const bookingWhatsAppUrl = `https://wa.me/56944986391?text=${encodeURIComponent(
     `Hola Bellabel, acabo de reservar ${recommended?.eyebrow ?? "una evaluación"} para el ${date.split("-").reverse().join("/")} a las ${time}. Código: ${confirmationCode}. Profesional: ${professional}. Mi nombre es ${name}.${managementUrl ? ` Gestionar reserva: ${managementUrl}` : ""}`,
   )}`;
 
@@ -339,7 +339,7 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-visual">
-          <img src="/images/identidad-biobelle.jpg" alt="Identidad visual de Bellabel Centro Médico Estético" />
+          <img src="/images/identidad-bellabel.jpg" alt="Identidad visual de Bellabel Centro Médico Estético" />
           <div className="floating-card"><span>✦</span><p><small>Nuestra filosofía</small><b>Resultados naturales,<br />siempre.</b></p></div>
         </div>
       </section>
@@ -408,7 +408,7 @@ export default function Home() {
           <p>Creemos en una estética consciente: escuchar primero, indicar solo lo necesario y acompañarte en cada etapa. Porque un resultado realmente bello comienza con confianza.</p>
           <a href="#equipo" className="line-link">Conoce nuestra forma de cuidar <span>→</span></a>
         </div>
-        <figure className="intro-image"><img src="/images/biobelle-recepcion.jpg" alt="Recepción y logotipo Bellabel" /><figcaption>Rancagua · Atención con cita previa</figcaption></figure>
+        <figure className="intro-image"><img src="/images/bellabel-recepcion.jpg" alt="Recepción y logotipo Bellabel" /><figcaption>Rancagua · Atención con cita previa</figcaption></figure>
       </section>
 
       <section className="treatments" id="tratamientos">
@@ -511,7 +511,7 @@ export default function Home() {
           </figure>
 
           <figure className="clinical-card">
-            <img src="/images/equipo-clinico-biobelle.jpg" alt="EU. Kiara Moscoso Villegas y EU. Pía Orellana G. equipadas en box clínico" />
+            <img src="/images/equipo-clinico-bellabel.jpg" alt="EU. Kiara Moscoso Villegas y EU. Pía Orellana G. equipadas en box clínico" />
             <figcaption>
               <span className="clinical-badge">Seguridad & Protocolo</span>
               <h3>Estándares clínicos de excelencia</h3>
@@ -571,7 +571,7 @@ export default function Home() {
       <section className="gallery">
         <div className="gallery-copy"><p className="section-number light">CONOCE BELLABEL</p><h2>Una marca creada<br />para <em>cuidarte.</em></h2><p>Consulta nuestro catálogo y descubre un espacio donde salud, estética y trato cercano se encuentran.</p></div>
         <img src="/images/catalogo-tratamientos.jpg" alt="Catálogo de tratamientos dermoestéticos Bellabel" />
-        <img src="/images/servicios-biobelle.jpg" alt="Afiche oficial de servicios Bellabel" />
+        <img src="/images/servicios-bellabel.jpg" alt="Afiche oficial de servicios Bellabel" />
       </section>
 
       <section className="faq">
@@ -588,20 +588,20 @@ export default function Home() {
         <div><p className="section-number light">TU PRÓXIMO PASO</p><h2>Comienza por una<br /><em>conversación.</em></h2><p>Agenda tu evaluación personalizada y descubre qué tiene sentido para ti.</p><button className="cream-button" onClick={() => openBooking()}>Agendar mi evaluación <span>↗</span></button></div>
         <div className="contact-card">
           <p><span>Ubicación</span><b>Bueras 218, Edificio Olavarría<br />Oficina 302, Rancagua</b></p>
-          <p><span>Contacto</span><b>+56 9 7965 5129<br />+56 9 6406 1984</b></p>
+          <p><span>Contacto</span><b>+56 9 4498 6391<br />+56 9 6406 1984</b></p>
           <p><span>Emails agenda</span><b>Kiara: kiaramoscoso77@gmail.com<br />Pía: piaorellana96@gmail.com</b></p>
-          <p><span>Redes</span><b>@biobelle_center</b></p>
+          <p><span>Redes</span><a href="https://www.instagram.com/bellabel_center?igsi=aXhkd283dXQ2M2Ex" target="_blank" rel="noreferrer" style={{ textDecoration: "none", color: "inherit" }}><b>@bellabel_center</b></a></p>
         </div>
       </section>
 
       <footer>
         <a className="brand footer-brand" href="#inicio" aria-label="Bellabel inicio"><BrandLockup /></a>
         <p>Belleza natural. Cuidado profesional.</p>
-        <div><a href="#tratamientos">Tratamientos</a><a href="#promociones">Descuentos</a><a href="#equipo">Equipo</a><a href="https://instagram.com/biobelle_center">Instagram</a><Link href="/privacidad">Privacidad</Link><Link href="/terminos">Términos</Link></div>
+        <div><a href="#tratamientos">Tratamientos</a><a href="#promociones">Descuentos</a><a href="#equipo">Equipo</a><a href="https://www.instagram.com/bellabel_center?igsi=aXhkd283dXQ2M2Ex" target="_blank" rel="noreferrer">Instagram</a><Link href="/privacidad">Privacidad</Link><Link href="/terminos">Términos</Link></div>
         <small>© 2026 Bellabel · Información referencial. Todo procedimiento requiere evaluación profesional.</small>
       </footer>
 
-      <a className="whatsapp" href={`https://wa.me/56979655129?text=${encodeURIComponent("Hola Bellabel, quisiera recibir orientación sobre sus tratamientos y disponibilidad.")}`} target="_blank" rel="noreferrer" aria-label="Contactar Bellabel por WhatsApp" onClick={() => track("whatsapp_clicked")}><FaWhatsapp aria-hidden="true" /></a>
+      <a className="whatsapp" href={`https://wa.me/56944986391?text=${encodeURIComponent("Hola Bellabel, quisiera recibir orientación sobre sus tratamientos y disponibilidad.")}`} target="_blank" rel="noreferrer" aria-label="Contactar Bellabel por WhatsApp" onClick={() => track("whatsapp_clicked")}><FaWhatsapp aria-hidden="true" /></a>
 
       {bookingOpen && (
         <div className="modal-backdrop" role="presentation" onMouseDown={(e) => { if (e.currentTarget === e.target) closeBooking(); }}>
@@ -971,7 +971,7 @@ export default function Home() {
           <section className="flyer-modal" role="dialog" aria-modal="true" aria-label="Flyer oficial de servicios Bellabel">
             <button className="modal-close" onClick={() => setFlyerOpen(false)} aria-label="Cerrar flyer">×</button>
             <div className="flyer-modal-content">
-              <img src="/images/servicios-biobelle.jpg" alt="Flyer oficial de servicios Bellabel" />
+              <img src="/images/servicios-bellabel.jpg" alt="Flyer oficial de servicios Bellabel" />
               <div className="flyer-modal-actions">
                 <button className="primary" onClick={() => { setFlyerOpen(false); openBooking(); }}>
                   Agendar hora <span>↗</span>

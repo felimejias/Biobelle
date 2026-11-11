@@ -109,7 +109,7 @@ export default function ReservationPage() {
       <div className="announcement">Gestión segura de tu reserva Bellabel</div>
       <header className="site-header treatment-header"><BrandSocial /><Link className="back-home" href="/">← Volver al inicio</Link></header>
       <section className="reservation-shell">
-        {loading ? <div className="reservation-loading">Consultando tu reserva…</div> : error && !booking ? <div className="reservation-empty"><h1>No encontramos esta reserva.</h1><p>{error}</p><a href="https://wa.me/56979655129">Solicitar ayuda por WhatsApp</a></div> : booking && <>
+        {loading ? <div className="reservation-loading">Consultando tu reserva…</div> : error && !booking ? <div className="reservation-empty"><h1>No encontramos esta reserva.</h1><p>{error}</p><a href="https://wa.me/56944986391">Solicitar ayuda por WhatsApp</a></div> : booking && <>
           <div className="reservation-heading"><p>Reserva {booking.confirmationCode}</p><h1>Hola, {booking.patientName.split(" ")[0]}.</h1><span>Aquí puedes revisar, reprogramar o cancelar tu hora sin llamar.</span></div>
           <div className={`reservation-card ${booking.status}`}>
             <div><small>Tratamiento</small><b>{booking.treatmentName}</b></div>

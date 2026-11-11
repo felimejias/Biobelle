@@ -176,3 +176,70 @@ export const professionalProfiles = sqliteTable(
     updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
   },
 );
+
+export const patients = sqliteTable(
+  "patients",
+  {
+    rut: text("rut").primaryKey(),
+    fullName: text("full_name").notNull(),
+    phone: text("phone").notNull(),
+    email: text("email"),
+    birthDate: text("birth_date"),
+    medicalAlerts: text("medical_alerts"),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [
+    index("patients_phone_idx").on(table.phone),
+  ],
+);
+
+export const clinicalRecords = sqliteTable(
+  "clinical_records",
+  {
+    id: text("id").primaryKey(),
+    patientRut: text("patient_rut").notNull().references(() => patients.rut),
+    bookingId: text("booking_id"),
+    treatmentId: text("treatment_id").notNull(),
+    treatmentName: text("treatment_name").notNull(),
+    professional: text("professional").notNull(),
+    sessionNumber: integer("session_number").notNull().default(1),
+    treatmentZone: text("treatment_zone").notNull(),
+    clinicalParameters: text("clinical_parameters"),
+    productsPrescribed: text("products_prescribed"),
+    nextSessionRecommendedDate: text("next_session_recommended_date"),
+    observations: text("observations"),
+    procedureDate: text("procedure_date").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [
+    index("clinical_records_patient_rut_idx").on(table.patientRut),
+    index("clinical_records_procedure_date_idx").on(table.procedureDate),
+    index("clinical_records_treatment_idx").on(table.treatmentId),
+  ],
+);
+
+export const postTreatmentFollowups = sqliteTable(
+  "post_treatment_followups",
+  {
+    id: text("id").primaryKey(),
+    recordId: text("record_id").notNull().references(() => clinicalRecords.id),
+    patientRut: text("patient_rut").notNull(),
+    phone: text("phone").notNull(),
+    scheduledDatetime: text("scheduled_datetime").notNull(),
+    messageType: text("message_type").notNull(),
+    messageText: text("message_text").notNull(),
+    status: text("status").notNull().default("scheduled"),
+    patientReply: text("patient_reply"),
+    escalatedTo: text("escalated_to"),
+    sentAt: integer("sent_at", { mode: "timestamp_ms" }),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [
+    index("followups_patient_rut_idx").on(table.patientRut),
+    index("followups_status_idx").on(table.status),
+    index("followups_scheduled_idx").on(table.scheduledDatetime),
+    index("followups_record_idx").on(table.recordId),
+  ],
+);
+

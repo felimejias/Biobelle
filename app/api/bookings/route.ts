@@ -6,7 +6,7 @@ import { formatRut, validateRut } from "../../rut-validator";
 import { getTreatmentById } from "../../treatment-service";
 import { syncBookingToGoogleCalendar } from "../../google-calendar-service";
 
-// Apertura operacional BIOBELLE: 2026-08-10.
+// Apertura operacional Bellabel: 2026-08-10.
 type BookingPayload = {
   concernId?: string;
   treatmentId?: string;

@@ -4,7 +4,7 @@ import { bookings, scheduleBlocks } from "../../../db/schema";
 import { OPENING_DATE, SLOTS, getSlotsForDay, isProfessional, isProfessionalScheduledForSlot } from "../../clinic-config";
 import { getEligibleProfessionals } from "../../treatment-service";
 
-// Apertura operacional BIOBELLE: 2026-08-10.
+// Apertura operacional Bellabel: 2026-08-10.
 function isValidDate(value: string) {
   return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T12:00:00`));
 }

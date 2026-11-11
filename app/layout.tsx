@@ -7,7 +7,7 @@ const serif = Cormorant_Garamond({ variable: "--font-serif", subsets: ["latin"],
 const sans = Manrope({ variable: "--font-sans", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.biobelle.cl"),
+  metadataBase: new URL("https://www.bellabel.cl"),
   title: "Bellabel | Centro Médico Estético en Rancagua",
   description: "Medicina estética consciente, tecnología láser y dermoestética. Agenda tu evaluación personalizada en Bellabel Rancagua.",
   icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
@@ -26,10 +26,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const structuredData = {
     "@context": "https://schema.org", "@type": "MedicalBusiness", name: "Bellabel Centro Médico Estético",
-    url: "https://www.biobelle.cl", logo: "https://www.biobelle.cl/images/biobelle-lockup.png", image: "https://www.biobelle.cl/images/identidad-biobelle.jpg",
-    telephone: "+56979655129", priceRange: "$$",
+    url: "https://www.bellabel.cl", logo: "https://www.bellabel.cl/images/bellabel-lockup.png", image: "https://www.bellabel.cl/images/identidad-bellabel.jpg",
+    telephone: "+56944986391", priceRange: "$$",
     address: { "@type": "PostalAddress", streetAddress: "Bueras 218, Edificio Olavarría, Oficina 302", addressLocality: "Rancagua", addressRegion: "Región de O’Higgins", addressCountry: "CL" },
-    areaServed: "Rancagua", openingHours: "Mo-Sa 09:30-18:30", sameAs: ["https://www.instagram.com/biobelle_center"],
+    areaServed: "Rancagua", openingHours: "Mo-Sa 09:30-18:30", sameAs: ["https://www.instagram.com/bellabel_center?igsi=aXhkd283dXQ2M2Ex"],
   };
   return <html lang="es"><body className={`${serif.variable} ${sans.variable}`}><FirstPartyAnalytics />{children}<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} /></body></html>;
 }

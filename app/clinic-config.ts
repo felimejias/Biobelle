@@ -94,7 +94,7 @@ export type ProfessionalName = typeof PROFESSIONALS[number];
 export const PROFESSIONAL_EMAILS: Record<ProfessionalName, string> = {
   "Kiara Moscoso": "kiaramoscoso77@gmail.com",
   "Pía Orellana": "piaorellana96@gmail.com",
-  "Dr. Luis Moscoso": "consulta@biobelle.cl",
+  "Dr. Luis Moscoso": "consulta@bellabel.cl",
 };
 
 export type ProfessionalProfile = {
@@ -182,7 +182,7 @@ export function generateCalendarLinks(booking: {
   patientName?: string;
   phone?: string;
 }) {
-  const proEmail = PROFESSIONAL_EMAILS[booking.professional as ProfessionalName] || "consulta@biobelle.cl";
+  const proEmail = PROFESSIONAL_EMAILS[booking.professional as ProfessionalName] || "consulta@bellabel.cl";
   const dateFormatted = booking.date.replaceAll("-", "");
   const timeFormatted = booking.time.replaceAll(":", "");
   const startIso = `${dateFormatted}T${timeFormatted}00`;
@@ -195,11 +195,11 @@ export function generateCalendarLinks(booking: {
   const endIso = `${dateFormatted}T${endH}${endM}00`;
 
   const nowUtc = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-  const uid = `${booking.confirmationCode.toLowerCase()}@biobelle.cl`;
+  const uid = `${booking.confirmationCode.toLowerCase()}@bellabel.cl`;
 
-  const title = encodeURIComponent(`Cita BIOBELLE: ${booking.treatmentName} - ${booking.professional}`);
+  const title = encodeURIComponent(`Cita Bellabel: ${booking.treatmentName} - ${booking.professional}`);
   const details = encodeURIComponent(
-    `Reserva BIOBELLE (${booking.confirmationCode}).\nTratamiento: ${booking.treatmentName} (Duración estim.: ${durationMin} min)\nProfesional: ${booking.professional} (${proEmail})\nPaciente: ${booking.patientName || "Paciente"}\nContacto: ${booking.phone || ""}\nDirección: Bueras 218, Edificio Olavarría, Oficina 302, Rancagua.`
+    `Reserva Bellabel (${booking.confirmationCode}).\nTratamiento: ${booking.treatmentName} (Duración estim.: ${durationMin} min)\nProfesional: ${booking.professional} (${proEmail})\nPaciente: ${booking.patientName || "Paciente"}\nContacto: ${booking.phone || ""}\nDirección: Bueras 218, Edificio Olavarría, Oficina 302, Rancagua.`
   );
   const location = encodeURIComponent("Bueras 218, Edificio Olavarría, Oficina 302, Rancagua");
 
@@ -208,20 +208,20 @@ export function generateCalendarLinks(booking: {
   const icsLines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//BIOBELLE Centro Medico Estetico//Agenda//ES",
+    "PRODID:-//Bellabel Centro Medico Estetico//Agenda//ES",
     "CALSCALE:GREGORIAN",
     "METHOD:REQUEST",
     "BEGIN:VEVENT",
     `UID:${uid}`,
     `DTSTAMP:${nowUtc}`,
-    `SUMMARY:Cita BIOBELLE: ${booking.treatmentName} - ${booking.patientName || "Paciente"}`,
+    `SUMMARY:Cita Bellabel: ${booking.treatmentName} - ${booking.patientName || "Paciente"}`,
     `DESCRIPTION:Cita con ${booking.professional} (${proEmail}). Paciente: ${booking.patientName || "Paciente"}. Contacto: ${booking.phone || ""}. Código: ${booking.confirmationCode}.`,
     "LOCATION:Bueras 218\\, Edificio Olavarría\\, Oficina 302\\, Rancagua",
     `DTSTART;TZID=America/Santiago:${startIso}`,
     `DTEND;TZID=America/Santiago:${endIso}`,
     "STATUS:CONFIRMED",
     "SEQUENCE:0",
-    `ORGANIZER;CN=BIOBELLE Centro Medico:mailto:${proEmail}`,
+    `ORGANIZER;CN=Bellabel Centro Medico Estetico:mailto:${proEmail}`,
     `ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=${booking.professional}:mailto:${proEmail}`,
     "END:VEVENT",
     "END:VCALENDAR",

@@ -11,7 +11,7 @@ export interface BookingCalendarPayload {
 }
 
 export function buildIcsInvitation(booking: BookingCalendarPayload): string {
-  const proEmail = PROFESSIONAL_EMAILS[booking.professional as ProfessionalName] || "consulta@biobelle.cl";
+  const proEmail = PROFESSIONAL_EMAILS[booking.professional as ProfessionalName] || "consulta@bellabel.cl";
   const dateFormatted = booking.date.replaceAll("-", "");
   const timeFormatted = booking.time.replaceAll(":", "");
   const startIso = `${dateFormatted}T${timeFormatted}00`;
@@ -23,7 +23,7 @@ export function buildIcsInvitation(booking: BookingCalendarPayload): string {
   const endIso = `${dateFormatted}T${endH}${endM}00`;
 
   const nowUtc = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-  const uid = `${booking.confirmationCode.toLowerCase()}@biobelle.cl`;
+  const uid = `${booking.confirmationCode.toLowerCase()}@bellabel.cl`;
 
   const summary = `Cita Bellabel: ${booking.treatmentName} - ${booking.patientName}`;
   const description = `Paciente: ${booking.patientName}\\nWhatsApp: ${booking.phone}\\nTratamiento: ${booking.treatmentName}\\nCódigo de Reserva: ${booking.confirmationCode}\\nProfesional: ${booking.professional}`;
@@ -75,7 +75,7 @@ export async function syncBookingToGoogleCalendar(booking: BookingCalendarPayloa
   method: "api" | "email" | "feed_only";
   error?: string;
 }> {
-  const proEmail = PROFESSIONAL_EMAILS[booking.professional as ProfessionalName] || "consulta@biobelle.cl";
+  const proEmail = PROFESSIONAL_EMAILS[booking.professional as ProfessionalName] || "consulta@bellabel.cl";
   const icsContent = buildIcsInvitation(booking);
   const resendApiKey = process.env.RESEND_API_KEY;
 
@@ -88,7 +88,7 @@ export async function syncBookingToGoogleCalendar(booking: BookingCalendarPayloa
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "Bellabel Agenda <agenda@biobelle.cl>",
+          from: "Bellabel Agenda <agenda@bellabel.cl>",
           to: [proEmail],
           subject: `📅 Cita Agendada: ${booking.patientName} (${booking.date} ${booking.time})`,
           html: `

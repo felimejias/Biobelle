@@ -43,7 +43,7 @@ export default async function TreatmentPage({ params }: TreatmentPageProps) {
           <h1>{treatment.title}</h1>
           <p>{treatment.summary}</p>
           <div className="detail-meta"><span><small>Duración estimada</small>{treatment.duration}</span><span><small>Valor</small>{treatment.price}</span></div>
-          <div className="detail-actions"><Link className="primary" href={`/?agendar=${treatment.slug}`}>Agendar evaluación <span>↗</span></Link><a className="detail-whatsapp" href={`https://wa.me/56979655129?text=${whatsappText}`} target="_blank" rel="noreferrer">Consultar por WhatsApp</a></div>
+          <div className="detail-actions"><Link className="primary" href={`/?agendar=${treatment.slug}`}>Agendar evaluación <span>↗</span></Link><a className="detail-whatsapp" href={`https://wa.me/56944986391?text=${whatsappText}`} target="_blank" rel="noreferrer">Consultar por WhatsApp</a></div>
         </div>
         <figure><img src={treatment.image} alt={`${treatment.eyebrow} en Bellabel Rancagua`} /></figure>
       </section>
