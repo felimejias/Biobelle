@@ -27,7 +27,7 @@ function normalizePhone(value: string) {
 }
 
 function confirmationCode() {
-  return `BIO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+  return `BEL-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
 }
 
 function isUniqueConstraintError(error: unknown) {

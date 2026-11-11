@@ -1248,5 +1248,108 @@ button.table-row:hover { background:#f6ece9; }
   .badge-sparkle { display: none; }
 }
 
+/* Unified Team Member Cards */
+.team-member-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(111, 38, 61, 0.16);
+  transition: transform .3s ease, box-shadow .3s ease;
+  aspect-ratio: 1086 / 1536;
+  text-decoration: none;
+  color: inherit;
+}
+.team-member-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 60px rgba(60, 21, 36, 0.2);
+}
+.team-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 5;
+  background: var(--wine);
+  color: #fffdfa;
+  padding: 7px 13px;
+  border-radius: 12px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba(60, 21, 36, 0.25);
+}
+.team-member-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+}
+.team-card-info {
+  position: absolute;
+  bottom: 0;
+  inset-x: 0;
+  padding: 28px 22px 22px;
+  background: linear-gradient(0deg, rgba(60, 21, 36, 0.95), rgba(60, 21, 36, 0.6) 70%, transparent);
+  color: #fff;
+  z-index: 4;
+}
+.team-card-info p {
+  color: #ebd2d7;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  margin: 0 0 4px;
+}
+.team-card-info h3 {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  color: #fffdfa;
+  margin: 0 0 6px;
+}
+.team-card-info small {
+  color: var(--gold);
+  font-size: 8.5px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  display: block;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+  padding: 100px 7vw;
+  background: #fcf9f6;
+  border-top: 1px solid rgba(111, 38, 61, 0.08);
+}
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 26px;
+  margin-top: 40px;
+}
+.testimonial-card {
+  margin: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 16px 45px rgba(60, 21, 36, 0.08);
+  border: 1px solid rgba(111, 38, 61, 0.12);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.testimonial-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 60px rgba(60, 21, 36, 0.16);
+}
+.testimonial-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
 
 

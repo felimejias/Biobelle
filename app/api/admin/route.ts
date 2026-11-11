@@ -16,7 +16,7 @@ function normalizePhone(value: string) {
 }
 
 function bookingCode() {
-  return `BIO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+  return `BEL-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
 }
 
 export async function GET(request: Request) {

@@ -316,6 +316,8 @@ export default function Home() {
           <a href="#tratamientos" onClick={() => setMenuOpen(false)}>Tratamientos</a>
           <a href="#promociones" onClick={() => setMenuOpen(false)}>Descuentos</a>
           <a href="#equipo" onClick={() => setMenuOpen(false)}>Equipo</a>
+          <a href="#protocolos-clinicos" onClick={() => setMenuOpen(false)}>Clínica</a>
+          <a href="#testimonios" onClick={() => setMenuOpen(false)}>Testimonios</a>
           <a href="#experiencia" onClick={() => setMenuOpen(false)}>Experiencia</a>
           <a href="#contacto" onClick={() => setMenuOpen(false)}>Contacto</a>
           <button className="nav-book mobile" onClick={() => openBooking()}>Agendar hora</button>
@@ -339,7 +341,7 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-visual">
-          <img src="/images/identidad-bellabel.jpg" alt="Identidad visual de Bellabel Centro Médico Estético" />
+          <img src="/images/muro-logo-bellabel.jpg" alt="Logotipo Bellabel en relieve en muro de recepción clínica" />
           <div className="floating-card"><span>✦</span><p><small>Nuestra filosofía</small><b>Resultados naturales,<br />siempre.</b></p></div>
         </div>
       </section>
@@ -408,7 +410,7 @@ export default function Home() {
           <p>Creemos en una estética consciente: escuchar primero, indicar solo lo necesario y acompañarte en cada etapa. Porque un resultado realmente bello comienza con confianza.</p>
           <a href="#equipo" className="line-link">Conoce nuestra forma de cuidar <span>→</span></a>
         </div>
-        <figure className="intro-image"><img src="/images/bellabel-recepcion.jpg" alt="Recepción y logotipo Bellabel" /><figcaption>Rancagua · Atención con cita previa</figcaption></figure>
+        <figure className="intro-image"><img src="/images/placa-puerta-bellabel.jpg" alt="Entrada y placa oficial Bellabel Oficina 302" /><figcaption>Rancagua · Bueras 218 · Edificio Olavarría Of. 302</figcaption></figure>
       </section>
 
       <section className="treatments" id="tratamientos">
@@ -451,18 +453,28 @@ export default function Home() {
           <p>Formación clínica, actualización constante y una mirada humana para recomendar solo aquello que aporte a tu bienestar.</p>
         </div>
         <div className="team-grid team-grid-three">
-          <Link className="team-card poster-card" href="/equipo/kiara-moscoso">
+          <Link className="team-card team-member-card" href="/equipo/kiara-moscoso">
+            <span className="team-badge">✦ ENFERMERA UNIVERSITARIA</span>
             <img src="/images/kiara-moscoso.jpg" alt="EU. Kiara Moscoso Villegas, enfermera dermoestética y cosmetóloga" />
-            <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Kiara Moscoso V.</h3><span>kiaramoscoso77@gmail.com · Ver perfil →</span></div>
+            <div className="team-card-info">
+              <p>Enfermera dermoestética · Cosmetóloga</p>
+              <h3>Kiara Moscoso V.</h3>
+              <small>kiaramoscoso77@gmail.com · Ver perfil →</small>
+            </div>
           </Link>
-          <Link className="team-card poster-card" href="/equipo/pia-orellana">
+          <Link className="team-card team-member-card" href="/equipo/pia-orellana">
+            <span className="team-badge">✦ ENFERMERA UNIVERSITARIA</span>
             <img src="/images/pia-orellana.jpg" alt="EU. Pía Orellana, enfermera dermoestética y cosmetóloga" />
-            <div><p>Enfermera dermoestética · Cosmetóloga</p><h3>Pía Orellana G.</h3><span>piaorellana96@gmail.com · Ver perfil →</span></div>
+            <div className="team-card-info">
+              <p>Enfermera dermoestética · Cosmetóloga</p>
+              <h3>Pía Orellana G.</h3>
+              <small>piaorellana96@gmail.com · Ver perfil →</small>
+            </div>
           </Link>
-          <Link className="team-card doctor-welcome-card" href="/equipo/dr-luis-moscoso">
-            <span className="welcome-badge">✦ BIENVENIDO AL EQUIPO</span>
+          <Link className="team-card team-member-card doctor-welcome-card" href="/equipo/dr-luis-moscoso">
+            <span className="team-badge welcome-badge">✦ BIENVENIDO AL EQUIPO</span>
             <img src="/images/dr-luis-moscoso.jpg" alt="Dr. Luis Moscoso, Médico General" />
-            <div className="doctor-card-info">
+            <div className="team-card-info doctor-card-info">
               <p>Médico General · Atención Clínica Integral</p>
               <h3>Dr. Luis Moscoso</h3>
               <small>Disponibilidad y agenda próximamente · Ver perfil →</small>
@@ -484,7 +496,7 @@ export default function Home() {
 
         <div className="clinical-grid">
           <figure className="clinical-card">
-            <img src="/images/procedimiento-diseno-facial.jpg" alt="Diseño y marcación anatómica de vectores faciales por Kiara y Pía" />
+            <img src="/images/procedimiento-diseno-facial-real.jpg" alt="Diseño y marcación anatómica de vectores faciales por Kiara y Pía" />
             <figcaption>
               <span className="clinical-badge">Diseño & Marcación Anatómica</span>
               <h3>Planificación exhaustiva del tratamiento</h3>
@@ -493,66 +505,104 @@ export default function Home() {
           </figure>
 
           <figure className="clinical-card">
-            <img src="/images/procedimiento-microinyeccion-precision.jpg" alt="EU. Kiara Moscoso realizando procedimiento de precisión facial" />
+            <img src="/images/procedimiento-depilacion-laser-real.jpg" alt="Sesión de depilación láser en box clínico con vista a la cordillera" />
             <figcaption>
-              <span className="clinical-badge">Técnica de Alta Precisión</span>
-              <h3>Microinyecciones & dermoestética</h3>
-              <p>Aplicación técnica depurada con insumos certificados para lograr cambios naturales y armónicos.</p>
+              <span className="clinical-badge">Láser & Fotodepilación</span>
+              <h3>Tecnología láser de alta precisión</h3>
+              <p>Tratamientos seguros en ambiente clínico climatizado con vista a la cordillera de Rancagua.</p>
             </figcaption>
           </figure>
 
           <figure className="clinical-card">
-            <img src="/images/procedimiento-evaluacion-clinica.jpg" alt="Evaluación y atención conjunta por EU. Kiara Moscoso y EU. Pía Orellana" />
+            <img src="/images/procedimiento-hollywood-peel-real.jpg" alt="Procedimiento Hollywood Peel con máscara de carbón activo y láser Nd:YAG" />
             <figcaption>
-              <span className="clinical-badge">Atención a Cuatro Manos</span>
-              <h3>Criterio clínico compartido</h3>
-              <p>Kiara y Pía analizan y coordinan cada indicación en equipo para brindar la máxima seguridad.</p>
+              <span className="clinical-badge">Láser Nd:YAG Q-Switched</span>
+              <h3>Hollywood Peel & Renovación</h3>
+              <p>Tratamiento de carbón activo para poros, textura y luminosidad profunda sin incapacidad.</p>
             </figcaption>
           </figure>
 
           <figure className="clinical-card">
-            <img src="/images/equipo-clinico-bellabel.jpg" alt="EU. Kiara Moscoso Villegas y EU. Pía Orellana G. equipadas en box clínico" />
+            <img src="/images/procedimiento-tatuajes-laser-real.jpg" alt="Borrado de tatuaje con cabezal láser de alta precisión en Bellabel" />
             <figcaption>
-              <span className="clinical-badge">Seguridad & Protocolo</span>
-              <h3>Estándares clínicos de excelencia</h3>
-              <p>Profesionales de salud con equipo de protección completo y estrictos protocolos de bioseguridad.</p>
+              <span className="clinical-badge">Remoción de Tatuajes</span>
+              <h3>Eliminación de pigmentos con láser</h3>
+              <p>Fragmentación fotoacústica de tinta dérmica con máxima protección de los tejidos sanos.</p>
             </figcaption>
           </figure>
 
           <figure className="clinical-card">
-            <img src="/images/equipo-box-atencion.jpg" alt="Equipo Bellabel en box clínico acondicionado en Rancagua" />
+            <img src="/images/procedimiento-plasmapen-real.jpg" alt="Blefaroplastia no quirúrgica y rejuvenecimiento con técnica Plasma Pen" />
             <figcaption>
-              <span className="clinical-badge">Box Clínico Rancagua</span>
-              <h3>Instalaciones privadas & confort</h3>
-              <p>Espacio clínico acondicionado en Edificio Olavarría, Oficina 302, pensado exclusivamente para tu privacidad.</p>
+              <span className="clinical-badge">Técnica Plasma Pen</span>
+              <h3>Fibroblast Facial & Párpados</h3>
+              <p>Retracción cutánea controlada para párpados y líneas de expresión sin cortes ni cicatrices.</p>
             </figcaption>
           </figure>
 
           <figure className="clinical-card">
-            <img src="/images/equipo-duo-clinico.jpg" alt="EU. Kiara Moscoso y EU. Pía Orellana - Equipo profesional Bellabel" />
+            <img src="/images/procedimiento-extraccion-lesiones-real.jpg" alt="Extracción clínica de lesiones cutáneas, acrocordones y verrugas" />
             <figcaption>
-              <span className="clinical-badge">Vocación & Cercanía</span>
-              <h3>Equipo profesional de salud</h3>
-              <p>Acompañamiento clínico integral y trato humano para potenciar tu belleza y bienestar en cada visita.</p>
+              <span className="clinical-badge">Dermoestética Clínica</span>
+              <h3>Retiro de Lesiones Cutáneas</h3>
+              <p>Evaluación y retiro seguro de acrocordones, milliums y verrugas por enfermeras universitarias.</p>
             </figcaption>
           </figure>
 
           <figure className="clinical-card">
-            <img src="/images/profesional-kiara-moscoso.jpg" alt="EU. Kiara Moscoso Villegas - Enfermera Universitaria Bellabel" />
+            <img src="/images/procedimiento-electrocardiograma-real.jpg" alt="Toma de electrocardiograma con indicación médica en Bellabel" />
             <figcaption>
-              <span className="clinical-badge">Enfermera Universitaria</span>
-              <h3>Evaluación & armonización avanzada</h3>
-              <p>Especialista en procedimientos inyectables, bioestimuladores y tecnologías de rejuvenecimiento facial.</p>
+              <span className="clinical-badge">Atención Médica</span>
+              <h3>Electrocardiograma de Reposo</h3>
+              <p>Toma de ECG con indicación médica, registro diagnóstico y entrega de trazado en box privado.</p>
             </figcaption>
           </figure>
 
           <figure className="clinical-card">
-            <img src="/images/profesional-pia-orellana.jpg" alt="EU. Pía Orellana G. - Enfermera Universitaria Bellabel" />
+            <img src="/images/equipo-duo-real.jpg" alt="EU. Pía Orellana y EU. Kiara Moscoso en box clínico Bellabel" />
             <figcaption>
-              <span className="clinical-badge">Enfermera Universitaria</span>
-              <h3>Dermoestética & cuidado integral</h3>
-              <p>Atención personalizada, tratamientos dermoestéticos de precisión y protocolos de máxima seguridad.</p>
+              <span className="clinical-badge">Equipo Fundador</span>
+              <h3>Vocación, rigor y cercanía</h3>
+              <p>Enfermeras universitarias y cosmetólogas comprometidas con la salud y bienestar integral.</p>
             </figcaption>
+          </figure>
+
+          <figure className="clinical-card">
+            <img src="/images/edificio-olavarria-bellabel.jpg" alt="Edificio Olavarría en Bueras 218, Rancagua" />
+            <figcaption>
+              <span className="clinical-badge">Edificio Olavarría · Of. 302</span>
+              <h3>Ubicación estratégica en Rancagua</h3>
+              <p>Bueras 218, piso 3. Entorno médico moderno, seguro, con estacionamiento y fácil conectividad.</p>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section className="testimonials-section" id="testimonios" aria-labelledby="testimonials-title">
+        <div className="section-head">
+          <div>
+            <p className="section-number">03.2 / TESTIMONIOS REALES</p>
+            <h2 id="testimonials-title">Lo que dicen<br /><em>nuestras pacientes.</em></h2>
+          </div>
+          <p>
+            Opiniones y experiencias directas de quienes se atienden en Bellabel. Trato humano, seguridad clínica y resultados visibles.
+          </p>
+        </div>
+        <div className="testimonials-grid">
+          <figure className="testimonial-card">
+            <img src="/images/testimonio-paciente-1.jpg" alt="Testimonio de paciente @carlagp216 en Bellabel" loading="lazy" />
+          </figure>
+          <figure className="testimonial-card">
+            <img src="/images/testimonio-paciente-2.jpg" alt="Testimonio de paciente @lx_mmp en Bellabel" loading="lazy" />
+          </figure>
+          <figure className="testimonial-card">
+            <img src="/images/testimonio-paciente-3.jpg" alt="Testimonio de paciente @aguilera_mg_pktr en Bellabel" loading="lazy" />
+          </figure>
+          <figure className="testimonial-card">
+            <img src="/images/testimonio-paciente-4.jpg" alt="Testimonio de paciente @jxvii._h en Bellabel" loading="lazy" />
+          </figure>
+          <figure className="testimonial-card">
+            <img src="/images/testimonio-paciente-5.jpg" alt="Testimonio de paciente Bellabel" loading="lazy" />
           </figure>
         </div>
       </section>
@@ -569,9 +619,13 @@ export default function Home() {
       </section>
 
       <section className="gallery">
-        <div className="gallery-copy"><p className="section-number light">CONOCE BELLABEL</p><h2>Una marca creada<br />para <em>cuidarte.</em></h2><p>Consulta nuestro catálogo y descubre un espacio donde salud, estética y trato cercano se encuentran.</p></div>
-        <img src="/images/catalogo-tratamientos.jpg" alt="Catálogo de tratamientos dermoestéticos Bellabel" />
-        <img src="/images/servicios-bellabel.jpg" alt="Afiche oficial de servicios Bellabel" />
+        <div className="gallery-copy">
+          <p className="section-number light">CONOCE BELLABEL</p>
+          <h2>Una clínica creada<br />para <em>cuidarte.</em></h2>
+          <p>Consulta nuestro catálogo oficial de procedimientos médicos y dermoestéticos, horarios de atención y visítanos en Edificio Olavarría, Rancagua.</p>
+        </div>
+        <img src="/images/catalogo-completo-bellabel.jpg" alt="Catálogo oficial integral de tratamientos Bellabel" loading="lazy" />
+        <img src="/images/horarios-atencion-bellabel.jpg" alt="Horarios oficiales de atención Bellabel Rancagua" loading="lazy" />
       </section>
 
       <section className="faq">
@@ -597,7 +651,7 @@ export default function Home() {
       <footer>
         <a className="brand footer-brand" href="#inicio" aria-label="Bellabel inicio"><BrandLockup /></a>
         <p>Belleza natural. Cuidado profesional.</p>
-        <div><a href="#tratamientos">Tratamientos</a><a href="#promociones">Descuentos</a><a href="#equipo">Equipo</a><a href="https://www.instagram.com/bellabel_center?igsi=aXhkd283dXQ2M2Ex" target="_blank" rel="noreferrer">Instagram</a><Link href="/privacidad">Privacidad</Link><Link href="/terminos">Términos</Link></div>
+        <div><a href="#tratamientos">Tratamientos</a><a href="#promociones">Descuentos</a><a href="#equipo">Equipo</a><a href="#testimonios">Testimonios</a><a href="https://www.instagram.com/bellabel_center?igsi=aXhkd283dXQ2M2Ex" target="_blank" rel="noreferrer">Instagram</a><Link href="/privacidad">Privacidad</Link><Link href="/terminos">Términos</Link></div>
         <small>© 2026 Bellabel · Información referencial. Todo procedimiento requiere evaluación profesional.</small>
       </footer>
 
